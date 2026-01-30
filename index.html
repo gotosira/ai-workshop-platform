@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI for Designers | Online Course Platform</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🤖</text></svg>">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: { extend: { fontFamily: { sans: ['IBM Plex Sans Thai', 'system-ui'] } } }
+        }
+    </script>
+    <style>
+        .gradient-text { background: linear-gradient(135deg, #f97316 0%, #ec4899 50%, #8b5cf6 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .glass { background: rgba(255,255,255,0.03); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.08); }
+        .mesh-bg { background-color: #0a0a0f; background-image: radial-gradient(at 40% 20%, rgba(249, 115, 22, 0.1) 0px, transparent 50%), radial-gradient(at 80% 0%, rgba(236, 72, 153, 0.08) 0px, transparent 50%); }
+        input, select, textarea { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); }
+        input:focus, select:focus, textarea:focus { outline: none; border-color: #f97316; }
+        .video-container { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; }
+        .video-container video { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+        [x-cloak] { display: none !important; }
+        .sidebar { transition: transform 0.3s ease; }
+        @media (max-width: 768px) { .sidebar { transform: translateX(-100%); position: fixed; z-index: 50; } .sidebar.open { transform: translateX(0); } }
+    </style>
+</head>
+<body class="bg-[#0a0a0f] text-white min-h-screen font-sans">
+    <div id="app"></div>
+
+    <script>
+        // ============ CONFIG ============
+        const CONFIG = {
+            SUPABASE_URL: 'YOUR_SUPABASE_URL',
+            SUPABASE_ANON_KEY: 'YOUR_SUPABASE_ANON_KEY',
+            PROMPTPAY_ID: '0812345678', // เบอร์ PromptPay
+            PROMPTPAY_NAME: 'คชา หาญชนะ',
+            ADMIN_EMAILS: ['sira.hanchana@gmail.com']
+        };
+
+        // ============ COURSES DATA ============
+        const COURSES = {
+            beginner: {
+                id: 'beginner',
+                name: '🌱 Beginner',
+                price: 2900,
+                color: 'green',
+                description: 'พื้นฐาน AI สำหรับ Designer',
+                lessons: [
+                    { id: 'b1', title: 'AI Fundamentals', duration: '25 min', videoUrl: '' },
+                    { id: 'b2', title: 'Prompt Engineering 101', duration: '30 min', videoUrl: '' },
+                    { id: 'b3', title: 'AI for UX Research', duration: '25 min', videoUrl: '' },
+                    { id: 'b4', title: 'AI Image Generation', duration: '20 min', videoUrl: '' },
+                    { id: 'b5', title: 'UX Writing with AI', duration: '20 min', videoUrl: '' }
+                ]
+            },
+            intermediate: {
+                id: 'intermediate',
+                name: '🚀 Intermediate',
+                price: 3900,
+                color: 'yellow',
+                description: 'เทคนิคขั้นสูง',
+                lessons: [
+                    { id: 'i1', title: 'Advanced Prompting', duration: '30 min', videoUrl: '' },
+                    { id: 'i2', title: 'Chain-of-Thought', duration: '25 min', videoUrl: '' },
+                    { id: 'i3', title: 'Multi-Modal AI', duration: '25 min', videoUrl: '' },
+                    { id: 'i4', title: 'Vision Models', duration: '20 min', videoUrl: '' },
+                    { id: 'i5', title: 'AI Agents & Automation', duration: '30 min', videoUrl: '' }
+                ]
+            },
+            advanced: {
+                id: 'advanced',
+                name: '⚡ Advanced',
+                price: 4900,
+                color: 'red',
+                description: 'Enterprise & Leadership',
+                lessons: [
+                    { id: 'a1', title: 'RAG & Knowledge Systems', duration: '35 min', videoUrl: '' },
+                    { id: 'a2', title: 'Fine-Tuning Models', duration: '30 min', videoUrl: '' },
+                    { id: 'a3', title: 'Building AI Plugins', duration: '35 min', videoUrl: '' },
+                    { id: 'a4', title: 'AI Governance & Ethics', duration: '25 min', videoUrl: '' },
+                    { id: 'a5', title: 'Team Training', duration: '20 min', videoUrl: '' }
+                ]
+            }
+        };
+
+        // ============ APP STATE ============
+        let state = {
+            page: 'home', // home, login, register, dashboard, admin, lesson
+            user: null,
+            userProfile: null,
+            currentLesson: null,
+            sidebarOpen: false,
+            loading: false,
+            registrations: [],
+            message: null
+        };
+
+        // ============ SUPABASE (Optional) ============
+        let supabase = null;
+        if (CONFIG.SUPABASE_URL !== 'YOUR_SUPABASE_URL') {
+            supabase = window.supabase.createClient(CONFIG.SUPABASE_URL, CONFIG.SUPABASE_ANON_KEY);
+        }
+
+        // ============ LOCAL STORAGE FALLBACK ============
+        const storage = {
+            getUsers: () => JSON.parse(localStorage.getItem('aiw_users') || '[]'),
+            saveUsers: (users) => localStorage.setItem('aiw_users', JSON.stringify(users)),
+            getRegistrations: () => JSON.parse(localStorage.getItem('aiw_registrations') || '[]'),
+            saveRegistrations: (regs) => localStorage.setItem('aiw_registrations', JSON.stringify(regs)),
+            getCurrentUser: () => JSON.parse(localStorage.getItem('aiw_current_user') || 'null'),
+            setCurrentUser: (user) => localStorage.setItem('aiw_current_user', JSON.stringify(user)),
+            getProgress: (userId) => JSON.parse(localStorage.getItem(`aiw_progress_${userId}`) || '{}'),
+            saveProgress: (userId, progress) => localStorage.setItem(`aiw_progress_${userId}`, JSON.stringify(progress))
+        };
+
+        // ============ RENDER FUNCTIONS ============
+        function render() {
+            const app = document.getElementById('app');
+            
+            switch(state.page) {
+                case 'home': app.innerHTML = renderHome(); break;
+                case 'login': app.innerHTML = renderLogin(); break;
+                case 'register': app.innerHTML = renderRegister(); break;
+                case 'payment': app.innerHTML = renderPayment(); break;
+                case 'dashboard': app.innerHTML = renderDashboard(); break;
+                case 'lesson': app.innerHTML = renderLesson(); break;
+                case 'admin': app.innerHTML = renderAdmin(); break;
+                default: app.innerHTML = renderHome();
+            }
+            
+            attachEvents();
+        }
+
+        function renderHome() {
+            return `
+                <nav class="fixed top-0 left-0 right-0 z-50 glass">
+                    <div class="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
+                        <div class="flex items-center gap-2">
+                            <span class="text-2xl">🤖</span>
+                            <span class="font-bold hidden sm:block">AI for Designers</span>
+                        </div>
+                        <div class="flex gap-3">
+                            ${state.user ? `
+                                <button onclick="navigate('dashboard')" class="px-4 py-2 glass rounded-lg hover:bg-white/10">Dashboard</button>
+                                <button onclick="logout()" class="px-4 py-2 text-zinc-400 hover:text-white">Logout</button>
+                            ` : `
+                                <button onclick="navigate('login')" class="px-4 py-2 text-zinc-400 hover:text-white">Login</button>
+                                <button onclick="navigate('register')" class="px-4 py-2 bg-gradient-to-r from-orange-500 to-pink-500 rounded-lg font-semibold">สมัครเรียน</button>
+                            `}
+                        </div>
+                    </div>
+                </nav>
+
+                <section class="mesh-bg min-h-screen flex items-center justify-center px-4 pt-20">
+                    <div class="max-w-4xl mx-auto text-center">
+                        <div class="inline-flex items-center gap-2 glass rounded-full px-4 py-2 mb-8">
+                            <span class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
+                            <span class="text-sm text-zinc-400">🎥 Online Course — เรียนที่ไหนก็ได้</span>
+                        </div>
+                        
+                        <h1 class="text-5xl sm:text-7xl font-bold mb-6">
+                            <span class="gradient-text">AI for Designers</span>
+                        </h1>
+                        
+                        <p class="text-xl text-zinc-400 mb-8 max-w-2xl mx-auto">
+                            เรียนรู้การใช้ AI เพื่อเพิ่มประสิทธิภาพการทำงานด้าน Design
+                        </p>
+                        
+                        <div class="flex flex-col sm:flex-row gap-4 justify-center mb-12">
+                            <button onclick="navigate('register')" class="px-8 py-4 bg-gradient-to-r from-orange-500 to-pink-500 rounded-xl font-semibold text-lg hover:opacity-90">
+                                🚀 สมัครเลย — เริ่มต้น ฿2,900
+                            </button>
+                        </div>
+
+                        <div class="flex flex-wrap justify-center gap-6 text-sm text-zinc-400">
+                            <div>🎥 ดูย้อนหลัง 1 ปี</div>
+                            <div>📱 ทุก Device</div>
+                            <div>🎓 Certificate</div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Courses -->
+                <section class="py-20 px-4">
+                    <div class="max-w-5xl mx-auto">
+                        <h2 class="text-3xl font-bold text-center mb-12">หลักสูตร 3 ระดับ</h2>
+                        <div class="grid md:grid-cols-3 gap-6">
+                            ${Object.values(COURSES).map(course => `
+                                <div class="glass rounded-2xl p-6 border-t-4 border-${course.color}-500">
+                                    <h3 class="text-xl font-bold text-${course.color}-400 mb-2">${course.name}</h3>
+                                    <p class="text-zinc-400 text-sm mb-4">${course.description}</p>
+                                    <ul class="space-y-2 text-sm text-zinc-300 mb-4">
+                                        ${course.lessons.map(l => `<li>✓ ${l.title}</li>`).join('')}
+                                    </ul>
+                                    <p class="text-2xl font-bold text-${course.color}-400">฿${course.price.toLocaleString()}</p>
+                                </div>
+                            `).join('')}
+                        </div>
+                        
+                        <div class="text-center mt-8">
+                            <div class="glass rounded-2xl p-6 inline-block">
+                                <p class="text-lg font-bold mb-2">⭐ Full Bundle — ครบทั้ง 3 ระดับ</p>
+                                <p class="text-3xl font-bold gradient-text">฿7,900</p>
+                                <p class="text-green-400 text-sm">ประหยัด ฿3,800</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <footer class="py-8 px-4 border-t border-white/5 text-center text-sm text-zinc-500">
+                    <p>© 2025 AI for Designers by May (Kacha Hanchana)</p>
+                </footer>
+            `;
+        }
+
+        function renderLogin() {
+            return `
+                <div class="min-h-screen flex items-center justify-center px-4 mesh-bg">
+                    <div class="glass rounded-2xl p-8 w-full max-w-md">
+                        <button onclick="navigate('home')" class="text-zinc-400 hover:text-white mb-6">&larr; กลับ</button>
+                        <h1 class="text-2xl font-bold mb-6">🔐 Login</h1>
+                        
+                        ${state.message ? `<div class="p-4 rounded-lg mb-4 ${state.message.type === 'error' ? 'bg-red-500/20 text-red-400' : 'bg-green-500/20 text-green-400'}">${state.message.text}</div>` : ''}
+                        
+                        <form id="loginForm" class="space-y-4">
+                            <div>
+                                <label class="block text-sm text-zinc-400 mb-1">Email</label>
+                                <input type="email" name="email" required class="w-full px-4 py-3 rounded-xl">
+                            </div>
+                            <div>
+                                <label class="block text-sm text-zinc-400 mb-1">Password</label>
+                                <input type="password" name="password" required class="w-full px-4 py-3 rounded-xl">
+                            </div>
+                            <button type="submit" class="w-full py-4 bg-gradient-to-r from-orange-500 to-pink-500 rounded-xl font-semibold">
+                                ${state.loading ? 'Loading...' : 'Login'}
+                            </button>
+                        </form>
+                        
+                        <p class="text-center text-zinc-500 mt-6">
+                            ยังไม่มีบัญชี? <button onclick="navigate('register')" class="text-orange-400 hover:underline">สมัครเรียน</button>
+                        </p>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderRegister() {
+            return `
+                <div class="min-h-screen flex items-center justify-center px-4 py-12 mesh-bg">
+                    <div class="glass rounded-2xl p-8 w-full max-w-md">
+                        <button onclick="navigate('home')" class="text-zinc-400 hover:text-white mb-6">&larr; กลับ</button>
+                        <h1 class="text-2xl font-bold mb-6">📝 สมัครเรียน</h1>
+                        
+                        ${state.message ? `<div class="p-4 rounded-lg mb-4 ${state.message.type === 'error' ? 'bg-red-500/20 text-red-400' : 'bg-green-500/20 text-green-400'}">${state.message.text}</div>` : ''}
+                        
+                        <form id="registerForm" class="space-y-4">
+                            <div>
+                                <label class="block text-sm text-zinc-400 mb-1">ชื่อ-นามสกุล *</label>
+                                <input type="text" name="fullname" required class="w-full px-4 py-3 rounded-xl">
+                            </div>
+                            <div>
+                                <label class="block text-sm text-zinc-400 mb-1">Email *</label>
+                                <input type="email" name="email" required class="w-full px-4 py-3 rounded-xl">
+                            </div>
+                            <div>
+                                <label class="block text-sm text-zinc-400 mb-1">เบอร์โทร *</label>
+                                <input type="tel" name="phone" required class="w-full px-4 py-3 rounded-xl">
+                            </div>
+                            <div>
+                                <label class="block text-sm text-zinc-400 mb-1">Password *</label>
+                                <input type="password" name="password" required minlength="6" class="w-full px-4 py-3 rounded-xl">
+                            </div>
+                            <div>
+                                <label class="block text-sm text-zinc-400 mb-1">Package *</label>
+                                <select name="package" required class="w-full px-4 py-3 rounded-xl">
+                                    <option value="">-- เลือก --</option>
+                                    <option value="beginner">🌱 Beginner — ฿2,900</option>
+                                    <option value="intermediate">🚀 Intermediate — ฿3,900</option>
+                                    <option value="advanced">⚡ Advanced — ฿4,900</option>
+                                    <option value="bundle">⭐ Full Bundle — ฿7,900</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="w-full py-4 bg-gradient-to-r from-orange-500 to-pink-500 rounded-xl font-semibold">
+                                ${state.loading ? 'Loading...' : 'ถัดไป — ชำระเงิน'}
+                            </button>
+                        </form>
+                        
+                        <p class="text-center text-zinc-500 mt-6">
+                            มีบัญชีแล้ว? <button onclick="navigate('login')" class="text-orange-400 hover:underline">Login</button>
+                        </p>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderPayment() {
+            const prices = { beginner: 2900, intermediate: 3900, advanced: 4900, bundle: 7900 };
+            const pkg = state.pendingRegistration?.package || 'bundle';
+            const amount = prices[pkg];
+            
+            return `
+                <div class="min-h-screen flex items-center justify-center px-4 py-12 mesh-bg">
+                    <div class="glass rounded-2xl p-8 w-full max-w-md text-center">
+                        <h1 class="text-2xl font-bold mb-2">💳 ชำระเงิน</h1>
+                        <p class="text-zinc-400 mb-6">Scan QR ด้วย Mobile Banking</p>
+                        
+                        <p class="text-sm text-zinc-400 mb-2">Package: <span class="text-white">${pkg}</span></p>
+                        <p class="text-4xl font-bold gradient-text mb-6">฿${amount.toLocaleString()}</p>
+                        
+                        <!-- QR Code -->
+                        <div class="bg-white rounded-2xl p-4 w-56 h-56 mx-auto mb-6 flex items-center justify-center">
+                            <img src="https://promptpay.io/${CONFIG.PROMPTPAY_ID}/${amount}" alt="QR" class="w-full h-full">
+                        </div>
+                        
+                        <div class="glass rounded-xl p-4 text-left mb-6">
+                            <p class="text-sm text-zinc-400">PromptPay:</p>
+                            <p class="font-semibold">${CONFIG.PROMPTPAY_ID}</p>
+                            <p class="text-zinc-400 text-sm">${CONFIG.PROMPTPAY_NAME}</p>
+                        </div>
+                        
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm text-zinc-400 mb-1">แนบสลิป *</label>
+                                <input type="file" id="slipUpload" accept="image/*" class="w-full px-4 py-3 rounded-xl">
+                            </div>
+                            <button onclick="submitPayment()" class="w-full py-4 bg-gradient-to-r from-green-500 to-emerald-500 rounded-xl font-semibold">
+                                ✅ ยืนยันการชำระเงิน
+                            </button>
+                        </div>
+                        
+                        <p class="text-zinc-500 text-xs mt-4">หลังยืนยัน รอ admin อนุมัติ แล้วจะเข้าเรียนได้</p>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderDashboard() {
+            if (!state.user) { navigate('login'); return ''; }
+            
+            const userCourses = getUserCourses();
+            const progress = storage.getProgress(state.user.id);
+            
+            return `
+                <div class="min-h-screen">
+                    <!-- Header -->
+                    <nav class="glass sticky top-0 z-40">
+                        <div class="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
+                            <div class="flex items-center gap-3">
+                                <button onclick="toggleSidebar()" class="md:hidden p-2 hover:bg-white/10 rounded-lg">☰</button>
+                                <span class="text-xl">🤖</span>
+                                <span class="font-bold">AI for Designers</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <span class="text-zinc-400 text-sm hidden sm:block">${state.user.email}</span>
+                                ${isAdmin() ? `<button onclick="navigate('admin')" class="px-3 py-1 glass rounded-lg text-sm">Admin</button>` : ''}
+                                <button onclick="logout()" class="text-zinc-400 hover:text-white">Logout</button>
+                            </div>
+                        </div>
+                    </nav>
+
+                    <div class="max-w-6xl mx-auto px-4 py-8">
+                        <h1 class="text-3xl font-bold mb-2">สวัสดี, ${state.user.fullname || 'Student'}! 👋</h1>
+                        <p class="text-zinc-400 mb-8">เลือกบทเรียนที่ต้องการเรียน</p>
+                        
+                        ${userCourses.length === 0 ? `
+                            <div class="glass rounded-2xl p-8 text-center">
+                                <p class="text-6xl mb-4">⏳</p>
+                                <p class="text-xl font-bold mb-2">รอการอนุมัติ</p>
+                                <p class="text-zinc-400">Admin กำลังตรวจสอบการชำระเงิน</p>
+                            </div>
+                        ` : `
+                            <div class="space-y-8">
+                                ${userCourses.map(courseId => {
+                                    const course = COURSES[courseId];
+                                    if (!course) return '';
+                                    const completed = course.lessons.filter(l => progress[l.id]).length;
+                                    const total = course.lessons.length;
+                                    const percent = Math.round((completed / total) * 100);
+                                    
+                                    return `
+                                        <div class="glass rounded-2xl p-6">
+                                            <div class="flex justify-between items-center mb-4">
+                                                <h2 class="text-xl font-bold text-${course.color}-400">${course.name}</h2>
+                                                <span class="text-sm text-zinc-400">${completed}/${total} บทเรียน</span>
+                                            </div>
+                                            <div class="w-full bg-white/10 rounded-full h-2 mb-4">
+                                                <div class="bg-${course.color}-500 h-2 rounded-full transition-all" style="width: ${percent}%"></div>
+                                            </div>
+                                            <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                                                ${course.lessons.map((lesson, idx) => `
+                                                    <button onclick="openLesson('${courseId}', '${lesson.id}')" 
+                                                        class="flex items-center gap-3 p-4 glass rounded-xl hover:bg-white/10 text-left transition">
+                                                        <div class="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${progress[lesson.id] ? 'bg-green-500' : 'bg-white/10'}">
+                                                            ${progress[lesson.id] ? '✓' : idx + 1}
+                                                        </div>
+                                                        <div>
+                                                            <p class="font-medium">${lesson.title}</p>
+                                                            <p class="text-xs text-zinc-500">${lesson.duration}</p>
+                                                        </div>
+                                                    </button>
+                                                `).join('')}
+                                            </div>
+                                        </div>
+                                    `;
+                                }).join('')}
+                            </div>
+                        `}
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderLesson() {
+            if (!state.user || !state.currentLesson) { navigate('dashboard'); return ''; }
+            
+            const { courseId, lessonId } = state.currentLesson;
+            const course = COURSES[courseId];
+            const lesson = course.lessons.find(l => l.id === lessonId);
+            const lessonIdx = course.lessons.findIndex(l => l.id === lessonId);
+            const prevLesson = course.lessons[lessonIdx - 1];
+            const nextLesson = course.lessons[lessonIdx + 1];
+            const progress = storage.getProgress(state.user.id);
+            
+            return `
+                <div class="min-h-screen">
+                    <nav class="glass sticky top-0 z-40">
+                        <div class="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
+                            <button onclick="navigate('dashboard')" class="flex items-center gap-2 text-zinc-400 hover:text-white">
+                                &larr; กลับ Dashboard
+                            </button>
+                            <span class="text-zinc-400 text-sm">${course.name}</span>
+                        </div>
+                    </nav>
+
+                    <div class="max-w-4xl mx-auto px-4 py-8">
+                        <h1 class="text-2xl font-bold mb-4">${lesson.title}</h1>
+                        
+                        <!-- Video Player -->
+                        <div class="video-container rounded-2xl overflow-hidden bg-black mb-6">
+                            ${lesson.videoUrl ? `
+                                <video id="videoPlayer" controls controlslist="nodownload" disablePictureInPicture oncontextmenu="return false;">
+                                    <source src="${lesson.videoUrl}" type="video/mp4">
+                                </video>
+                            ` : `
+                                <div class="absolute inset-0 flex items-center justify-center text-zinc-500">
+                                    <div class="text-center">
+                                        <p class="text-6xl mb-4">🎬</p>
+                                        <p>วิดีโอกำลังจะมาเร็วๆ นี้</p>
+                                    </div>
+                                </div>
+                            `}
+                        </div>
+                        
+                        <!-- Mark Complete -->
+                        <div class="flex flex-col sm:flex-row gap-4 justify-between items-center glass rounded-xl p-4 mb-6">
+                            <button onclick="markComplete('${lessonId}')" 
+                                class="px-6 py-3 ${progress[lessonId] ? 'bg-green-500/20 text-green-400' : 'bg-white/10 hover:bg-white/20'} rounded-xl font-semibold transition">
+                                ${progress[lessonId] ? '✅ เรียนจบแล้ว' : '☐ Mark as Complete'}
+                            </button>
+                            
+                            <div class="flex gap-2">
+                                ${prevLesson ? `<button onclick="openLesson('${courseId}', '${prevLesson.id}')" class="px-4 py-2 glass rounded-lg">&larr; ก่อนหน้า</button>` : ''}
+                                ${nextLesson ? `<button onclick="openLesson('${courseId}', '${nextLesson.id}')" class="px-4 py-2 bg-orange-500 rounded-lg">ถัดไป &rarr;</button>` : ''}
+                            </div>
+                        </div>
+                        
+                        <!-- Resources -->
+                        <div class="glass rounded-xl p-6">
+                            <h3 class="font-bold mb-4">📎 Resources</h3>
+                            <div class="space-y-2">
+                                <a href="#" class="flex items-center gap-2 text-zinc-400 hover:text-white">
+                                    <span>📄</span> Slide deck (PDF)
+                                </a>
+                                <a href="#" class="flex items-center gap-2 text-zinc-400 hover:text-white">
+                                    <span>📝</span> Prompt templates
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderAdmin() {
+            if (!isAdmin()) { navigate('dashboard'); return ''; }
+            
+            const registrations = storage.getRegistrations();
+            
+            return `
+                <div class="min-h-screen">
+                    <nav class="glass sticky top-0 z-40">
+                        <div class="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
+                            <div class="flex items-center gap-3">
+                                <span class="text-xl">⚙️</span>
+                                <span class="font-bold">Admin Panel</span>
+                            </div>
+                            <button onclick="navigate('dashboard')" class="text-zinc-400 hover:text-white">&larr; Dashboard</button>
+                        </div>
+                    </nav>
+
+                    <div class="max-w-6xl mx-auto px-4 py-8">
+                        <h1 class="text-3xl font-bold mb-8">การลงทะเบียน</h1>
+                        
+                        <div class="glass rounded-2xl overflow-hidden">
+                            <table class="w-full text-sm">
+                                <thead class="bg-white/5">
+                                    <tr>
+                                        <th class="text-left p-4">ชื่อ</th>
+                                        <th class="text-left p-4">Email</th>
+                                        <th class="text-left p-4">Package</th>
+                                        <th class="text-left p-4">Status</th>
+                                        <th class="text-left p-4">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${registrations.length === 0 ? `
+                                        <tr><td colspan="5" class="p-8 text-center text-zinc-500">ยังไม่มีการลงทะเบียน</td></tr>
+                                    ` : registrations.map(reg => `
+                                        <tr class="border-t border-white/5">
+                                            <td class="p-4">${reg.fullname}</td>
+                                            <td class="p-4">${reg.email}</td>
+                                            <td class="p-4">${reg.package}</td>
+                                            <td class="p-4">
+                                                <span class="px-2 py-1 rounded text-xs ${reg.status === 'approved' ? 'bg-green-500/20 text-green-400' : reg.status === 'rejected' ? 'bg-red-500/20 text-red-400' : 'bg-yellow-500/20 text-yellow-400'}">
+                                                    ${reg.status || 'pending'}
+                                                </span>
+                                            </td>
+                                            <td class="p-4">
+                                                ${reg.status !== 'approved' ? `
+                                                    <button onclick="approveRegistration('${reg.id}')" class="px-3 py-1 bg-green-500/20 text-green-400 rounded mr-2">✓ Approve</button>
+                                                ` : ''}
+                                                ${reg.status !== 'rejected' ? `
+                                                    <button onclick="rejectRegistration('${reg.id}')" class="px-3 py-1 bg-red-500/20 text-red-400 rounded">✗ Reject</button>
+                                                ` : ''}
+                                            </td>
+                                        </tr>
+                                    `).join('')}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // ============ EVENT HANDLERS ============
+        function attachEvents() {
+            const loginForm = document.getElementById('loginForm');
+            if (loginForm) {
+                loginForm.addEventListener('submit', handleLogin);
+            }
+            
+            const registerForm = document.getElementById('registerForm');
+            if (registerForm) {
+                registerForm.addEventListener('submit', handleRegister);
+            }
+        }
+
+        async function handleLogin(e) {
+            e.preventDefault();
+            state.loading = true;
+            state.message = null;
+            render();
+            
+            const form = e.target;
+            const email = form.email.value;
+            const password = form.password.value;
+            
+            // Local storage auth
+            const users = storage.getUsers();
+            const user = users.find(u => u.email === email && u.password === password);
+            
+            if (user) {
+                state.user = user;
+                storage.setCurrentUser(user);
+                state.page = 'dashboard';
+            } else {
+                state.message = { type: 'error', text: 'Email หรือ Password ไม่ถูกต้อง' };
+            }
+            
+            state.loading = false;
+            render();
+        }
+
+        async function handleRegister(e) {
+            e.preventDefault();
+            state.loading = true;
+            state.message = null;
+            render();
+            
+            const form = e.target;
+            const userData = {
+                id: Date.now().toString(),
+                fullname: form.fullname.value,
+                email: form.email.value,
+                phone: form.phone.value,
+                password: form.password.value,
+                package: form.package.value,
+                courses: [],
+                created_at: new Date().toISOString()
+            };
+            
+            // Check if email exists
+            const users = storage.getUsers();
+            if (users.find(u => u.email === userData.email)) {
+                state.message = { type: 'error', text: 'Email นี้ถูกใช้แล้ว' };
+                state.loading = false;
+                render();
+                return;
+            }
+            
+            state.pendingRegistration = userData;
+            state.page = 'payment';
+            state.loading = false;
+            render();
+        }
+
+        function submitPayment() {
+            const slipFile = document.getElementById('slipUpload').files[0];
+            if (!slipFile) {
+                alert('กรุณาแนบสลิป');
+                return;
+            }
+            
+            // Save user
+            const users = storage.getUsers();
+            users.push(state.pendingRegistration);
+            storage.saveUsers(users);
+            
+            // Save registration
+            const registrations = storage.getRegistrations();
+            registrations.push({
+                ...state.pendingRegistration,
+                status: 'pending',
+                slip: slipFile.name
+            });
+            storage.saveRegistrations(registrations);
+            
+            // Auto login
+            state.user = state.pendingRegistration;
+            storage.setCurrentUser(state.user);
+            
+            alert('ลงทะเบียนสำเร็จ! รอ admin อนุมัติ');
+            state.page = 'dashboard';
+            render();
+        }
+
+        function approveRegistration(regId) {
+            const registrations = storage.getRegistrations();
+            const reg = registrations.find(r => r.id === regId);
+            if (reg) {
+                reg.status = 'approved';
+                
+                // Update user courses
+                const users = storage.getUsers();
+                const user = users.find(u => u.id === regId);
+                if (user) {
+                    if (reg.package === 'bundle') {
+                        user.courses = ['beginner', 'intermediate', 'advanced'];
+                    } else {
+                        user.courses = [reg.package];
+                    }
+                    storage.saveUsers(users);
+                }
+                
+                storage.saveRegistrations(registrations);
+            }
+            render();
+        }
+
+        function rejectRegistration(regId) {
+            const registrations = storage.getRegistrations();
+            const reg = registrations.find(r => r.id === regId);
+            if (reg) {
+                reg.status = 'rejected';
+                storage.saveRegistrations(registrations);
+            }
+            render();
+        }
+
+        function getUserCourses() {
+            if (!state.user) return [];
+            const users = storage.getUsers();
+            const user = users.find(u => u.id === state.user.id);
+            return user?.courses || [];
+        }
+
+        function openLesson(courseId, lessonId) {
+            state.currentLesson = { courseId, lessonId };
+            state.page = 'lesson';
+            render();
+        }
+
+        function markComplete(lessonId) {
+            const progress = storage.getProgress(state.user.id);
+            progress[lessonId] = !progress[lessonId];
+            storage.saveProgress(state.user.id, progress);
+            render();
+        }
+
+        function navigate(page) {
+            state.page = page;
+            state.message = null;
+            render();
+        }
+
+        function logout() {
+            state.user = null;
+            storage.setCurrentUser(null);
+            state.page = 'home';
+            render();
+        }
+
+        function isAdmin() {
+            return state.user && CONFIG.ADMIN_EMAILS.includes(state.user.email);
+        }
+
+        function toggleSidebar() {
+            state.sidebarOpen = !state.sidebarOpen;
+            render();
+        }
+
+        // ============ INIT ============
+        function init() {
+            const savedUser = storage.getCurrentUser();
+            if (savedUser) {
+                state.user = savedUser;
+                state.page = 'dashboard';
+            }
+            render();
+        }
+
+        init();
+    </script>
+</body>
+</html>
