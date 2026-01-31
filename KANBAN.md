@@ -75,9 +75,9 @@
 ### 💡 NEW (17:05 Heartbeat)
 - [ ] **Landing page quiz mention** — บอกว่ามี quiz ท้ายบท
 - [x] ~~**Email capture**~~ ✅ Done (newsletter section)
-- [ ] **Instructor bio** — เพิ่มประวัติผู้สอน
+- [x] ~~**Instructor bio**~~ ✅ Done (Feb 1 - detailed bio with credentials)
 - [x] ~~**FAQ section**~~ ✅ Done (faq.html - 17 Q&A)
-- [ ] **Pricing section** — ราคาและ packages
+- [x] ~~**Pricing section**~~ ✅ Done (Feb 1 - Early Bird 40%, 3 tiers)
 
 ### 💡 NEW (19:00 Heartbeat)
 - [ ] **Keyboard shortcuts** — j/k navigate, m toggle sidebar, d toggle dark
