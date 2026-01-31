@@ -1,0 +1,1018 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard — AI for Designers</title>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #FAF9F6;
+            --bg-warm: #FEF7F1;
+            --card: #FFFFFF;
+            --accent: #D97757;
+            --accent-light: #FEF3EE;
+            --accent-hover: #C4684A;
+            --text: #2D2A26;
+            --text-muted: #8B8680;
+            --border: #E8E3DB;
+            --shadow: 0 4px 20px rgba(0,0,0,0.06);
+            --radius: 16px;
+            --success: #22C55E;
+        }
+
+        /* Dark Mode */
+        [data-theme="dark"] {
+            --bg: #1A1A1A;
+            --bg-warm: #242424;
+            --card: #2D2D2D;
+            --accent: #E8896A;
+            --accent-light: #3D2D28;
+            --accent-hover: #F09A7D;
+            --text: #F5F5F5;
+            --text-muted: #A0A0A0;
+            --border: #404040;
+            --shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'IBM Plex Sans Thai', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        /* Login Screen */
+        .login-screen {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--bg-warm) 0%, var(--bg) 100%);
+            padding: 24px;
+        }
+
+        .login-screen.hidden { display: none; }
+
+        .login-card {
+            background: var(--card);
+            border-radius: 24px;
+            padding: 48px;
+            box-shadow: var(--shadow);
+            width: 100%;
+            max-width: 420px;
+            text-align: center;
+            border: 1px solid var(--border);
+        }
+
+        .login-logo {
+            font-size: 3rem;
+            margin-bottom: 24px;
+        }
+
+        .login-card h1 {
+            font-size: 1.6rem;
+            margin-bottom: 8px;
+        }
+
+        .login-card > p {
+            color: var(--text-muted);
+            margin-bottom: 32px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            font-size: 1rem;
+            font-family: inherit;
+            transition: border-color 0.2s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 14px 28px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1rem;
+            text-decoration: none;
+            transition: all 0.2s;
+            cursor: pointer;
+            border: none;
+            font-family: inherit;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: white;
+            width: 100%;
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-hover);
+            transform: translateY(-1px);
+        }
+
+        .demo-hint {
+            margin-top: 24px;
+            padding: 16px;
+            background: var(--accent-light);
+            border-radius: 12px;
+            font-size: 0.85rem;
+            text-align: left;
+        }
+
+        .demo-hint code {
+            background: white;
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-size: 0.9em;
+        }
+
+        /* Dashboard */
+        .dashboard {
+            display: none;
+            min-height: 100vh;
+        }
+
+        .dashboard.active { display: block; }
+
+        /* Unified Nav Bar - Centered */
+        .navbar {
+            background: rgba(251, 249, 247, 0.95);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        [data-theme="dark"] .navbar {
+            background: rgba(26, 26, 26, 0.95);
+        }
+
+        [data-theme="dark"] .demo-hint code {
+            background: var(--bg);
+        }
+
+        .navbar-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 14px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .navbar-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: var(--text);
+            font-weight: 600;
+        }
+
+        .navbar-logo-icon {
+            width: 34px;
+            height: 34px;
+            background: var(--accent);
+            border-radius: 9px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+        }
+
+        .navbar-center {
+            display: flex;
+            gap: 32px;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: var(--text-muted);
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: color 0.15s;
+        }
+
+        .nav-link:hover {
+            color: var(--accent);
+        }
+
+        .nav-link.active {
+            color: var(--accent);
+        }
+
+        .navbar-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .user-avatar {
+            width: 34px;
+            height: 34px;
+            background: var(--accent);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.85rem;
+            text-decoration: none;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .user-avatar:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 12px rgba(217, 119, 87, 0.3);
+        }
+
+        .theme-toggle {
+            background: var(--card);
+            border: 1px solid var(--border);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .theme-toggle:hover {
+            border-color: var(--accent);
+            transform: scale(1.1);
+        }
+
+        .logout-btn {
+            background: transparent;
+            border: 1.5px solid var(--border);
+            color: var(--text);
+            padding: 10px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.15s;
+        }
+
+        .logout-btn:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, var(--bg-warm) 0%, #FFF9F5 100%);
+            padding: 48px 24px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .hero-inner {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .hero h1 {
+            font-size: 2rem;
+            margin-bottom: 8px;
+        }
+
+        .hero p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+
+        /* Stats */
+        .stats {
+            display: flex;
+            gap: 16px;
+            margin-top: 24px;
+            flex-wrap: wrap;
+        }
+
+        .stat {
+            background: white;
+            padding: 16px 24px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .stat-icon {
+            font-size: 1.5rem;
+        }
+
+        .stat-value {
+            font-size: 1.4rem;
+            font-weight: 700;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        /* Main Content */
+        .main {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 40px 24px;
+        }
+
+        /* Section */
+        .section {
+            margin-bottom: 48px;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .section-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+
+        .section-link {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        .section-link:hover {
+            text-decoration: underline;
+        }
+
+        /* Course Cards */
+        .courses-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 24px;
+        }
+
+        .course-card {
+            background: var(--card);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            transition: all 0.3s;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+
+        .course-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.1);
+            border-color: var(--accent);
+        }
+
+        .course-thumb {
+            height: 140px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            position: relative;
+        }
+
+        .course-thumb.beginner { background: linear-gradient(135deg, #E8F5E9 0%, #C8E6C9 100%); }
+        .course-thumb.intermediate { background: linear-gradient(135deg, #E3F2FD 0%, #BBDEFB 100%); }
+        .course-thumb.advanced { background: linear-gradient(135deg, #FFF3E0 0%, #FFE0B2 100%); }
+
+        .course-badge {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--accent);
+        }
+
+        .course-body {
+            padding: 24px;
+        }
+
+        .course-level {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+
+        .course-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .course-meta {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-bottom: 16px;
+        }
+
+        .course-progress {
+            background: var(--bg);
+            border-radius: 10px;
+            height: 8px;
+            overflow: hidden;
+        }
+
+        .course-progress-bar {
+            background: var(--accent);
+            height: 100%;
+            border-radius: 10px;
+            transition: width 0.3s;
+        }
+
+        .course-progress-text {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 8px;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        /* Quick Links */
+        .quick-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 16px;
+        }
+
+        .quick-card {
+            background: var(--card);
+            border-radius: 16px;
+            padding: 24px;
+            text-align: center;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.2s;
+        }
+
+        .quick-card:hover {
+            border-color: var(--accent);
+            transform: translateY(-2px);
+        }
+
+        .quick-icon {
+            font-size: 2rem;
+            margin-bottom: 12px;
+        }
+
+        .quick-title {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .quick-desc {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--bg-warm);
+            padding: 32px 24px;
+            text-align: center;
+            color: var(--text-muted);
+            border-top: 1px solid var(--border);
+        }
+
+        .footer a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        /* Mobile Nav Toggle */
+        .nav-toggle {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 8px;
+        }
+
+        .mobile-nav {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 200;
+        }
+
+        .mobile-nav.active { display: block; }
+
+        .mobile-nav-content {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 280px;
+            max-width: 80%;
+            height: 100%;
+            background: var(--card);
+            padding: 24px;
+            box-shadow: -4px 0 20px rgba(0,0,0,0.1);
+        }
+
+        .mobile-nav-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .mobile-nav-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .mobile-nav-links {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .mobile-nav-links a {
+            display: block;
+            padding: 14px 16px;
+            text-decoration: none;
+            color: var(--text);
+            font-weight: 500;
+            border-radius: 12px;
+            transition: background 0.2s;
+        }
+
+        .mobile-nav-links a:hover,
+        .mobile-nav-links a.active {
+            background: var(--accent-light);
+            color: var(--accent);
+        }
+
+        /* Responsive - Tablet */
+        @media (max-width: 768px) {
+            .header-nav { display: none; }
+            .navbar-center { display: none; }
+            .nav-toggle { display: block; }
+            
+            .hero h1 { font-size: 1.5rem; }
+            .stats { flex-direction: column; gap: 12px; }
+            .courses-grid { grid-template-columns: 1fr; }
+            .quick-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+
+            .login-card { padding: 32px 24px; }
+            .main { padding: 20px 16px; }
+        }
+
+        /* Responsive - Small Mobile (320px+) */
+        @media (max-width: 480px) {
+            .navbar-inner { padding: 12px 16px; }
+            .navbar-logo span { display: none; }
+            
+            .hero { padding: 24px 16px; }
+            .hero h1 { font-size: 1.3rem; }
+            .hero > p { font-size: 0.9rem; }
+            
+            .stats { gap: 8px; }
+            .stat { padding: 12px 16px; gap: 10px; }
+            .stat-icon { font-size: 1.3rem; }
+            .stat-value { font-size: 1.3rem; }
+            .stat-label { font-size: 0.75rem; }
+
+            .section-title { font-size: 1.1rem; }
+            
+            .course-card { flex-direction: column; }
+            .course-thumb { width: 100%; height: 120px; border-radius: 12px 12px 0 0; }
+            .course-body { padding: 16px; }
+            .course-title { font-size: 1rem; }
+
+            .quick-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+            .quick-card { padding: 16px 12px; }
+            .quick-icon { font-size: 1.5rem; margin-bottom: 6px; }
+            .quick-title { font-size: 0.85rem; }
+            .quick-desc { font-size: 0.7rem; }
+
+            .login-card { padding: 24px 20px; margin: 16px; }
+            .login-logo { font-size: 2.5rem; margin-bottom: 16px; }
+            .login-card h1 { font-size: 1.3rem; }
+            .form-group input { padding: 12px 14px; }
+            .btn { padding: 12px 20px; font-size: 0.95rem; }
+            .demo-hint { padding: 12px; font-size: 0.8rem; }
+            
+            .user-avatar { width: 32px; height: 32px; font-size: 0.8rem; }
+            .logout-btn { padding: 8px 12px; font-size: 0.8rem; }
+
+            .footer { padding: 20px 16px; font-size: 0.8rem; }
+        }
+
+        /* Extra small (320px) */
+        @media (max-width: 360px) {
+            .quick-grid { grid-template-columns: 1fr 1fr; gap: 6px; }
+            .quick-card { padding: 12px 8px; }
+            .quick-icon { font-size: 1.3rem; }
+            .quick-title { font-size: 0.8rem; }
+            .quick-desc { display: none; }
+            
+            .stat { flex-direction: column; text-align: center; padding: 12px; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Screen -->
+    <div class="login-screen" id="loginScreen">
+        <div class="login-card">
+            <div class="login-logo">🎨</div>
+            <h1>AI for Designers</h1>
+            <p>เข้าสู่ระบบเพื่อเริ่มเรียน</p>
+            
+            <form id="loginForm">
+                <div class="form-group">
+                    <label>อีเมล</label>
+                    <input type="email" id="email" placeholder="your@email.com" required>
+                </div>
+                <div class="form-group">
+                    <label>รหัสผ่าน</label>
+                    <input type="password" id="password" placeholder="••••••••" required>
+                </div>
+                <button type="submit" class="btn btn-primary">เข้าสู่ระบบ</button>
+            </form>
+
+            <div class="demo-hint">
+                <strong>🔐 Demo Account</strong><br>
+                Email: <code>demo@aidesigner.com</code><br>
+                Password: <code>demo2026</code>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dashboard -->
+    <div class="dashboard" id="dashboard">
+        <nav class="navbar">
+            <div class="navbar-inner">
+                <a href="dashboard.html" class="navbar-logo">
+                    <div class="navbar-logo-icon">🎨</div>
+                    <span>AI for Designers</span>
+                </a>
+                <div class="navbar-center">
+                    <a href="dashboard.html" class="nav-link active">หน้าแรก</a>
+                    <a href="lesson.html?lesson=1.1" class="nav-link">บทเรียน</a>
+                    <a href="downloads.html" class="nav-link">ดาวน์โหลด</a>
+                    <a href="quiz.html" class="nav-link">Quiz</a>
+                </div>
+                <div class="navbar-right">
+                    <button class="theme-toggle" onclick="toggleTheme()" title="เปลี่ยนธีม">🌙</button>
+                    <a href="profile.html" class="user-avatar" id="navAvatar" title="โปรไฟล์">D</a>
+                    <button class="logout-btn" onclick="logout()">ออกจากระบบ</button>
+                    <button class="nav-toggle" onclick="toggleMobileNav()">☰</button>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Mobile Nav -->
+        <div class="mobile-nav" id="mobileNav" onclick="closeMobileNav(event)">
+            <div class="mobile-nav-content" onclick="event.stopPropagation()">
+                <div class="mobile-nav-header">
+                    <span style="font-weight: 600;">🎨 เมนู</span>
+                    <button class="mobile-nav-close" onclick="toggleMobileNav()">✕</button>
+                </div>
+                <div class="mobile-nav-links">
+                    <a href="dashboard.html" class="active">🏠 หน้าแรก</a>
+                    <a href="lesson.html?lesson=1.1">📖 บทเรียน</a>
+                    <a href="downloads.html">📥 ดาวน์โหลด</a>
+                    <a href="quiz.html">📝 Quiz</a>
+                    <a href="certificate.html">🏆 Certificate</a>
+                    <a href="profile.html">👤 โปรไฟล์</a>
+                </div>
+            </div>
+        </div>
+
+        <section class="hero">
+            <div class="hero-inner">
+                <h1 id="heroGreeting">👋 สวัสดี, Demo User!</h1>
+                <p>พร้อมเรียนรู้ AI Skills ใหม่ๆ วันนี้หรือยัง?</p>
+                <div class="stats">
+                    <div class="stat">
+                        <span class="stat-icon">📚</span>
+                        <div>
+                            <div class="stat-value">3</div>
+                            <div class="stat-label">คอร์สทั้งหมด</div>
+                        </div>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-icon">🎬</span>
+                        <div>
+                            <div class="stat-value">24</div>
+                            <div class="stat-label">บทเรียน</div>
+                        </div>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-icon">✅</span>
+                        <div>
+                            <div class="stat-value" id="completedCount">0</div>
+                            <div class="stat-label">เสร็จแล้ว</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <main class="main">
+            <!-- Courses Section -->
+            <section class="section">
+                <div class="section-header">
+                    <h2 class="section-title">📖 คอร์สเรียน</h2>
+                </div>
+                <div class="courses-grid">
+                    <a href="lesson.html?lesson=1.1" class="course-card">
+                        <div class="course-thumb beginner">
+                            🌱
+                        </div>
+                        <div class="course-body">
+                            <div class="course-level">Beginner</div>
+                            <h3 class="course-title">Prompting Principles</h3>
+                            <p class="course-meta">8 บทเรียน • 3 ชั่วโมง</p>
+                            <div class="course-progress">
+                                <div class="course-progress-bar" id="progress-m1" style="width: 0%"></div>
+                            </div>
+                            <div class="course-progress-text">
+                                <span id="progress-m1-text">0/8 บทเรียน</span>
+                                <span id="progress-m1-pct">0%</span>
+                            </div>
+                        </div>
+                    </a>
+
+                    <a href="lesson.html?lesson=2.1" class="course-card">
+                        <div class="course-thumb intermediate">
+                            🚀
+                        </div>
+                        <div class="course-body">
+                            <div class="course-level">Intermediate</div>
+                            <h3 class="course-title">AI-Assisted Research & Writing</h3>
+                            <p class="course-meta">8 บทเรียน • 4 ชั่วโมง</p>
+                            <div class="course-progress">
+                                <div class="course-progress-bar" id="progress-m2" style="width: 0%"></div>
+                            </div>
+                            <div class="course-progress-text">
+                                <span id="progress-m2-text">0/8 บทเรียน</span>
+                                <span id="progress-m2-pct">0%</span>
+                            </div>
+                        </div>
+                    </a>
+
+                    <a href="lesson.html?lesson=3.1" class="course-card">
+                        <div class="course-thumb advanced">
+                            ⚡
+                        </div>
+                        <div class="course-body">
+                            <div class="course-level">Advanced</div>
+                            <h3 class="course-title">Future-Ready Skills</h3>
+                            <p class="course-meta">8 บทเรียน • 5 ชั่วโมง</p>
+                            <div class="course-progress">
+                                <div class="course-progress-bar" id="progress-m3" style="width: 0%"></div>
+                            </div>
+                            <div class="course-progress-text">
+                                <span id="progress-m3-text">0/8 บทเรียน</span>
+                                <span id="progress-m3-pct">0%</span>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </section>
+
+            <!-- Quick Links -->
+            <section class="section">
+                <div class="section-header">
+                    <h2 class="section-title">⚡ ลิงก์ด่วน</h2>
+                </div>
+                <div class="quick-grid">
+                    <a href="downloads.html" class="quick-card">
+                        <div class="quick-icon">📥</div>
+                        <div class="quick-title">Downloads</div>
+                        <div class="quick-desc">ไฟล์ประกอบการเรียน</div>
+                    </a>
+                    <a href="quiz.html" class="quick-card">
+                        <div class="quick-icon">📝</div>
+                        <div class="quick-title">Quiz</div>
+                        <div class="quick-desc">ทดสอบความเข้าใจ</div>
+                    </a>
+                    <a href="index.html" class="quick-card">
+                        <div class="quick-icon">🏠</div>
+                        <div class="quick-title">หน้าแรก</div>
+                        <div class="quick-desc">กลับไปหน้าแนะนำ</div>
+                    </a>
+                    <a href="certificate.html" class="quick-card">
+                        <div class="quick-icon">🏆</div>
+                        <div class="quick-title">Certificate</div>
+                        <div class="quick-desc">รับใบประกาศ</div>
+                    </a>
+                    <a href="search.html" class="quick-card">
+                        <div class="quick-icon">🔍</div>
+                        <div class="quick-title">ค้นหา</div>
+                        <div class="quick-desc">หาบทเรียน</div>
+                    </a>
+                    <a href="glossary.html" class="quick-card">
+                        <div class="quick-icon">📖</div>
+                        <div class="quick-title">Glossary</div>
+                        <div class="quick-desc">คำศัพท์ AI</div>
+                    </a>
+                </div>
+            </section>
+        </main>
+
+        <footer class="footer">
+            <p>🎨 AI for Designers 2026 • <a href="index.html">เกี่ยวกับคอร์ส</a></p>
+        </footer>
+    </div>
+
+    <script>
+        // Login
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            if (email === 'demo@aidesigner.com' && password === 'demo2026') {
+                document.getElementById('loginScreen').classList.add('hidden');
+                document.getElementById('dashboard').classList.add('active');
+                localStorage.setItem('isLoggedIn', 'true');
+                updateProgress();
+            } else {
+                alert('อีเมลหรือรหัสผ่านไม่ถูกต้อง');
+            }
+        });
+
+        // Check login
+        if (localStorage.getItem('isLoggedIn') === 'true') {
+            document.getElementById('loginScreen').classList.add('hidden');
+            document.getElementById('dashboard').classList.add('active');
+            updateProgress();
+        }
+
+        // Logout
+        function logout() {
+            localStorage.removeItem('isLoggedIn');
+            location.reload();
+        }
+
+        // Reset progress
+        function resetProgress() {
+            if (confirm('ต้องการล้างข้อมูลการเรียนทั้งหมด?')) {
+                localStorage.removeItem('lessonProgress');
+                localStorage.removeItem('quizScores');
+                updateProgress();
+                alert('🔄 Reset เรียบร้อย!');
+            }
+        }
+
+        // Update progress from localStorage
+        function updateProgress() {
+            const progress = JSON.parse(localStorage.getItem('lessonProgress') || '{}');
+            const completed = Object.keys(progress).length;
+            
+            document.getElementById('completedCount').textContent = completed;
+            
+            const m1 = Object.keys(progress).filter(k => k.startsWith('1.')).length;
+            const m2 = Object.keys(progress).filter(k => k.startsWith('2.')).length;
+            const m3 = Object.keys(progress).filter(k => k.startsWith('3.')).length;
+            
+            document.getElementById('progress-m1').style.width = `${(m1/8)*100}%`;
+            document.getElementById('progress-m1-text').textContent = `${m1}/8 บทเรียน`;
+            document.getElementById('progress-m1-pct').textContent = `${Math.round((m1/8)*100)}%`;
+            
+            document.getElementById('progress-m2').style.width = `${(m2/8)*100}%`;
+            document.getElementById('progress-m2-text').textContent = `${m2}/8 บทเรียน`;
+            document.getElementById('progress-m2-pct').textContent = `${Math.round((m2/8)*100)}%`;
+            
+            document.getElementById('progress-m3').style.width = `${(m3/8)*100}%`;
+            document.getElementById('progress-m3-text').textContent = `${m3}/8 บทเรียน`;
+            document.getElementById('progress-m3-pct').textContent = `${Math.round((m3/8)*100)}%`;
+        }
+
+        // Load user profile
+        function loadUserProfile() {
+            const profile = JSON.parse(localStorage.getItem('userProfile') || '{}');
+            const navAvatar = document.getElementById('navAvatar');
+            const heroGreeting = document.getElementById('heroGreeting');
+            
+            // Get name or default
+            const name = profile.fullName || 'Demo User';
+            const initial = name.charAt(0).toUpperCase();
+            
+            // Update hero greeting
+            heroGreeting.textContent = `👋 สวัสดี, ${name}!`;
+            
+            // Update avatar - show image if available, otherwise show initial
+            if (profile.avatarUrl) {
+                navAvatar.innerHTML = `<img src="${profile.avatarUrl}" alt="Avatar" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
+            } else {
+                navAvatar.textContent = initial;
+            }
+        }
+
+        // URL reset param
+        if (new URLSearchParams(window.location.search).get('reset') === 'true') {
+            localStorage.removeItem('lessonProgress');
+            localStorage.removeItem('quizScores');
+            localStorage.removeItem('userProfile');
+            alert('🔄 Progress reset!');
+            window.location.href = 'dashboard.html';
+        }
+
+        // Mobile nav toggle
+        function toggleMobileNav() {
+            const mobileNav = document.getElementById('mobileNav');
+            mobileNav.classList.toggle('active');
+            document.body.style.overflow = mobileNav.classList.contains('active') ? 'hidden' : '';
+        }
+
+        function closeMobileNav(event) {
+            if (event.target.id === 'mobileNav') {
+                toggleMobileNav();
+            }
+        }
+
+        // Theme toggle
+        function toggleTheme() {
+            const html = document.documentElement;
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            
+            // Update toggle button icon
+            const btn = document.querySelector('.theme-toggle');
+            btn.textContent = newTheme === 'dark' ? '☀️' : '🌙';
+        }
+
+        // Load saved theme
+        function loadTheme() {
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            
+            const btn = document.querySelector('.theme-toggle');
+            if (btn) btn.textContent = savedTheme === 'dark' ? '☀️' : '🌙';
+        }
+
+        // Load theme immediately
+        loadTheme();
+
+        // Load profile on page load
+        loadUserProfile();
+    </script>
+</body>
+</html>

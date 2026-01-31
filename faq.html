@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FAQ — AI for Designers</title>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #FAF9F6;
+            --card: #FFFFFF;
+            --accent: #D97757;
+            --accent-light: #FEF3EE;
+            --text: #2D2A26;
+            --text-muted: #8B8680;
+            --border: #E8E3DB;
+            --shadow: 0 4px 20px rgba(0,0,0,0.06);
+        }
+
+        [data-theme="dark"] {
+            --bg: #1A1A1A;
+            --card: #2D2D2D;
+            --accent: #E8896A;
+            --accent-light: #3D2D28;
+            --text: #F5F5F5;
+            --text-muted: #A0A0A0;
+            --border: #404040;
+            --shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+
+        [data-theme="dark"] .navbar { background: rgba(26,26,26,0.95); }
+        [data-theme="dark"] .hero { background: linear-gradient(135deg, #242424 0%, #1A1A1A 100%); }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'IBM Plex Sans Thai', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        /* Nav Bar */
+        .navbar { background: rgba(251, 249, 247, 0.95); backdrop-filter: blur(20px); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100; }
+        .navbar-inner { max-width: 1200px; margin: 0 auto; padding: 14px 24px; display: flex; align-items: center; justify-content: space-between; }
+        .navbar-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--text); font-weight: 600; }
+        .navbar-logo-icon { width: 34px; height: 34px; background: var(--accent); border-radius: 9px; display: flex; align-items: center; justify-content: center; font-size: 1rem; }
+        .navbar-center { display: flex; gap: 32px; }
+        .nav-link { text-decoration: none; color: var(--text-muted); font-weight: 500; font-size: 0.9rem; transition: color 0.15s; }
+        .nav-link:hover, .nav-link.active { color: var(--accent); }
+        .theme-toggle { background: var(--card); border: 1px solid var(--border); width: 36px; height: 36px; border-radius: 50%; cursor: pointer; font-size: 1rem; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
+        .theme-toggle:hover { border-color: var(--accent); transform: scale(1.1); }
+
+        /* Hero */
+        .hero {
+            background: linear-gradient(135deg, var(--accent-light) 0%, var(--bg) 100%);
+            padding: 60px 24px;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 2.2rem;
+            margin-bottom: 12px;
+        }
+
+        .hero p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+
+        /* Main */
+        .main {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 24px;
+        }
+
+        /* Category Tabs */
+        .category-tabs {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 32px;
+            justify-content: center;
+        }
+
+        .category-tab {
+            padding: 10px 20px;
+            background: var(--card);
+            border: 2px solid var(--border);
+            border-radius: 25px;
+            font-family: inherit;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .category-tab:hover {
+            border-color: var(--accent);
+        }
+
+        .category-tab.active {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: white;
+        }
+
+        /* FAQ Accordion */
+        .faq-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .faq-item {
+            background: var(--card);
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            overflow: hidden;
+            transition: all 0.2s;
+        }
+
+        .faq-item:hover {
+            border-color: var(--accent);
+        }
+
+        .faq-question {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px 24px;
+            cursor: pointer;
+            font-weight: 600;
+            gap: 16px;
+        }
+
+        .faq-question:hover {
+            background: var(--accent-light);
+        }
+
+        .faq-icon {
+            font-size: 1.2rem;
+            transition: transform 0.3s;
+            flex-shrink: 0;
+        }
+
+        .faq-item.open .faq-icon {
+            transform: rotate(45deg);
+        }
+
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+
+        .faq-answer-inner {
+            padding: 0 24px 24px;
+            color: var(--text);
+            line-height: 1.8;
+        }
+
+        .faq-answer-inner a {
+            color: var(--accent);
+        }
+
+        .faq-answer-inner ul {
+            margin: 12px 0;
+            padding-left: 24px;
+        }
+
+        .faq-answer-inner li {
+            margin-bottom: 8px;
+        }
+
+        /* Contact CTA */
+        .contact-cta {
+            margin-top: 48px;
+            text-align: center;
+            padding: 40px;
+            background: var(--card);
+            border-radius: 20px;
+            border: 1px solid var(--border);
+        }
+
+        .contact-cta h3 {
+            margin-bottom: 12px;
+        }
+
+        .contact-cta p {
+            color: var(--text-muted);
+            margin-bottom: 20px;
+        }
+
+        .contact-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 14px 28px;
+            background: var(--accent);
+            color: white;
+            text-decoration: none;
+            border-radius: 12px;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .contact-btn:hover {
+            background: #C4684A;
+            transform: translateY(-2px);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .navbar-center { display: none; }
+            .hero { padding: 40px 20px; }
+            .hero h1 { font-size: 1.8rem; }
+        }
+
+        @media (max-width: 480px) {
+            .navbar-inner { padding: 12px 16px; }
+            .navbar-logo span { display: none; }
+            .main { padding: 24px 16px; }
+            .hero h1 { font-size: 1.5rem; }
+            .hero p { font-size: 1rem; }
+            .faq-question { padding: 16px; font-size: 0.95rem; }
+            .faq-answer-inner { padding: 0 16px 16px; }
+            .contact-cta { padding: 24px 16px; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-inner">
+            <a href="dashboard.html" class="navbar-logo">
+                <div class="navbar-logo-icon">🎨</div>
+                <span>AI for Designers</span>
+            </a>
+            <div class="navbar-center">
+                <a href="dashboard.html" class="nav-link">หน้าแรก</a>
+                <a href="lesson.html?lesson=1.1" class="nav-link">บทเรียน</a>
+                <a href="downloads.html" class="nav-link">ดาวน์โหลด</a>
+                <a href="quiz.html" class="nav-link">Quiz</a>
+            </div>
+            <button class="theme-toggle" onclick="toggleTheme()">🌙</button>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <h1>❓ คำถามที่พบบ่อย</h1>
+        <p>รวมคำตอบสำหรับคำถามยอดนิยมเกี่ยวกับคอร์ส AI for Designers</p>
+    </section>
+
+    <main class="main">
+        <div class="category-tabs">
+            <button class="category-tab active" data-category="all">ทั้งหมด</button>
+            <button class="category-tab" data-category="course">📚 คอร์สเรียน</button>
+            <button class="category-tab" data-category="payment">💳 การชำระเงิน</button>
+            <button class="category-tab" data-category="tech">🔧 เทคนิค</button>
+            <button class="category-tab" data-category="ai">🤖 AI Tools</button>
+        </div>
+
+        <div class="faq-list" id="faqList"></div>
+
+        <div class="contact-cta">
+            <h3>🤔 ยังมีคำถามอยู่?</h3>
+            <p>ถ้าหาคำตอบไม่เจอ สามารถติดต่อสอบถามได้เลย</p>
+            <a href="mailto:contact@aifordesigners.com" class="contact-btn">
+                📧 ติดต่อเรา
+            </a>
+        </div>
+    </main>
+
+    <script>
+        const faqs = [
+            // Course
+            { category: 'course', q: 'คอร์สนี้เหมาะกับใคร?', a: 'เหมาะสำหรับ Designer ทุกคนที่อยากเรียนรู้การใช้ AI ในงานออกแบบ ไม่ว่าจะเป็น:<ul><li>UX/UI Designer</li><li>Product Designer</li><li>Graphic Designer</li><li>Design Manager/Lead</li></ul>ไม่จำเป็นต้องมีพื้นฐานเขียนโค้ดหรือ AI มาก่อน' },
+            { category: 'course', q: 'คอร์สใช้เวลาเรียนนานเท่าไหร่?', a: 'คอร์สมีทั้งหมด <strong>24 บทเรียน</strong> รวมประมาณ <strong>12 ชั่วโมง</strong> แบ่งเป็น 3 โมดูล:<ul><li>Module 1: Prompting Principles (3 ชั่วโมง)</li><li>Module 2: AI-Assisted Research & Writing (4 ชั่วโมง)</li><li>Module 3: Future-Ready Skills (5 ชั่วโมง)</li></ul>คุณสามารถเรียนตามจังหวะของตัวเองได้ ไม่มีกำหนดเวลา' },
+            { category: 'course', q: 'เรียนจบแล้วได้ Certificate ไหม?', a: 'ได้ค่ะ! เมื่อเรียนจบครบทั้ง 24 บทเรียน จะได้รับ <strong>Certificate of Completion</strong> แบบดิจิทัล สามารถดาวน์โหลดและแชร์ใน LinkedIn ได้เลย' },
+            { category: 'course', q: 'มี Quiz หรือ Assignment ไหม?', a: 'มีค่ะ! ทุก Module มี Quiz ท้ายบทเพื่อทดสอบความเข้าใจ และมี Hands-on Project ให้ลงมือทำจริง' },
+            { category: 'course', q: 'เข้าถึงคอร์สได้นานแค่ไหน?', a: 'เข้าถึงได้ <strong>ตลอดชีพ</strong> (Lifetime Access) รวมถึง update เนื้อหาในอนาคตด้วย' },
+            { category: 'course', q: 'มีกลุ่มหรือ Community ไหม?', a: 'มีค่ะ! ผู้เรียนจะได้เข้ากลุ่ม Discord Community สำหรับแลกเปลี่ยน prompts, ถามคำถาม และ networking กับ Designer คนอื่นๆ' },
+            
+            // Payment
+            { category: 'payment', q: 'คอร์สราคาเท่าไหร่?', a: 'ราคาปกติ <strong>฿2,900</strong> (รวม VAT แล้ว)<br><br>มีส่วนลดสำหรับ Early Bird และ Group Booking - ติดต่อสอบถามได้' },
+            { category: 'payment', q: 'ชำระเงินได้ช่องทางไหนบ้าง?', a: 'รับชำระผ่าน:<ul><li>บัตรเครดิต/เดบิต (Visa, Mastercard)</li><li>PromptPay QR Code</li><li>โอนผ่านธนาคาร</li></ul>' },
+            { category: 'payment', q: 'มี Refund Policy ไหม?', a: 'มีค่ะ! ถ้าเรียนแล้วไม่พอใจ สามารถขอคืนเงินได้ภายใน <strong>7 วัน</strong> หลังซื้อ (เงื่อนไข: ยังไม่เรียนเกิน 20% ของคอร์ส)' },
+            { category: 'payment', q: 'มีราคาสำหรับองค์กร/ทีมไหม?', a: 'มีค่ะ! <strong>Corporate Package</strong> สำหรับทีม 5 คนขึ้นไป ราคาพิเศษพร้อม:<ul><li>Admin Dashboard ดู progress ทีม</li><li>Private workshop session</li><li>Custom content ตาม industry</li></ul>ติดต่อ contact@aifordesigners.com' },
+            
+            // Tech
+            { category: 'tech', q: 'ต้องใช้คอมพิวเตอร์ spec แรงไหม?', a: 'ไม่จำเป็นค่ะ คอร์สนี้ใช้ AI Tools แบบ cloud-based ทั้งหมด ขอแค่มีอินเทอร์เน็ตและ browser ก็เรียนได้' },
+            { category: 'tech', q: 'เรียนบนมือถือได้ไหม?', a: 'ได้ค่ะ! เว็บไซต์รองรับทุก device ทั้ง Desktop, Tablet และ Mobile' },
+            { category: 'tech', q: 'ต้องใช้โปรแกรมอะไรบ้าง?', a: 'โปรแกรมที่แนะนำ:<ul><li><strong>ChatGPT</strong> หรือ <strong>Claude</strong> - สำหรับ text generation</li><li><strong>Midjourney</strong> หรือ <strong>DALL-E</strong> - สำหรับ image generation</li><li><strong>Figma</strong> - สำหรับ design work</li></ul>ส่วนใหญ่มี free tier ให้ใช้ได้' },
+            { category: 'tech', q: 'วิดีโอมี Subtitle ไหม?', a: 'มีค่ะ! วิดีโอทุกตัวมี Thai Subtitle และบางตัวมี English Subtitle ด้วย' },
+            
+            // AI
+            { category: 'ai', q: 'ต้องสมัคร ChatGPT Plus ไหม?', a: 'ไม่จำเป็นค่ะ ใช้ free version ก็เรียนได้ แต่ถ้ามี Plus จะได้ใช้ GPT-4 ที่ฉลาดกว่า และมี feature เพิ่มเติม' },
+            { category: 'ai', q: 'Midjourney ต้องจ่ายเงินไหม?', a: 'Midjourney ไม่มี free trial แล้ว ต้องสมัครแบบ $10/เดือนขึ้นไป<br><br>ทางเลือก free:<ul><li><strong>DALL-E</strong> (ผ่าน Bing Image Creator)</li><li><strong>Leonardo.AI</strong> (มี free credits)</li><li><strong>Ideogram</strong> (มี free tier)</li></ul>' },
+            { category: 'ai', q: 'AI จะมาแทนที่ Designer ไหม?', a: 'ไม่ค่ะ! AI เป็นแค่ <strong>เครื่องมือ</strong> ที่ช่วยให้ Designer ทำงานได้เร็วขึ้น Designer ที่รู้จักใช้ AI จะได้เปรียบกว่า Designer ที่ไม่ใช้<br><br>คอร์สนี้จะสอนให้คุณเป็น "Designer ที่ใช้ AI เป็น" ไม่ใช่ให้ AI มาแทนคุณ' },
+            { category: 'ai', q: 'ผลงานที่สร้างด้วย AI ใช้เชิงพาณิชย์ได้ไหม?', a: 'ขึ้นอยู่กับ tool ที่ใช้:<ul><li><strong>ChatGPT</strong> - ใช้ได้เชิงพาณิชย์</li><li><strong>DALL-E</strong> - ใช้ได้เชิงพาณิชย์</li><li><strong>Midjourney</strong> - ใช้ได้ถ้าสมัคร paid plan</li></ul>แนะนำให้อ่าน Terms of Service ของแต่ละ tool ด้วยนะคะ' },
+        ];
+
+        let currentCategory = 'all';
+
+        function renderFAQs() {
+            const filtered = currentCategory === 'all' 
+                ? faqs 
+                : faqs.filter(f => f.category === currentCategory);
+            
+            document.getElementById('faqList').innerHTML = filtered.map((faq, i) => `
+                <div class="faq-item" data-index="${i}">
+                    <div class="faq-question" onclick="toggleFAQ(this)">
+                        <span>${faq.q}</span>
+                        <span class="faq-icon">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <div class="faq-answer-inner">${faq.a}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function toggleFAQ(el) {
+            const item = el.parentElement;
+            const answer = item.querySelector('.faq-answer');
+            const isOpen = item.classList.contains('open');
+            
+            // Close all others
+            document.querySelectorAll('.faq-item.open').forEach(other => {
+                if (other !== item) {
+                    other.classList.remove('open');
+                    other.querySelector('.faq-answer').style.maxHeight = '0';
+                }
+            });
+            
+            // Toggle current
+            if (isOpen) {
+                item.classList.remove('open');
+                answer.style.maxHeight = '0';
+            } else {
+                item.classList.add('open');
+                answer.style.maxHeight = answer.scrollHeight + 'px';
+            }
+        }
+
+        // Category tabs
+        document.querySelectorAll('.category-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.category-tab').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                currentCategory = tab.dataset.category;
+                renderFAQs();
+            });
+        });
+
+        // Theme
+        function toggleTheme() {
+            const t = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', t);
+            localStorage.setItem('theme', t);
+            document.querySelector('.theme-toggle').textContent = t === 'dark' ? '☀️' : '🌙';
+        }
+        (function() {
+            const t = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', t);
+            const btn = document.querySelector('.theme-toggle');
+            if (btn) btn.textContent = t === 'dark' ? '☀️' : '🌙';
+        })();
+
+        // Initial render
+        renderFAQs();
+    </script>
+</body>
+</html>

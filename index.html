@@ -3,831 +3,1355 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI for Designers | Learn Online</title>
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✨</text></svg>">
-    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <title>AI for Designers — ออกแบบเร็วขึ้น ดีขึ้น ด้วย AI | คอร์สออนไลน์</title>
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="เรียนรู้การใช้ AI สำหรับ Designers 24 บทเรียน ครอบคลุม Prompting, Research, UX Writing และ Workflow Integration สอนโดย Design Lead 16+ ปี">
+    <meta name="keywords" content="AI for Designers, Prompt Engineering, UX Design, AI Tools, คอร์สออนไลน์, ออกแบบด้วย AI, ChatGPT, Midjourney">
+    <meta name="author" content="May - Design Lead">
+    <meta name="robots" content="index, follow">
+    
+    <!-- Open Graph -->
+    <meta property="og:title" content="AI for Designers — ออกแบบเร็วขึ้น ดีขึ้น ด้วย AI">
+    <meta property="og:description" content="คอร์สสอน AI สำหรับ Designer ภาษาไทย 24 บทเรียน เรียนรู้ Prompting, Research, Writing และ Future-Ready Skills">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://ai-for-designers-2026.vercel.app">
+    <meta property="og:image" content="https://ai-for-designers-2026.vercel.app/og-image.png">
+    <meta property="og:locale" content="th_TH">
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="AI for Designers — คอร์สสอน AI สำหรับ Designer">
+    <meta name="twitter:description" content="24 บทเรียน ครอบคลุม Prompting, Research, UX Writing และ Workflow Integration">
+    
+    <!-- Favicon -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎨</text></svg>">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>/* Ensure immediate render */ body { visibility: visible !important; }</style>
     <style>
-        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-        
         :root {
-            --bg: #09090b;
-            --bg-subtle: #18181b;
-            --bg-muted: #27272a;
-            --border: #3f3f46;
-            --text: #fafafa;
-            --text-muted: #a1a1aa;
-            --text-subtle: #71717a;
-            --primary: #f97316;
-            --primary-hover: #ea580c;
-            --success: #22c55e;
-            --error: #ef4444;
-            --accent-1: #ec4899;
-            --accent-2: #8b5cf6;
-            --radius: 12px;
-            --radius-lg: 16px;
-            --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.2), 0 2px 4px -2px rgb(0 0 0 / 0.2);
-            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.3), 0 4px 6px -4px rgb(0 0 0 / 0.3);
+            /* Warm & Friendly Theme */
+            --bg-cream: #FBF9F7;
+            --bg-warm: #F6F3EF;
+            --bg-white: #FFFFFF;
+            --accent: #C9785D;
+            --accent-hover: #B5694F;
+            --accent-light: #F9EEEA;
+            --accent-soft: #E8D5CF;
+            --text-dark: #1F1F1F;
+            --text-body: #454545;
+            --text-muted: #858585;
+            --border: #E9E5E0;
+            --success: #5A9A6E;
+            --radius: 16px;
+            --radius-sm: 10px;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.04);
+            --shadow: 0 4px 16px rgba(0,0,0,0.06);
+            --shadow-lg: 0 12px 40px rgba(0,0,0,0.08);
         }
 
-        html { scroll-behavior: smooth; }
-        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
-            font-family: 'Inter', 'IBM Plex Sans Thai', -apple-system, sans-serif;
-            background: var(--bg);
-            color: var(--text);
-            line-height: 1.6;
-            min-height: 100vh;
-            -webkit-font-smoothing: antialiased;
+            font-family: 'IBM Plex Sans Thai', 'Instrument Sans', -apple-system, sans-serif;
+            background: var(--bg-cream);
+            color: var(--text-dark);
+            line-height: 1.65;
+            font-size: 16px;
         }
 
-        /* Typography */
-        h1, h2, h3, h4 { font-weight: 700; line-height: 1.2; letter-spacing: -0.02em; }
-        h1 { font-size: clamp(2rem, 5vw, 3.5rem); }
-        h2 { font-size: clamp(1.5rem, 3vw, 2.25rem); }
-        h3 { font-size: clamp(1.125rem, 2vw, 1.5rem); }
-        
-        /* Utilities */
-        .container { max-width: 1200px; margin: 0 auto; padding: 0 1.5rem; }
-        .gradient-text { background: linear-gradient(135deg, var(--primary) 0%, var(--accent-1) 50%, var(--accent-2) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
-        .text-muted { color: var(--text-muted); }
-        .text-subtle { color: var(--text-subtle); }
-
-        /* Buttons */
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-            padding: 0.875rem 1.5rem;
-            font-size: 0.9375rem;
-            font-weight: 600;
-            border-radius: var(--radius);
-            border: none;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            text-decoration: none;
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 24px;
         }
-        .btn-primary {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--accent-1) 100%);
-            color: white;
-            box-shadow: 0 4px 14px 0 rgba(249, 115, 22, 0.4);
-        }
-        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 20px 0 rgba(249, 115, 22, 0.5); }
-        .btn-secondary {
-            background: var(--bg-subtle);
-            color: var(--text);
-            border: 1px solid var(--border);
-        }
-        .btn-secondary:hover { background: var(--bg-muted); border-color: var(--text-subtle); }
-        .btn-ghost { background: transparent; color: var(--text-muted); }
-        .btn-ghost:hover { color: var(--text); background: var(--bg-subtle); }
-
-        /* Cards */
-        .card {
-            background: var(--bg-subtle);
-            border: 1px solid var(--border);
-            border-radius: var(--radius-lg);
-            padding: 1.5rem;
-            transition: all 0.3s ease;
-        }
-        .card:hover { border-color: var(--text-subtle); transform: translateY(-4px); box-shadow: var(--shadow-lg); }
-
-        /* Forms */
-        .input {
-            width: 100%;
-            padding: 0.875rem 1rem;
-            background: var(--bg);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            color: var(--text);
-            font-size: 1rem;
-            transition: border-color 0.2s;
-        }
-        .input:focus { outline: none; border-color: var(--primary); }
-        .input::placeholder { color: var(--text-subtle); }
-        
-        .label { display: block; font-size: 0.875rem; font-weight: 500; color: var(--text-muted); margin-bottom: 0.5rem; }
 
         /* Navigation */
-        .nav {
+        nav {
             position: fixed;
             top: 0;
             left: 0;
             right: 0;
-            z-index: 100;
-            background: rgba(9, 9, 11, 0.8);
-            backdrop-filter: blur(12px);
+            background: rgba(251, 249, 247, 0.9);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            z-index: 1000;
             border-bottom: 1px solid var(--border);
         }
+
         .nav-inner {
             display: flex;
-            align-items: center;
             justify-content: space-between;
-            height: 64px;
+            align-items: center;
+            padding: 14px 24px;
+            max-width: 1100px;
+            margin: 0 auto;
         }
-        .nav-brand { display: flex; align-items: center; gap: 0.75rem; font-weight: 700; font-size: 1.125rem; }
-        .nav-links { display: flex; align-items: center; gap: 0.5rem; }
 
-        /* Hero */
-        .hero {
-            min-height: 100vh;
+        .logo {
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: var(--text-dark);
+            text-decoration: none;
             display: flex;
             align-items: center;
-            padding: 6rem 0 4rem;
-            background: 
-                radial-gradient(ellipse 80% 50% at 50% -20%, rgba(249, 115, 22, 0.15), transparent),
-                radial-gradient(ellipse 60% 40% at 100% 0%, rgba(236, 72, 153, 0.1), transparent),
-                radial-gradient(ellipse 60% 40% at 0% 100%, rgba(139, 92, 246, 0.08), transparent);
+            gap: 10px;
         }
-        .hero-content { text-align: center; max-width: 800px; margin: 0 auto; }
+
+        .logo-icon {
+            width: 34px;
+            height: 34px;
+            background: var(--accent);
+            border-radius: 9px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 32px;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: var(--text-body);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: color 0.15s;
+        }
+
+        .nav-links a:hover {
+            color: var(--accent);
+        }
+
+        .nav-links a.active {
+            color: var(--accent);
+            background: var(--accent-light);
+            padding: 8px 16px;
+            border-radius: 8px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 11px 22px;
+            border-radius: var(--radius-sm);
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-decoration: none;
+            transition: all 0.15s;
+            cursor: pointer;
+            border: none;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-hover);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(201, 120, 93, 0.25);
+        }
+
+        .btn-secondary {
+            background: var(--bg-white);
+            color: var(--text-dark);
+            border: 1.5px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .btn-lg {
+            padding: 14px 32px;
+            font-size: 0.95rem;
+            border-radius: 12px;
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 140px 0 80px;
+            text-align: center;
+        }
+
         .hero-badge {
             display: inline-flex;
             align-items: center;
-            gap: 0.5rem;
-            padding: 0.5rem 1rem;
-            background: var(--bg-subtle);
+            gap: 8px;
+            background: var(--bg-white);
             border: 1px solid var(--border);
+            padding: 8px 18px;
             border-radius: 100px;
-            font-size: 0.875rem;
-            color: var(--text-muted);
-            margin-bottom: 2rem;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--text-body);
+            margin-bottom: 24px;
+            box-shadow: var(--shadow-sm);
         }
-        .hero-badge .dot { width: 8px; height: 8px; background: var(--success); border-radius: 50%; animation: pulse 2s infinite; }
-        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
-        .hero-title { margin-bottom: 1.5rem; }
-        .hero-desc { font-size: 1.25rem; color: var(--text-muted); margin-bottom: 2.5rem; max-width: 600px; margin-left: auto; margin-right: auto; }
-        .hero-actions { display: flex; flex-wrap: wrap; gap: 1rem; justify-content: center; margin-bottom: 3rem; }
-        .hero-stats { display: flex; flex-wrap: wrap; gap: 2rem; justify-content: center; }
-        .hero-stat { display: flex; align-items: center; gap: 0.5rem; color: var(--text-muted); font-size: 0.9375rem; }
 
-        /* Course Grid */
-        .courses { padding: 6rem 0; }
-        .section-header { text-align: center; margin-bottom: 3rem; }
-        .section-header p { color: var(--text-muted); margin-top: 0.5rem; }
-        .course-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; }
-        .course-card { position: relative; }
-        .course-card.featured { border-color: var(--primary); }
-        .course-badge {
+        .hero-badge .dot {
+            width: 6px;
+            height: 6px;
+            background: var(--success);
+            border-radius: 50%;
+        }
+
+        .hero h1 {
+            font-family: 'Instrument Sans', sans-serif;
+            font-size: clamp(2.5rem, 5vw, 3.5rem);
+            font-weight: 600;
+            line-height: 1.15;
+            margin-bottom: 20px;
+            color: var(--text-dark);
+            letter-spacing: -0.02em;
+        }
+
+        .hero h1 .highlight {
+            color: var(--accent);
+        }
+
+        .hero-subtitle {
+            font-size: 1.15rem;
+            color: var(--text-body);
+            max-width: 520px;
+            margin: 0 auto 36px;
+            line-height: 1.7;
+        }
+
+        .hero-cta {
+            display: flex;
+            gap: 14px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .hero-visual {
+            margin-top: 60px;
+            background: var(--bg-white);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 28px 32px;
+            box-shadow: var(--shadow);
+            max-width: 680px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .hero-visual-label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-bottom: 16px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .tools-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .tool-tag {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 14px;
+            background: var(--bg-warm);
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--text-body);
+        }
+
+        /* Section Styles */
+        section {
+            padding: 80px 0;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 48px;
+        }
+
+        .section-tag {
+            display: inline-block;
+            background: var(--accent-light);
+            color: var(--accent);
+            padding: 5px 12px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-bottom: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .section-header h2 {
+            font-family: 'Instrument Sans', sans-serif;
+            font-size: 1.9rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+            letter-spacing: -0.01em;
+        }
+
+        .section-header p {
+            color: var(--text-body);
+            max-width: 500px;
+            margin: 0 auto;
+            font-size: 1.05rem;
+        }
+
+        /* Problem Section */
+        .problem-section {
+            background: var(--bg-warm);
+        }
+
+        .problem-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 20px;
+        }
+
+        .problem-card {
+            background: var(--bg-white);
+            padding: 28px;
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+        }
+
+        .problem-icon {
+            width: 44px;
+            height: 44px;
+            background: var(--accent-light);
+            border-radius: 11px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            margin-bottom: 16px;
+        }
+
+        .problem-card h3 {
+            font-size: 1.05rem;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .problem-card p {
+            color: var(--text-body);
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        /* What You Learn Section */
+        .learn-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 20px;
+        }
+
+        .learn-card {
+            background: var(--bg-white);
+            border-radius: var(--radius);
+            padding: 28px;
+            border: 1px solid var(--border);
+        }
+
+        .learn-card-header {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 18px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .learn-card-icon {
+            width: 42px;
+            height: 42px;
+            background: var(--accent-light);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+        }
+
+        .learn-card-header h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .learn-list {
+            list-style: none;
+        }
+
+        .learn-list li {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 8px 0;
+            font-size: 0.9rem;
+            color: var(--text-body);
+        }
+
+        .learn-list li::before {
+            content: "→";
+            color: var(--accent);
+            font-weight: 500;
+            flex-shrink: 0;
+        }
+
+        /* Tools Section */
+        .tools-section {
+            background: var(--bg-warm);
+        }
+
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 14px;
+        }
+
+        .tool-card {
+            background: var(--bg-white);
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            border: 1px solid var(--border);
+            transition: all 0.15s;
+        }
+
+        .tool-card:hover {
+            border-color: var(--accent-soft);
+            transform: translateY(-2px);
+        }
+
+        .tool-emoji {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+        }
+
+        .tool-name {
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 3px;
+        }
+
+        .tool-category {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        /* Benefits Section */
+        .benefits-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            align-items: center;
+        }
+
+        .benefit-list {
+            list-style: none;
+        }
+
+        .benefit-item {
+            display: flex;
+            gap: 16px;
+            padding: 20px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .benefit-item:last-child {
+            border-bottom: none;
+        }
+
+        .benefit-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--accent-light);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            flex-shrink: 0;
+        }
+
+        .benefit-text h4 {
+            font-size: 1rem;
+            margin-bottom: 4px;
+            font-weight: 600;
+        }
+
+        .benefit-text p {
+            font-size: 0.9rem;
+            color: var(--text-body);
+            line-height: 1.5;
+        }
+
+        .benefit-visual {
+            background: var(--bg-white);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 40px;
+            text-align: center;
+        }
+
+        .stat-big {
+            font-family: 'Instrument Sans', sans-serif;
+            font-size: 4.5rem;
+            font-weight: 700;
+            color: var(--accent);
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 1rem;
+            color: var(--text-body);
+        }
+
+        .stat-divider {
+            height: 1px;
+            background: var(--border);
+            margin: 28px 0;
+        }
+
+        /* Instructor Section */
+        .instructor-section {
+            background: var(--bg-warm);
+        }
+
+        .instructor-card {
+            background: var(--bg-white);
+            border-radius: var(--radius);
+            padding: 40px;
+            border: 1px solid var(--border);
+            display: grid;
+            grid-template-columns: 160px 1fr;
+            gap: 36px;
+            align-items: center;
+        }
+
+        .instructor-photo {
+            width: 160px;
+            height: 160px;
+            background: var(--bg-warm);
+            border-radius: var(--radius);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+        }
+
+        .instructor-info h3 {
+            font-family: 'Instrument Sans', sans-serif;
+            font-size: 1.4rem;
+            margin-bottom: 6px;
+            font-weight: 600;
+        }
+
+        .instructor-title {
+            color: var(--accent);
+            font-weight: 500;
+            margin-bottom: 14px;
+            font-size: 0.95rem;
+        }
+
+        .instructor-bio {
+            color: var(--text-body);
+            margin-bottom: 20px;
+            font-size: 0.95rem;
+            line-height: 1.65;
+        }
+
+        .credentials {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .credential {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.85rem;
+            color: var(--text-body);
+        }
+
+        .credential::before {
+            content: "✓";
+            color: var(--success);
+            font-weight: 700;
+        }
+
+        /* Newsletter Section */
+        .newsletter-section {
+            background: linear-gradient(135deg, var(--accent) 0%, #C4684A 100%);
+            color: white;
+            padding: 60px 0;
+        }
+
+        .newsletter-inner {
+            max-width: 600px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .newsletter-inner h2 {
+            font-size: 1.8rem;
+            margin-bottom: 12px;
+        }
+
+        .newsletter-inner p {
+            opacity: 0.9;
+            margin-bottom: 24px;
+        }
+
+        .newsletter-form {
+            display: flex;
+            gap: 12px;
+            max-width: 480px;
+            margin: 0 auto;
+        }
+
+        .newsletter-input {
+            flex: 1;
+            padding: 16px 20px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-family: inherit;
+        }
+
+        .newsletter-input:focus {
+            outline: 3px solid rgba(255,255,255,0.3);
+        }
+
+        .newsletter-btn {
+            padding: 16px 28px;
+            background: white;
+            color: var(--accent);
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            font-family: inherit;
+            cursor: pointer;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        .newsletter-btn:hover {
+            transform: scale(1.02);
+        }
+
+        .newsletter-note {
+            font-size: 0.85rem;
+            opacity: 0.8;
+            margin-top: 16px;
+        }
+
+        @media (max-width: 600px) {
+            .newsletter-form {
+                flex-direction: column;
+            }
+            .newsletter-btn {
+                width: 100%;
+            }
+        }
+
+        /* Pricing Section */
+        .pricing-section {
+            background: var(--bg-cream);
+        }
+
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            max-width: 960px;
+            margin: 0 auto;
+        }
+
+        .pricing-card {
+            background: var(--bg-white);
+            border-radius: var(--radius);
+            padding: 32px;
+            border: 1px solid var(--border);
+            position: relative;
+        }
+
+        .pricing-card.featured {
+            border: 2px solid var(--accent);
+        }
+
+        .pricing-badge {
             position: absolute;
             top: -12px;
             left: 50%;
             transform: translateX(-50%);
-            padding: 0.375rem 1rem;
-            background: linear-gradient(135deg, var(--primary), var(--accent-1));
+            background: var(--accent);
+            color: white;
+            padding: 6px 18px;
             border-radius: 100px;
-            font-size: 0.75rem;
+            font-size: 0.8rem;
             font-weight: 600;
-            white-space: nowrap;
         }
-        .course-icon { font-size: 2.5rem; margin-bottom: 1rem; }
-        .course-title { margin-bottom: 0.5rem; }
-        .course-desc { color: var(--text-muted); font-size: 0.9375rem; margin-bottom: 1rem; }
-        .course-lessons { list-style: none; margin-bottom: 1.5rem; }
-        .course-lessons li { padding: 0.5rem 0; font-size: 0.875rem; color: var(--text-muted); border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 0.5rem; }
-        .course-lessons li:last-child { border-bottom: none; }
-        .course-price { font-size: 2rem; font-weight: 700; }
-        .course-price .original { font-size: 1rem; color: var(--text-subtle); text-decoration: line-through; margin-left: 0.5rem; }
 
-        /* Pricing */
-        .pricing { padding: 6rem 0; background: var(--bg-subtle); }
-        .pricing-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; max-width: 900px; margin: 0 auto; }
-
-        /* Features */
-        .features { padding: 6rem 0; }
-        .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; }
-        .feature { text-align: center; padding: 2rem 1.5rem; }
-        .feature-icon { font-size: 2.5rem; margin-bottom: 1rem; }
-        .feature h3 { margin-bottom: 0.5rem; }
-        .feature p { color: var(--text-muted); font-size: 0.9375rem; }
-
-        /* Footer */
-        .footer { padding: 3rem 0; border-top: 1px solid var(--border); text-align: center; color: var(--text-subtle); font-size: 0.875rem; }
-
-        /* Modal */
-        .modal-overlay {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.75);
-            backdrop-filter: blur(4px);
-            z-index: 200;
-            align-items: center;
-            justify-content: center;
-            padding: 1rem;
+        .pricing-name {
+            font-family: 'Instrument Sans', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 4px;
         }
-        .modal-overlay.active { display: flex; }
-        .modal {
-            background: var(--bg-subtle);
-            border: 1px solid var(--border);
-            border-radius: var(--radius-lg);
-            width: 100%;
-            max-width: 440px;
-            max-height: 90vh;
-            overflow-y: auto;
-            animation: modalIn 0.3s ease;
+
+        .pricing-desc {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 18px;
         }
-        @keyframes modalIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
-        .modal-header {
+
+        .pricing-price {
+            font-family: 'Instrument Sans', sans-serif;
+            font-size: 2.4rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 4px;
+        }
+
+        .pricing-price span {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            font-weight: 400;
+        }
+
+        .pricing-note {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-bottom: 24px;
+        }
+
+        .pricing-features {
+            list-style: none;
+            margin-bottom: 28px;
+        }
+
+        .pricing-features li {
+            padding: 8px 0;
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            padding: 1.5rem;
-            border-bottom: 1px solid var(--border);
+            gap: 10px;
+            font-size: 0.9rem;
+            color: var(--text-body);
         }
-        .modal-close { background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 1.5rem; line-height: 1; }
-        .modal-close:hover { color: var(--text); }
-        .modal-body { padding: 1.5rem; }
-        .modal-footer { padding: 1.5rem; border-top: 1px solid var(--border); }
 
-        /* Form Group */
-        .form-group { margin-bottom: 1.25rem; }
-        .form-group:last-child { margin-bottom: 0; }
+        .pricing-features li::before {
+            content: "✓";
+            color: var(--success);
+            font-weight: 700;
+        }
 
-        /* Alert */
-        .alert { padding: 1rem; border-radius: var(--radius); font-size: 0.875rem; margin-bottom: 1rem; }
-        .alert-error { background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); color: #fca5a5; }
-        .alert-success { background: rgba(34, 197, 94, 0.1); border: 1px solid rgba(34, 197, 94, 0.3); color: #86efac; }
-
-        /* Dashboard */
-        .dashboard { padding-top: 80px; min-height: 100vh; }
-        .dashboard-header { padding: 2rem 0; border-bottom: 1px solid var(--border); margin-bottom: 2rem; }
-        .progress-bar { height: 8px; background: var(--bg-muted); border-radius: 100px; overflow: hidden; margin-top: 1rem; }
-        .progress-fill { height: 100%; background: linear-gradient(90deg, var(--primary), var(--accent-1)); border-radius: 100px; transition: width 0.5s ease; }
-        .lesson-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1rem; }
-        .lesson-card {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            padding: 1rem;
-            background: var(--bg-subtle);
+        /* Guarantee */
+        .guarantee {
+            background: var(--bg-white);
             border: 1px solid var(--border);
             border-radius: var(--radius);
-            cursor: pointer;
-            transition: all 0.2s;
+            padding: 32px;
+            text-align: center;
+            max-width: 600px;
+            margin: 48px auto 0;
         }
-        .lesson-card:hover { border-color: var(--primary); }
-        .lesson-num {
-            width: 36px;
-            height: 36px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: var(--bg-muted);
-            border-radius: 50%;
-            font-size: 0.875rem;
+
+        .guarantee-icon {
+            font-size: 2.5rem;
+            margin-bottom: 12px;
+        }
+
+        .guarantee h3 {
+            font-size: 1.15rem;
+            margin-bottom: 8px;
             font-weight: 600;
-            flex-shrink: 0;
         }
-        .lesson-num.done { background: var(--success); }
-        .lesson-info h4 { font-size: 0.9375rem; margin-bottom: 0.25rem; }
-        .lesson-info p { font-size: 0.8125rem; color: var(--text-subtle); }
 
-        /* Video Player */
-        .video-wrapper {
-            position: relative;
-            padding-bottom: 56.25%;
-            background: #000;
-            border-radius: var(--radius-lg);
-            overflow: hidden;
-            margin-bottom: 1.5rem;
+        .guarantee p {
+            color: var(--text-body);
+            font-size: 0.9rem;
         }
-        .video-wrapper video, .video-wrapper .video-placeholder {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+
+        /* CTA Section */
+        .cta-section {
+            text-align: center;
+            padding: 100px 0;
         }
-        .video-placeholder {
+
+        .cta-section h2 {
+            font-family: 'Instrument Sans', sans-serif;
+            font-size: 2.2rem;
+            margin-bottom: 14px;
+            font-weight: 600;
+        }
+
+        .cta-section p {
+            color: var(--text-body);
+            font-size: 1.1rem;
+            margin-bottom: 32px;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--text-dark);
+            color: white;
+            padding: 48px 0;
+        }
+
+        .footer-content {
             display: flex;
-            flex-direction: column;
+            justify-content: space-between;
             align-items: center;
-            justify-content: center;
-            color: var(--text-subtle);
         }
-        .video-placeholder span { font-size: 4rem; margin-bottom: 1rem; }
 
-        /* Admin */
-        .admin-table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 0.875rem;
+        .footer-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
         }
-        .admin-table th, .admin-table td {
-            padding: 1rem;
-            text-align: left;
-            border-bottom: 1px solid var(--border);
+
+        .footer-links {
+            display: flex;
+            gap: 28px;
         }
-        .admin-table th { font-weight: 600; color: var(--text-muted); background: var(--bg-muted); }
-        .status { padding: 0.25rem 0.75rem; border-radius: 100px; font-size: 0.75rem; font-weight: 600; }
-        .status-pending { background: rgba(234, 179, 8, 0.2); color: #fde047; }
-        .status-approved { background: rgba(34, 197, 94, 0.2); color: #86efac; }
-        .status-rejected { background: rgba(239, 68, 68, 0.2); color: #fca5a5; }
+
+        .footer-links a {
+            color: rgba(255,255,255,0.7);
+            text-decoration: none;
+            font-size: 0.85rem;
+        }
+
+        .footer-links a:hover {
+            color: white;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            margin-top: 36px;
+            padding-top: 24px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            color: rgba(255,255,255,0.5);
+            font-size: 0.85rem;
+        }
 
         /* Responsive */
-        @media (max-width: 640px) {
-            .hero { padding: 5rem 0 3rem; }
-            .hero-desc { font-size: 1.125rem; }
-            .nav-brand span { display: none; }
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .benefits-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .instructor-card {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+
+            .instructor-photo {
+                margin: 0 auto;
+            }
+
+            .credentials {
+                justify-content: center;
+            }
+
+            .footer-content {
+                flex-direction: column;
+                gap: 20px;
+            }
         }
     </style>
 </head>
 <body>
-    <div id="app"></div>
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-inner">
+            <a href="#" class="logo">
+                <span class="logo-icon">🎨</span>
+                AI for Designers
+            </a>
+            <div class="nav-links">
+                <a href="index.html" class="active">หน้าแรก</a>
+                <a href="dashboard.html">เรียน</a>
+                <a href="lesson.html?lesson=1.1">บทเรียน</a>
+                <a href="downloads.html">ดาวน์โหลด</a>
+                <a href="quiz.html">Quiz</a>
+                <a href="dashboard.html" class="btn btn-primary">เข้าสู่ระบบ</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-badge">
+                <span class="dot"></span>
+                อัพเดททุก Quarter — เนื้อหาใหม่ล่าสุดเสมอ
+            </div>
+            <h1>
+                ออกแบบ <span class="highlight">เร็วขึ้น ดีขึ้น</span><br>
+                ด้วยพลังของ AI
+            </h1>
+            <p class="hero-subtitle">
+                เรียนรู้หลักการและวิธีใช้ AI Tools อย่างมีประสิทธิภาพ 
+                ไม่ใช่แค่รู้จักเครื่องมือ แต่รู้วิธีคิดที่ถูกต้อง
+            </p>
+            <div class="hero-cta">
+                <a href="#pricing" class="btn btn-primary btn-lg">เริ่มเรียนเลย →</a>
+                <a href="#learn" class="btn btn-secondary btn-lg">ดูเนื้อหาคอร์ส</a>
+            </div>
+            
+            <div class="hero-visual">
+                <div class="hero-visual-label">เรียนรู้การใช้งาน AI Tools ชั้นนำ</div>
+                <div class="tools-row">
+                    <span class="tool-tag">🎨 Figma AI</span>
+                    <span class="tool-tag">🖼️ Midjourney</span>
+                    <span class="tool-tag">✨ Framer AI</span>
+                    <span class="tool-tag">🎬 Runway</span>
+                    <span class="tool-tag">📝 Notion AI</span>
+                    <span class="tool-tag">🔮 Galileo AI</span>
+                    <span class="tool-tag">⚡ v0.dev</span>
+                    <span class="tool-tag">+อีกมาก</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Problem Section -->
+    <section class="problem-section">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">ปัญหา</span>
+                <h2>คุณกำลังเจอสิ่งเหล่านี้หรือเปล่า?</h2>
+                <p>ถ้าใช่ คอร์สนี้ออกแบบมาเพื่อคุณโดยเฉพาะ</p>
+            </div>
+            <div class="problem-grid">
+                <div class="problem-card">
+                    <div class="problem-icon">🤯</div>
+                    <h3>AI Tools มีเยอะมาก</h3>
+                    <p>ไม่รู้ว่าตัวไหนเหมาะกับงานอะไร ข้อมูลกระจัดกระจาย เสียเวลาลองผิดลองถูก</p>
+                </div>
+                <div class="problem-card">
+                    <div class="problem-icon">😐</div>
+                    <h3>ใช้แล้วไม่เห็นผล</h3>
+                    <p>ลองใช้ AI แล้ว แต่ผลลัพธ์ไม่ดีอย่างที่คาด ไม่รู้วิธีใช้ที่ถูกต้อง</p>
+                </div>
+                <div class="problem-card">
+                    <div class="problem-icon">😰</div>
+                    <h3>กลัวตกขบวน</h3>
+                    <p>AI เปลี่ยนเร็วมาก กลัวว่าสิ่งที่เรียนวันนี้จะล้าสมัยพรุ่งนี้</p>
+                </div>
+                <div class="problem-card">
+                    <div class="problem-icon">🎯</div>
+                    <h3>ไม่รู้ว่าเมื่อไหร่ควรใช้</h3>
+                    <p>AI ไม่ได้ดีเสมอไป ไม่รู้ว่าเมื่อไหร่ควรใช้ เมื่อไหร่ควรทำเอง</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- What You Learn Section -->
+    <section id="learn">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">เนื้อหาคอร์ส</span>
+                <h2>หลักการที่ไม่มีวันล้าสมัย</h2>
+                <p>วิธีคิดและหลักการที่ใช้ได้กับทุก AI Tools</p>
+            </div>
+            <div class="learn-grid">
+                <div class="learn-card">
+                    <div class="learn-card-header">
+                        <span class="learn-card-icon">🧠</span>
+                        <h3>Prompting Principles</h3>
+                    </div>
+                    <ul class="learn-list">
+                        <li>หลักการเขียน Prompt ที่ได้ผลลัพธ์ดี</li>
+                        <li>Structure และ Format ที่เหมาะสม</li>
+                        <li>วิธีให้ Context และ Examples</li>
+                        <li>Iterative Refinement Techniques</li>
+                    </ul>
+                </div>
+                <div class="learn-card">
+                    <div class="learn-card-header">
+                        <span class="learn-card-icon">🔍</span>
+                        <h3>AI-Assisted Research</h3>
+                    </div>
+                    <ul class="learn-list">
+                        <li>วิธีใช้ AI ช่วย User Research</li>
+                        <li>การวิเคราะห์ข้อมูลด้วย AI</li>
+                        <li>Competitive Analysis Workflows</li>
+                        <li>ข้อจำกัดและสิ่งที่ต้องระวัง</li>
+                    </ul>
+                </div>
+                <div class="learn-card">
+                    <div class="learn-card-header">
+                        <span class="learn-card-icon">🎨</span>
+                        <h3>Visual Generation</h3>
+                    </div>
+                    <ul class="learn-list">
+                        <li>หลักการสร้างภาพด้วย AI</li>
+                        <li>Style Reference และ Control</li>
+                        <li>การใช้ AI ในงาน UI Design</li>
+                        <li>Ethical Considerations</li>
+                    </ul>
+                </div>
+                <div class="learn-card">
+                    <div class="learn-card-header">
+                        <span class="learn-card-icon">✍️</span>
+                        <h3>Content & UX Writing</h3>
+                    </div>
+                    <ul class="learn-list">
+                        <li>AI สำหรับ Microcopy</li>
+                        <li>Brand Voice และ Tone</li>
+                        <li>Localization Workflows</li>
+                        <li>Content Strategy with AI</li>
+                    </ul>
+                </div>
+                <div class="learn-card">
+                    <div class="learn-card-header">
+                        <span class="learn-card-icon">⚡</span>
+                        <h3>Workflow Automation</h3>
+                    </div>
+                    <ul class="learn-list">
+                        <li>ออกแบบ AI-Enhanced Workflows</li>
+                        <li>เมื่อไหร่ควรใช้ / ไม่ควรใช้ AI</li>
+                        <li>Integration กับ Design Tools</li>
+                        <li>Measuring Productivity Gains</li>
+                    </ul>
+                </div>
+                <div class="learn-card">
+                    <div class="learn-card-header">
+                        <span class="learn-card-icon">🚀</span>
+                        <h3>Future-Ready Skills</h3>
+                    </div>
+                    <ul class="learn-list">
+                        <li>วิธีติดตามและเรียนรู้ Tools ใหม่</li>
+                        <li>Critical Thinking กับ AI Output</li>
+                        <li>สร้าง Personal AI Stack</li>
+                        <li>Lead AI ในทีม</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Quiz Feature Badge -->
+            <div style="margin-top: 40px; text-align: center;">
+                <div style="display: inline-flex; align-items: center; gap: 12px; background: #FEF3EE; padding: 16px 28px; border-radius: 50px;">
+                    <span style="font-size: 1.5rem;">📝</span>
+                    <span><strong>Quiz ท้ายทุก Module</strong> — ทดสอบความเข้าใจก่อนไปต่อ</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tools Section -->
+    <section class="tools-section" id="tools">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">AI Tools</span>
+                <h2>เครื่องมือที่จะได้เรียนรู้</h2>
+                <p>รวม Tools ที่ยังไม่มีคอร์สสอนที่ไหน — <strong>เรียนรู้ก่อนใคร</strong></p>
+            </div>
+            <div class="tools-grid">
+                <div class="tool-card">
+                    <div class="tool-emoji">🎨</div>
+                    <div class="tool-name">Figma AI</div>
+                    <div class="tool-category">Design</div>
+                </div>
+                <div class="tool-card">
+                    <div class="tool-emoji">🖼️</div>
+                    <div class="tool-name">Midjourney</div>
+                    <div class="tool-category">Image Gen</div>
+                </div>
+                <div class="tool-card">
+                    <div class="tool-emoji">✨</div>
+                    <div class="tool-name">Framer AI</div>
+                    <div class="tool-category">Web Design</div>
+                </div>
+                <div class="tool-card">
+                    <div class="tool-emoji">🔮</div>
+                    <div class="tool-name">Galileo AI</div>
+                    <div class="tool-category">UI Gen</div>
+                </div>
+                <div class="tool-card">
+                    <div class="tool-emoji">⚡</div>
+                    <div class="tool-name">v0.dev</div>
+                    <div class="tool-category">UI to Code</div>
+                </div>
+                <div class="tool-card">
+                    <div class="tool-emoji">🎬</div>
+                    <div class="tool-name">Runway</div>
+                    <div class="tool-category">Video</div>
+                </div>
+                <div class="tool-card">
+                    <div class="tool-emoji">🔥</div>
+                    <div class="tool-name">Firefly</div>
+                    <div class="tool-category">Adobe AI</div>
+                </div>
+                <div class="tool-card">
+                    <div class="tool-emoji">🎯</div>
+                    <div class="tool-name">Relume</div>
+                    <div class="tool-category">Wireframe</div>
+                </div>
+                <div class="tool-card">
+                    <div class="tool-emoji">📝</div>
+                    <div class="tool-name">Notion AI</div>
+                    <div class="tool-category">Writing</div>
+                </div>
+                <div class="tool-card">
+                    <div class="tool-emoji">🖌️</div>
+                    <div class="tool-name">Krea AI</div>
+                    <div class="tool-category">Real-time</div>
+                </div>
+                <div class="tool-card">
+                    <div class="tool-emoji">📸</div>
+                    <div class="tool-name">Photoroom</div>
+                    <div class="tool-category">Photo Edit</div>
+                </div>
+                <div class="tool-card">
+                    <div class="tool-emoji">🎭</div>
+                    <div class="tool-name">Ideogram</div>
+                    <div class="tool-category">Text-Image</div>
+                </div>
+            </div>
+            <p style="text-align: center; margin-top: 28px; color: var(--text-muted); font-size: 0.9rem;">
+                🚀 Tools ใหม่ที่ยังไม่มีคอร์สสอนที่ไหน + อัพเดททุก Quarter
+            </p>
+        </div>
+    </section>
+
+    <!-- Benefits Section -->
+    <section>
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">ผลลัพธ์</span>
+                <h2>คุณจะได้อะไรจากคอร์สนี้</h2>
+            </div>
+            <div class="benefits-grid">
+                <ul class="benefit-list">
+                    <li class="benefit-item">
+                        <span class="benefit-icon">⚡</span>
+                        <div class="benefit-text">
+                            <h4>ลดเวลางาน Routine</h4>
+                            <p>ใช้ AI ทำงานซ้ำๆ แทน เช่น resize, variations, first draft</p>
+                        </div>
+                    </li>
+                    <li class="benefit-item">
+                        <span class="benefit-icon">💡</span>
+                        <div class="benefit-text">
+                            <h4>มี Brainstorm Partner 24/7</h4>
+                            <p>AI ช่วยคิด ideas, alternatives, และ edge cases ได้ตลอด</p>
+                        </div>
+                    </li>
+                    <li class="benefit-item">
+                        <span class="benefit-icon">🎯</span>
+                        <div class="benefit-text">
+                            <h4>รู้ว่าเมื่อไหร่ไม่ควรใช้</h4>
+                            <p>Critical thinking — AI ไม่ได้ดีทุกอย่าง รู้ข้อจำกัด</p>
+                        </div>
+                    </li>
+                    <li class="benefit-item">
+                        <span class="benefit-icon">🚀</span>
+                        <div class="benefit-text">
+                            <h4>พร้อมสำหรับ Tools ใหม่</h4>
+                            <p>หลักการที่เรียนใช้ได้กับทุก Tools ไม่ต้องเรียนใหม่ทุกครั้ง</p>
+                        </div>
+                    </li>
+                </ul>
+                <div class="benefit-visual">
+                    <div class="stat-big">3-5x</div>
+                    <div class="stat-label">เร็วขึ้นในงาน Routine</div>
+                    <div class="stat-divider"></div>
+                    <div class="stat-big" style="font-size: 3.5rem;">∞</div>
+                    <div class="stat-label">Ideas ใหม่ๆ ไม่มีวันหมด</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Instructor Section -->
+    <section class="instructor-section">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">ผู้สอน</span>
+                <h2>สอนโดยคนที่ใช้ AI จริงทุกวัน</h2>
+            </div>
+            <div class="instructor-card">
+                <div class="instructor-photo">👨‍💻</div>
+                <div class="instructor-info">
+                    <h3>Kacha Hanchana (May)</h3>
+                    <div class="instructor-title">Design System Lead • 16+ ปีประสบการณ์</div>
+                    <p class="instructor-bio">
+                        ไม่ใช่แค่ครูที่สอนทฤษฎี แต่เป็นคนที่ใช้ AI ในงาน Design จริงทุกวัน 
+                        เคยสร้างและ lead ทีม Design ตั้งแต่ 1 คน จนถึง 90+ คน 
+                        ทำงานกับบริษัทระดับ enterprise หลายแห่ง
+                    </p>
+                    <div class="credentials">
+                        <span class="credential">ADPList Global Mentor</span>
+                        <span class="credential">Design System Expert</span>
+                        <span class="credential">AI Practitioner</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Newsletter Section -->
+    <section class="newsletter-section">
+        <div class="container">
+            <div class="newsletter-inner">
+                <h2>📬 รับ AI Tips ฟรีทุกสัปดาห์</h2>
+                <p>สมัครรับ newsletter เพื่อรับเทคนิค AI สำหรับ Designer ส่งตรงถึงอีเมล</p>
+                <form class="newsletter-form" onsubmit="subscribeNewsletter(event)">
+                    <input type="email" class="newsletter-input" placeholder="your@email.com" required>
+                    <button type="submit" class="newsletter-btn">สมัครฟรี →</button>
+                </form>
+                <p class="newsletter-note">🔒 ไม่ส่ง spam • ยกเลิกได้ตลอด</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section class="pricing-section" id="pricing">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">ราคา</span>
+                <h2>เลือกแพ็คเกจที่เหมาะกับคุณ</h2>
+                <p>จ่ายครั้งเดียว เข้าถึงตลอดชีพ พร้อม Updates ทุก Quarter</p>
+            </div>
+            <div class="pricing-grid">
+                <div class="pricing-card">
+                    <div class="pricing-name">Starter</div>
+                    <div class="pricing-desc">สำหรับเริ่มต้นเรียนรู้</div>
+                    <div class="pricing-price">฿2,900 <span>THB</span></div>
+                    <div class="pricing-note">จ่ายครั้งเดียว • เข้าถึงตลอดชีพ</div>
+                    <ul class="pricing-features">
+                        <li>Prompting Principles</li>
+                        <li>Visual Generation Basics</li>
+                        <li>5 Prompt Templates</li>
+                        <li>Community Access</li>
+                        <li>Quarterly Updates</li>
+                    </ul>
+                    <a href="dashboard.html" class="btn btn-secondary" style="width: 100%;">เริ่มต้นเรียน</a>
+                </div>
+                <div class="pricing-card featured">
+                    <div class="pricing-badge">แนะนำ</div>
+                    <div class="pricing-name">Complete</div>
+                    <div class="pricing-desc">ครบทุกเนื้อหา + Bonus</div>
+                    <div class="pricing-price">฿6,900 <span>THB</span></div>
+                    <div class="pricing-note">จ่ายครั้งเดียว • เข้าถึงตลอดชีพ</div>
+                    <ul class="pricing-features">
+                        <li>ทุกอย่างใน Starter</li>
+                        <li>AI-Assisted Research</li>
+                        <li>Workflow Automation</li>
+                        <li>Future-Ready Skills</li>
+                        <li>20+ Prompt Templates</li>
+                        <li>1-on-1 Q&A Session</li>
+                        <li>Certificate</li>
+                    </ul>
+                    <a href="dashboard.html" class="btn btn-primary" style="width: 100%;">สมัครเลย →</a>
+                </div>
+                <div class="pricing-card">
+                    <div class="pricing-name">Team</div>
+                    <div class="pricing-desc">สำหรับทีม 5 คนขึ้นไป</div>
+                    <div class="pricing-price">฿22,000 <span>THB</span></div>
+                    <div class="pricing-note">5 Seats • Volume discount</div>
+                    <ul class="pricing-features">
+                        <li>ทุกอย่างใน Complete × 5</li>
+                        <li>Team Workshop 3 ชม.</li>
+                        <li>Custom Use Cases</li>
+                        <li>Admin Dashboard</li>
+                        <li>Invoice / ใบกำกับภาษี</li>
+                    </ul>
+                    <a href="mailto:may@aidesigner.com" class="btn btn-secondary" style="width: 100%;">ติดต่อเรา</a>
+                </div>
+            </div>
+
+            <div class="guarantee">
+                <div class="guarantee-icon">🛡️</div>
+                <h3>รับประกันความพอใจ 14 วัน</h3>
+                <p>ถ้าเรียนแล้วไม่ถูกใจ ขอเงินคืนได้ภายใน 14 วัน ไม่ถามเหตุผล</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="container">
+            <h2>พร้อมยกระดับงาน Design ของคุณ?</h2>
+            <p>เริ่มเรียนวันนี้ และใช้ AI ได้อย่างมีประสิทธิภาพตั้งแต่พรุ่งนี้</p>
+            <a href="#pricing" class="btn btn-primary btn-lg">เริ่มเรียนเลย →</a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <span class="logo-icon" style="width: 28px; height: 28px; font-size: 0.9rem;">✦</span>
+                    AI for Designers
+                </div>
+                <div class="footer-links">
+                    <a href="faq.html">คำถามที่พบบ่อย</a>
+                    <a href="glossary.html">คำศัพท์ AI</a>
+                    <a href="#">เงื่อนไขการใช้งาน</a>
+                    <a href="mailto:may@aidesigner.com">ติดต่อเรา</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                © 2026 AI for Designers. All rights reserved.
+            </div>
+        </div>
+    </footer>
 
     <script>
-        // ========== CONFIG ==========
-        const CONFIG = {
-            PROMPTPAY_ID: '0812345678',
-            PROMPTPAY_NAME: 'คชา หาญชนะ',
-            ADMIN_EMAILS: ['sira.hanchana@gmail.com']
-        };
-
-        // ========== DATA ==========
-        const COURSES = {
-            beginner: {
-                id: 'beginner', name: 'Beginner', icon: '🌱', color: '#22c55e', price: 2900,
-                description: 'เริ่มต้นใช้ AI ตั้งแต่พื้นฐาน',
-                lessons: [
-                    { id: 'b1', title: 'AI Fundamentals', duration: '25 นาที' },
-                    { id: 'b2', title: 'Prompt Engineering 101', duration: '30 นาที' },
-                    { id: 'b3', title: 'AI for UX Research', duration: '25 นาที' },
-                    { id: 'b4', title: 'AI Image Generation', duration: '20 นาที' },
-                    { id: 'b5', title: 'UX Writing with AI', duration: '20 นาที' }
-                ]
-            },
-            intermediate: {
-                id: 'intermediate', name: 'Intermediate', icon: '🚀', color: '#eab308', price: 3900,
-                description: 'เทคนิคขั้นสูงและ Multi-Modal',
-                lessons: [
-                    { id: 'i1', title: 'Advanced Prompting', duration: '30 นาที' },
-                    { id: 'i2', title: 'Chain-of-Thought', duration: '25 นาที' },
-                    { id: 'i3', title: 'Multi-Modal AI', duration: '25 นาที' },
-                    { id: 'i4', title: 'Vision Models', duration: '20 นาที' },
-                    { id: 'i5', title: 'AI Agents & Automation', duration: '30 นาที' }
-                ]
-            },
-            advanced: {
-                id: 'advanced', name: 'Advanced', icon: '⚡', color: '#ef4444', price: 4900,
-                description: 'Enterprise & Team Leadership',
-                lessons: [
-                    { id: 'a1', title: 'RAG & Knowledge Systems', duration: '35 นาที' },
-                    { id: 'a2', title: 'Fine-Tuning Models', duration: '30 นาที' },
-                    { id: 'a3', title: 'Building AI Plugins', duration: '35 นาที' },
-                    { id: 'a4', title: 'AI Governance & Ethics', duration: '25 นาที' },
-                    { id: 'a5', title: 'Team Training Strategy', duration: '20 นาที' }
-                ]
-            }
-        };
-
-        // ========== STATE ==========
-        let state = {
-            page: 'home',
-            user: null,
-            currentLesson: null,
-            pendingReg: null,
-            message: null
-        };
-
-        // ========== STORAGE ==========
-        const db = {
-            users: () => JSON.parse(localStorage.getItem('aiw_users') || '[]'),
-            saveUsers: (u) => localStorage.setItem('aiw_users', JSON.stringify(u)),
-            regs: () => JSON.parse(localStorage.getItem('aiw_regs') || '[]'),
-            saveRegs: (r) => localStorage.setItem('aiw_regs', JSON.stringify(r)),
-            currentUser: () => JSON.parse(localStorage.getItem('aiw_user') || 'null'),
-            setUser: (u) => localStorage.setItem('aiw_user', JSON.stringify(u)),
-            progress: (id) => JSON.parse(localStorage.getItem(`aiw_prog_${id}`) || '{}'),
-            saveProgress: (id, p) => localStorage.setItem(`aiw_prog_${id}`, JSON.stringify(p))
-        };
-
-        // ========== HELPERS ==========
-        const isAdmin = () => state.user && CONFIG.ADMIN_EMAILS.includes(state.user.email);
-        const getUserCourses = () => {
-            if (!state.user) return [];
-            const user = db.users().find(u => u.id === state.user.id);
-            return user?.courses || [];
-        };
-
-        // ========== RENDER ==========
-        function render() {
-            const pages = { home: renderHome, login: renderLogin, register: renderRegister, payment: renderPayment, dashboard: renderDashboard, lesson: renderLesson, admin: renderAdmin };
-            document.getElementById('app').innerHTML = (pages[state.page] || renderHome)();
-            attachEvents();
-        }
-
-        function renderNav(showDashboard = false) {
-            return `
-                <nav class="nav">
-                    <div class="container nav-inner">
-                        <a href="#" onclick="go('home')" class="nav-brand">✨ <span>AI for Designers</span></a>
-                        <div class="nav-links">
-                            ${state.user ? `
-                                ${showDashboard ? '' : `<button onclick="go('dashboard')" class="btn btn-ghost">Dashboard</button>`}
-                                ${isAdmin() ? `<button onclick="go('admin')" class="btn btn-ghost">Admin</button>` : ''}
-                                <button onclick="logout()" class="btn btn-ghost">ออก</button>
-                            ` : `
-                                <button onclick="go('login')" class="btn btn-ghost">เข้าสู่ระบบ</button>
-                                <button onclick="go('register')" class="btn btn-primary">สมัครเรียน</button>
-                            `}
-                        </div>
-                    </div>
-                </nav>
-            `;
-        }
-
-        function renderHome() {
-            return `
-                ${renderNav()}
-                <section class="hero">
-                    <div class="container">
-                        <div class="hero-content">
-                            <div class="hero-badge"><span class="dot"></span> Online Course — เรียนได้ทุกที่ ดูย้อนหลังได้</div>
-                            <h1 class="hero-title"><span class="gradient-text">AI for Designers</span></h1>
-                            <p class="hero-desc">เรียนรู้การใช้ AI เพื่อเพิ่มประสิทธิภาพการทำงานด้าน Design ตั้งแต่พื้นฐานจนถึงระดับ Enterprise</p>
-                            <div class="hero-actions">
-                                <button onclick="go('register')" class="btn btn-primary">เริ่มเรียน — ฿2,900</button>
-                                <a href="#courses" class="btn btn-secondary">ดูหลักสูตร</a>
-                            </div>
-                            <div class="hero-stats">
-                                <div class="hero-stat">🎥 6+ ชั่วโมง Content</div>
-                                <div class="hero-stat">📚 15 บทเรียน</div>
-                                <div class="hero-stat">🔄 ดูได้ 1 ปี</div>
-                                <div class="hero-stat">🎓 Certificate</div>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
-                <section class="features" id="features">
-                    <div class="container">
-                        <div class="section-header">
-                            <h2>ทำไมต้องเรียนที่นี่?</h2>
-                        </div>
-                        <div class="features-grid">
-                            <div class="feature card">
-                                <div class="feature-icon">🏠</div>
-                                <h3>เรียนที่ไหนก็ได้</h3>
-                                <p>ไม่ต้องเดินทาง ดูผ่านมือถือ แท็บเล็ต หรือคอมพิวเตอร์</p>
-                            </div>
-                            <div class="feature card">
-                                <div class="feature-icon">🔄</div>
-                                <h3>ดูซ้ำไม่จำกัด</h3>
-                                <p>ทบทวนได้ตลอด 1 ปี เรียนตามจังหวะของคุณ</p>
-                            </div>
-                            <div class="feature card">
-                                <div class="feature-icon">👨‍🏫</div>
-                                <h3>สอนโดยผู้เชี่ยวชาญ</h3>
-                                <p>16+ ปีประสบการณ์ด้าน Design Systems & UX</p>
-                            </div>
-                            <div class="feature card">
-                                <div class="feature-icon">💬</div>
-                                <h3>Community</h3>
-                                <p>พูดคุยแลกเปลี่ยนกับผู้เรียนคนอื่นๆ</p>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
-                <section class="courses" id="courses">
-                    <div class="container">
-                        <div class="section-header">
-                            <h2>หลักสูตร 3 ระดับ</h2>
-                            <p>เลือกเรียนตามระดับ หรือซื้อ Bundle ครบทุก level</p>
-                        </div>
-                        <div class="course-grid">
-                            ${Object.values(COURSES).map(c => `
-                                <div class="card course-card">
-                                    <div class="course-icon">${c.icon}</div>
-                                    <h3 class="course-title" style="color: ${c.color}">${c.name}</h3>
-                                    <p class="course-desc">${c.description}</p>
-                                    <ul class="course-lessons">
-                                        ${c.lessons.map(l => `<li><span style="color: ${c.color}">✓</span> ${l.title}</li>`).join('')}
-                                    </ul>
-                                    <div class="course-price">฿${c.price.toLocaleString()}</div>
-                                </div>
-                            `).join('')}
-                        </div>
-                        <div style="text-align: center; margin-top: 3rem;">
-                            <div class="card course-card featured" style="display: inline-block; max-width: 400px;">
-                                <div class="course-badge">⭐ Best Value</div>
-                                <div class="course-icon" style="margin-top: 1rem;">🎁</div>
-                                <h3 class="course-title gradient-text">Full Bundle</h3>
-                                <p class="course-desc">ครบทั้ง 3 ระดับ พร้อม Bonus content</p>
-                                <div class="course-price">฿7,900 <span class="original">฿11,700</span></div>
-                                <p style="color: var(--success); font-size: 0.875rem; margin-top: 0.5rem;">ประหยัด ฿3,800</p>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
-                <section class="pricing" id="pricing">
-                    <div class="container" style="text-align: center;">
-                        <h2 style="margin-bottom: 1rem;">พร้อมเริ่มเรียนหรือยัง?</h2>
-                        <p class="text-muted" style="margin-bottom: 2rem;">เริ่มเรียนได้ทันทีหลังชำระเงิน</p>
-                        <button onclick="go('register')" class="btn btn-primary" style="font-size: 1.125rem; padding: 1rem 2rem;">สมัครเลย →</button>
-                    </div>
-                </section>
-
-                <footer class="footer">
-                    <div class="container">
-                        <p>© 2025 AI for Designers by May (Kacha Hanchana)</p>
-                    </div>
-                </footer>
-            `;
-        }
-
-        function renderLogin() {
-            return `
-                ${renderNav()}
-                <div style="min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 6rem 1rem 2rem;">
-                    <div class="card" style="width: 100%; max-width: 400px;">
-                        <h2 style="margin-bottom: 1.5rem;">เข้าสู่ระบบ</h2>
-                        ${state.message ? `<div class="alert alert-${state.message.type}">${state.message.text}</div>` : ''}
-                        <form id="loginForm">
-                            <div class="form-group">
-                                <label class="label">Email</label>
-                                <input type="email" name="email" class="input" required placeholder="you@email.com">
-                            </div>
-                            <div class="form-group">
-                                <label class="label">Password</label>
-                                <input type="password" name="password" class="input" required placeholder="••••••••">
-                            </div>
-                            <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 0.5rem;">เข้าสู่ระบบ</button>
-                        </form>
-                        <p style="text-align: center; margin-top: 1.5rem; color: var(--text-muted); font-size: 0.875rem;">
-                            ยังไม่มีบัญชี? <a href="#" onclick="go('register')" style="color: var(--primary);">สมัครเรียน</a>
-                        </p>
-                    </div>
-                </div>
-            `;
-        }
-
-        function renderRegister() {
-            return `
-                ${renderNav()}
-                <div style="min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 6rem 1rem 2rem;">
-                    <div class="card" style="width: 100%; max-width: 400px;">
-                        <h2 style="margin-bottom: 1.5rem;">สมัครเรียน</h2>
-                        ${state.message ? `<div class="alert alert-${state.message.type}">${state.message.text}</div>` : ''}
-                        <form id="registerForm">
-                            <div class="form-group">
-                                <label class="label">ชื่อ-นามสกุล</label>
-                                <input type="text" name="fullname" class="input" required placeholder="ชื่อจริง นามสกุล">
-                            </div>
-                            <div class="form-group">
-                                <label class="label">Email</label>
-                                <input type="email" name="email" class="input" required placeholder="you@email.com">
-                            </div>
-                            <div class="form-group">
-                                <label class="label">เบอร์โทร</label>
-                                <input type="tel" name="phone" class="input" required placeholder="08X-XXX-XXXX">
-                            </div>
-                            <div class="form-group">
-                                <label class="label">Password</label>
-                                <input type="password" name="password" class="input" required minlength="6" placeholder="อย่างน้อย 6 ตัว">
-                            </div>
-                            <div class="form-group">
-                                <label class="label">เลือก Package</label>
-                                <select name="package" class="input" required>
-                                    <option value="">— เลือก —</option>
-                                    <option value="beginner">🌱 Beginner — ฿2,900</option>
-                                    <option value="intermediate">🚀 Intermediate — ฿3,900</option>
-                                    <option value="advanced">⚡ Advanced — ฿4,900</option>
-                                    <option value="bundle">🎁 Full Bundle — ฿7,900</option>
-                                </select>
-                            </div>
-                            <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 0.5rem;">ถัดไป — ชำระเงิน</button>
-                        </form>
-                        <p style="text-align: center; margin-top: 1.5rem; color: var(--text-muted); font-size: 0.875rem;">
-                            มีบัญชีแล้ว? <a href="#" onclick="go('login')" style="color: var(--primary);">เข้าสู่ระบบ</a>
-                        </p>
-                    </div>
-                </div>
-            `;
-        }
-
-        function renderPayment() {
-            const prices = { beginner: 2900, intermediate: 3900, advanced: 4900, bundle: 7900 };
-            const pkg = state.pendingReg?.package || 'bundle';
-            const amount = prices[pkg];
-            return `
-                ${renderNav()}
-                <div style="min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 6rem 1rem 2rem;">
-                    <div class="card" style="width: 100%; max-width: 400px; text-align: center;">
-                        <h2 style="margin-bottom: 0.5rem;">ชำระเงิน</h2>
-                        <p class="text-muted" style="margin-bottom: 1.5rem;">Scan QR Code ด้วย Mobile Banking</p>
-                        <p style="margin-bottom: 0.5rem; font-size: 0.875rem;" class="text-muted">Package: ${pkg}</p>
-                        <p class="gradient-text" style="font-size: 2.5rem; font-weight: 700; margin-bottom: 1.5rem;">฿${amount.toLocaleString()}</p>
-                        <div style="background: white; border-radius: 12px; padding: 1rem; width: 200px; height: 200px; margin: 0 auto 1.5rem;">
-                            <img src="https://promptpay.io/${CONFIG.PROMPTPAY_ID}/${amount}" alt="QR" style="width: 100%; height: 100%;">
-                        </div>
-                        <div style="background: var(--bg); border-radius: 8px; padding: 1rem; margin-bottom: 1.5rem; text-align: left;">
-                            <p class="text-subtle" style="font-size: 0.8125rem;">PromptPay</p>
-                            <p style="font-weight: 600;">${CONFIG.PROMPTPAY_ID}</p>
-                            <p class="text-muted" style="font-size: 0.875rem;">${CONFIG.PROMPTPAY_NAME}</p>
-                        </div>
-                        <div class="form-group" style="text-align: left;">
-                            <label class="label">แนบสลิปโอนเงิน</label>
-                            <input type="file" id="slipFile" accept="image/*" class="input">
-                        </div>
-                        <button onclick="submitPayment()" class="btn btn-primary" style="width: 100%; background: linear-gradient(135deg, #22c55e, #16a34a);">✓ ยืนยันการชำระเงิน</button>
-                        <p class="text-subtle" style="font-size: 0.75rem; margin-top: 1rem;">หลังยืนยัน รอ Admin อนุมัติ แล้วเข้าเรียนได้ทันที</p>
-                    </div>
-                </div>
-            `;
-        }
-
-        function renderDashboard() {
-            if (!state.user) { go('login'); return ''; }
-            const courses = getUserCourses();
-            const progress = db.progress(state.user.id);
-            return `
-                ${renderNav(true)}
-                <div class="dashboard">
-                    <div class="container">
-                        <div class="dashboard-header">
-                            <h1>สวัสดี, ${state.user.fullname?.split(' ')[0] || 'Student'}! 👋</h1>
-                            <p class="text-muted">เลือกบทเรียนที่ต้องการเรียน</p>
-                        </div>
-                        ${courses.length === 0 ? `
-                            <div class="card" style="text-align: center; padding: 3rem;">
-                                <div style="font-size: 4rem; margin-bottom: 1rem;">⏳</div>
-                                <h3>รอการอนุมัติ</h3>
-                                <p class="text-muted">Admin กำลังตรวจสอบการชำระเงิน</p>
-                            </div>
-                        ` : courses.map(cid => {
-                            const c = COURSES[cid];
-                            if (!c) return '';
-                            const done = c.lessons.filter(l => progress[l.id]).length;
-                            const pct = Math.round((done / c.lessons.length) * 100);
-                            return `
-                                <div class="card" style="margin-bottom: 2rem;">
-                                    <div style="display: flex; justify-content: space-between; align-items: center;">
-                                        <h3 style="color: ${c.color}">${c.icon} ${c.name}</h3>
-                                        <span class="text-muted" style="font-size: 0.875rem;">${done}/${c.lessons.length} บทเรียน</span>
-                                    </div>
-                                    <div class="progress-bar"><div class="progress-fill" style="width: ${pct}%"></div></div>
-                                    <div class="lesson-grid" style="margin-top: 1.5rem;">
-                                        ${c.lessons.map((l, i) => `
-                                            <div class="lesson-card" onclick="openLesson('${cid}', '${l.id}')">
-                                                <div class="lesson-num ${progress[l.id] ? 'done' : ''}">${progress[l.id] ? '✓' : i + 1}</div>
-                                                <div class="lesson-info">
-                                                    <h4>${l.title}</h4>
-                                                    <p>${l.duration}</p>
-                                                </div>
-                                            </div>
-                                        `).join('')}
-                                    </div>
-                                </div>
-                            `;
-                        }).join('')}
-                    </div>
-                </div>
-            `;
-        }
-
-        function renderLesson() {
-            if (!state.user || !state.currentLesson) { go('dashboard'); return ''; }
-            const { cid, lid } = state.currentLesson;
-            const c = COURSES[cid], l = c.lessons.find(x => x.id === lid);
-            const idx = c.lessons.findIndex(x => x.id === lid);
-            const prev = c.lessons[idx - 1], next = c.lessons[idx + 1];
-            const progress = db.progress(state.user.id);
-            return `
-                ${renderNav(true)}
-                <div class="dashboard">
-                    <div class="container" style="max-width: 900px;">
-                        <button onclick="go('dashboard')" class="btn btn-ghost" style="margin-bottom: 1rem;">← กลับ Dashboard</button>
-                        <h2 style="margin-bottom: 1.5rem;">${l.title}</h2>
-                        <div class="video-wrapper">
-                            <div class="video-placeholder">
-                                <span>🎬</span>
-                                <p>วิดีโอกำลังจะมาเร็วๆ นี้</p>
-                            </div>
-                        </div>
-                        <div class="card" style="display: flex; flex-wrap: wrap; gap: 1rem; justify-content: space-between; align-items: center;">
-                            <button onclick="markDone('${lid}')" class="btn ${progress[lid] ? 'btn-primary' : 'btn-secondary'}">
-                                ${progress[lid] ? '✓ เรียนจบแล้ว' : '☐ Mark as Complete'}
-                            </button>
-                            <div style="display: flex; gap: 0.5rem;">
-                                ${prev ? `<button onclick="openLesson('${cid}', '${prev.id}')" class="btn btn-secondary">← ก่อนหน้า</button>` : ''}
-                                ${next ? `<button onclick="openLesson('${cid}', '${next.id}')" class="btn btn-primary">ถัดไป →</button>` : ''}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
-        }
-
-        function renderAdmin() {
-            if (!isAdmin()) { go('dashboard'); return ''; }
-            const regs = db.regs();
-            return `
-                ${renderNav(true)}
-                <div class="dashboard">
-                    <div class="container">
-                        <h1 style="margin-bottom: 2rem;">Admin Panel</h1>
-                        <div class="card" style="overflow-x: auto;">
-                            <table class="admin-table">
-                                <thead><tr><th>ชื่อ</th><th>Email</th><th>Package</th><th>Status</th><th>Actions</th></tr></thead>
-                                <tbody>
-                                    ${regs.length === 0 ? `<tr><td colspan="5" style="text-align: center; padding: 2rem;" class="text-muted">ยังไม่มีการลงทะเบียน</td></tr>` : regs.map(r => `
-                                        <tr>
-                                            <td>${r.fullname}</td>
-                                            <td>${r.email}</td>
-                                            <td>${r.package}</td>
-                                            <td><span class="status status-${r.status || 'pending'}">${r.status || 'pending'}</span></td>
-                                            <td>
-                                                ${r.status !== 'approved' ? `<button onclick="approve('${r.id}')" class="btn btn-ghost" style="padding: 0.25rem 0.75rem; font-size: 0.8125rem; color: var(--success);">✓ Approve</button>` : ''}
-                                                ${r.status !== 'rejected' ? `<button onclick="reject('${r.id}')" class="btn btn-ghost" style="padding: 0.25rem 0.75rem; font-size: 0.8125rem; color: var(--error);">✗ Reject</button>` : ''}
-                                            </td>
-                                        </tr>
-                                    `).join('')}
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            `;
-        }
-
-        // ========== EVENTS ==========
-        function attachEvents() {
-            document.getElementById('loginForm')?.addEventListener('submit', handleLogin);
-            document.getElementById('registerForm')?.addEventListener('submit', handleRegister);
-        }
-
-        function handleLogin(e) {
+        function subscribeNewsletter(e) {
             e.preventDefault();
-            const f = new FormData(e.target);
-            const users = db.users();
-            const user = users.find(u => u.email === f.get('email') && u.password === f.get('password'));
-            if (user) { state.user = user; db.setUser(user); state.message = null; go('dashboard'); }
-            else { state.message = { type: 'error', text: 'Email หรือ Password ไม่ถูกต้อง' }; render(); }
-        }
-
-        function handleRegister(e) {
-            e.preventDefault();
-            const f = new FormData(e.target);
-            if (db.users().find(u => u.email === f.get('email'))) {
-                state.message = { type: 'error', text: 'Email นี้ถูกใช้แล้ว' }; render(); return;
+            const email = e.target.querySelector('input').value;
+            
+            // Store in localStorage for now (replace with actual API later)
+            const subscribers = JSON.parse(localStorage.getItem('newsletterSubscribers') || '[]');
+            if (!subscribers.includes(email)) {
+                subscribers.push(email);
+                localStorage.setItem('newsletterSubscribers', JSON.stringify(subscribers));
             }
-            state.pendingReg = {
-                id: Date.now().toString(),
-                fullname: f.get('fullname'),
-                email: f.get('email'),
-                phone: f.get('phone'),
-                password: f.get('password'),
-                package: f.get('package'),
-                courses: []
-            };
-            state.message = null;
-            go('payment');
+            
+            // Show success message
+            e.target.innerHTML = `
+                <div style="text-align: center; padding: 20px;">
+                    <div style="font-size: 2rem; margin-bottom: 8px;">✅</div>
+                    <div style="font-weight: 600;">สมัครสำเร็จ!</div>
+                    <div style="opacity: 0.8; font-size: 0.9rem;">รอรับ AI Tips ใน inbox เร็วๆ นี้</div>
+                </div>
+            `;
         }
-
-        function submitPayment() {
-            const slip = document.getElementById('slipFile')?.files[0];
-            if (!slip) { alert('กรุณาแนบสลิป'); return; }
-            const users = db.users(); users.push(state.pendingReg); db.saveUsers(users);
-            const regs = db.regs(); regs.push({ ...state.pendingReg, status: 'pending', slip: slip.name }); db.saveRegs(regs);
-            state.user = state.pendingReg; db.setUser(state.user);
-            alert('ลงทะเบียนสำเร็จ! รอ Admin อนุมัติ'); go('dashboard');
-        }
-
-        function approve(id) {
-            const regs = db.regs(), r = regs.find(x => x.id === id);
-            if (r) {
-                r.status = 'approved';
-                const users = db.users(), u = users.find(x => x.id === id);
-                if (u) { u.courses = r.package === 'bundle' ? ['beginner', 'intermediate', 'advanced'] : [r.package]; db.saveUsers(users); }
-                db.saveRegs(regs);
-            }
-            render();
-        }
-
-        function reject(id) {
-            const regs = db.regs(), r = regs.find(x => x.id === id);
-            if (r) { r.status = 'rejected'; db.saveRegs(regs); }
-            render();
-        }
-
-        function openLesson(cid, lid) { state.currentLesson = { cid, lid }; go('lesson'); }
-        function markDone(lid) {
-            const p = db.progress(state.user.id);
-            p[lid] = !p[lid];
-            db.saveProgress(state.user.id, p);
-            render();
-        }
-        function go(page) { state.page = page; state.message = null; render(); window.scrollTo(0, 0); }
-        function logout() { state.user = null; db.setUser(null); go('home'); }
-
-        // ========== INIT ==========
-        (function init() {
-            const u = db.currentUser();
-            if (u) { state.user = u; state.page = 'dashboard'; }
-            render();
-        })();
     </script>
 </body>
 </html>

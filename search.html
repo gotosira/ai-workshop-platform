@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ค้นหาบทเรียน — AI for Designers</title>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #FAF9F6;
+            --card: #FFFFFF;
+            --accent: #D97757;
+            --accent-light: #FEF3EE;
+            --text: #2D2A26;
+            --text-muted: #8B8680;
+            --border: #E8E3DB;
+            --shadow: 0 4px 20px rgba(0,0,0,0.06);
+        }
+
+        [data-theme="dark"] {
+            --bg: #1A1A1A;
+            --card: #2D2D2D;
+            --accent: #E8896A;
+            --accent-light: #3D2D28;
+            --text: #F5F5F5;
+            --text-muted: #A0A0A0;
+            --border: #404040;
+            --shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+
+        [data-theme="dark"] .navbar { background: rgba(26,26,26,0.95); }
+        [data-theme="dark"] .search-input { background: var(--bg); }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'IBM Plex Sans Thai', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        /* Nav Bar */
+        .navbar { background: rgba(251, 249, 247, 0.95); backdrop-filter: blur(20px); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100; }
+        .navbar-inner { max-width: 1200px; margin: 0 auto; padding: 14px 24px; display: flex; align-items: center; justify-content: space-between; }
+        .navbar-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--text); font-weight: 600; }
+        .navbar-logo-icon { width: 34px; height: 34px; background: var(--accent); border-radius: 9px; display: flex; align-items: center; justify-content: center; font-size: 1rem; }
+        .navbar-center { display: flex; gap: 32px; }
+        .nav-link { text-decoration: none; color: var(--text-muted); font-weight: 500; font-size: 0.9rem; transition: color 0.15s; }
+        .nav-link:hover, .nav-link.active { color: var(--accent); }
+        .theme-toggle { background: var(--card); border: 1px solid var(--border); width: 36px; height: 36px; border-radius: 50%; cursor: pointer; font-size: 1rem; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
+        .theme-toggle:hover { border-color: var(--accent); transform: scale(1.1); }
+
+        /* Main */
+        .main {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 24px;
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .page-header h1 {
+            font-size: 2rem;
+            margin-bottom: 8px;
+        }
+
+        .page-header p {
+            color: var(--text-muted);
+        }
+
+        /* Search Box */
+        .search-box {
+            position: relative;
+            margin-bottom: 32px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 18px 24px 18px 56px;
+            border: 2px solid var(--border);
+            border-radius: 16px;
+            font-size: 1.1rem;
+            font-family: inherit;
+            background: var(--card);
+            transition: all 0.2s;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 4px var(--accent-light);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.3rem;
+            color: var(--text-muted);
+        }
+
+        .search-clear {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: var(--border);
+            border: none;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1rem;
+            display: none;
+        }
+
+        .search-clear.show { display: block; }
+
+        /* Filters */
+        .filters {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 24px;
+        }
+
+        .filter-btn {
+            padding: 8px 16px;
+            border: 2px solid var(--border);
+            border-radius: 20px;
+            background: var(--card);
+            font-family: inherit;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .filter-btn:hover {
+            border-color: var(--accent);
+        }
+
+        .filter-btn.active {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: white;
+        }
+
+        /* Results */
+        .results-info {
+            color: var(--text-muted);
+            margin-bottom: 16px;
+            font-size: 0.9rem;
+        }
+
+        .results-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .result-card {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 20px;
+            background: var(--card);
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            text-decoration: none;
+            color: var(--text);
+            transition: all 0.2s;
+        }
+
+        .result-card:hover {
+            border-color: var(--accent);
+            transform: translateX(4px);
+            box-shadow: var(--shadow);
+        }
+
+        .result-num {
+            width: 44px;
+            height: 44px;
+            background: var(--accent-light);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: var(--accent);
+            flex-shrink: 0;
+        }
+
+        .result-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .result-title {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .result-title mark {
+            background: var(--accent-light);
+            color: var(--accent);
+            padding: 0 4px;
+            border-radius: 4px;
+        }
+
+        .result-meta {
+            display: flex;
+            gap: 12px;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .result-arrow {
+            color: var(--accent);
+            font-size: 1.2rem;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-muted);
+        }
+
+        .empty-state-icon {
+            font-size: 4rem;
+            margin-bottom: 16px;
+        }
+
+        .empty-state h3 {
+            color: var(--text);
+            margin-bottom: 8px;
+        }
+
+        /* Popular Searches */
+        .popular-section {
+            margin-top: 40px;
+            padding-top: 32px;
+            border-top: 1px solid var(--border);
+        }
+
+        .popular-section h3 {
+            font-size: 1rem;
+            color: var(--text-muted);
+            margin-bottom: 16px;
+        }
+
+        .popular-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .popular-tag {
+            padding: 8px 16px;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .popular-tag:hover {
+            background: var(--accent-light);
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .navbar-center { display: none; }
+        }
+
+        @media (max-width: 480px) {
+            .navbar-inner { padding: 12px 16px; }
+            .navbar-logo span { display: none; }
+
+            .main { padding: 24px 16px; }
+            .page-header h1 { font-size: 1.5rem; }
+
+            .search-input { padding: 14px 20px 14px 48px; font-size: 1rem; }
+            .search-icon { left: 16px; font-size: 1.1rem; }
+
+            .result-card { padding: 14px; gap: 12px; }
+            .result-num { width: 36px; height: 36px; font-size: 0.9rem; }
+            .result-title { font-size: 0.95rem; }
+            .result-meta { font-size: 0.8rem; gap: 8px; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-inner">
+            <a href="dashboard.html" class="navbar-logo">
+                <div class="navbar-logo-icon">🎨</div>
+                <span>AI for Designers</span>
+            </a>
+            <div class="navbar-center">
+                <a href="dashboard.html" class="nav-link">หน้าแรก</a>
+                <a href="lesson.html?lesson=1.1" class="nav-link">บทเรียน</a>
+                <a href="downloads.html" class="nav-link">ดาวน์โหลด</a>
+                <a href="quiz.html" class="nav-link">Quiz</a>
+            </div>
+            <button class="theme-toggle" onclick="toggleTheme()">🌙</button>
+        </div>
+    </nav>
+
+    <main class="main">
+        <div class="page-header">
+            <h1>🔍 ค้นหาบทเรียน</h1>
+            <p>พิมพ์คำค้นหาเพื่อหาบทเรียนที่ต้องการ</p>
+        </div>
+
+        <div class="search-box">
+            <span class="search-icon">🔍</span>
+            <input type="text" class="search-input" id="searchInput" placeholder="ค้นหา เช่น prompting, UX writing, workflow..." autofocus>
+            <button class="search-clear" id="clearBtn" onclick="clearSearch()">✕</button>
+        </div>
+
+        <div class="filters">
+            <button class="filter-btn active" data-filter="all">ทั้งหมด</button>
+            <button class="filter-btn" data-filter="1">🌱 Module 1</button>
+            <button class="filter-btn" data-filter="2">🚀 Module 2</button>
+            <button class="filter-btn" data-filter="3">⚡ Module 3</button>
+        </div>
+
+        <div id="resultsContainer">
+            <div class="results-info" id="resultsInfo">พิมพ์เพื่อค้นหา...</div>
+            <div class="results-list" id="resultsList"></div>
+        </div>
+
+        <div class="popular-section" id="popularSection">
+            <h3>🔥 คำค้นหายอดนิยม</h3>
+            <div class="popular-tags">
+                <span class="popular-tag" onclick="searchFor('prompting')">Prompting</span>
+                <span class="popular-tag" onclick="searchFor('UX writing')">UX Writing</span>
+                <span class="popular-tag" onclick="searchFor('workflow')">Workflow</span>
+                <span class="popular-tag" onclick="searchFor('research')">Research</span>
+                <span class="popular-tag" onclick="searchFor('visual')">Visual</span>
+                <span class="popular-tag" onclick="searchFor('ethics')">Ethics</span>
+                <span class="popular-tag" onclick="searchFor('project')">Project</span>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Lesson data
+        const lessons = [
+            { id: '1.1', title: 'หลักการ Prompting ที่ได้ผล', level: '🌱 Beginner', duration: '25 นาที', module: 1, keywords: ['prompting', 'prompt', 'พื้นฐาน', 'เริ่มต้น'] },
+            { id: '1.2', title: 'Structure & Format ที่เหมาะสม', level: '🌱 Beginner', duration: '35 นาที', module: 1, keywords: ['structure', 'format', 'โครงสร้าง'] },
+            { id: '1.3', title: 'Context & Examples ที่มีประสิทธิภาพ', level: '🌱 Beginner', duration: '30 นาที', module: 1, keywords: ['context', 'examples', 'บริบท', 'ตัวอย่าง'] },
+            { id: '1.4', title: 'Iterative Refinement Techniques', level: '🌱 Beginner', duration: '40 นาที', module: 1, keywords: ['iterative', 'refinement', 'ปรับปรุง'] },
+            { id: '1.5', title: 'หลักการสร้างภาพด้วย AI', level: '🌱 Beginner', duration: '45 นาที', module: 1, keywords: ['visual', 'image', 'ภาพ', 'midjourney', 'dall-e'] },
+            { id: '1.6', title: 'Style Reference & Control', level: '🌱 Beginner', duration: '30 นาที', module: 1, keywords: ['style', 'reference', 'สไตล์'] },
+            { id: '1.7', title: 'AI Ethics & ข้อจำกัดที่ต้องรู้', level: '🌱 Beginner', duration: '25 นาที', module: 1, keywords: ['ethics', 'จริยธรรม', 'ข้อจำกัด'] },
+            { id: '1.8', title: 'Hands-on Project', level: '🌱 Beginner', duration: '60 นาที', module: 1, keywords: ['project', 'hands-on', 'โปรเจค'] },
+            
+            { id: '2.1', title: 'AI ช่วย User Research อย่างไร', level: '🚀 Intermediate', duration: '40 นาที', module: 2, keywords: ['research', 'user', 'วิจัย'] },
+            { id: '2.2', title: 'การวิเคราะห์ข้อมูลด้วย AI', level: '🚀 Intermediate', duration: '35 นาที', module: 2, keywords: ['data', 'analysis', 'วิเคราะห์', 'ข้อมูล'] },
+            { id: '2.3', title: 'Competitive Analysis Workflows', level: '🚀 Intermediate', duration: '30 นาที', module: 2, keywords: ['competitive', 'analysis', 'คู่แข่ง'] },
+            { id: '2.4', title: 'AI สำหรับ UX Writing', level: '🚀 Intermediate', duration: '40 นาที', module: 2, keywords: ['ux', 'writing', 'microcopy', 'เขียน'] },
+            { id: '2.5', title: 'Brand Voice & Tone with AI', level: '🚀 Intermediate', duration: '35 นาที', module: 2, keywords: ['brand', 'voice', 'tone', 'แบรนด์'] },
+            { id: '2.6', title: 'Design Critique with AI', level: '🚀 Intermediate', duration: '30 นาที', module: 2, keywords: ['critique', 'feedback', 'วิจารณ์'] },
+            { id: '2.7', title: 'Integration กับ Design Tools', level: '🚀 Intermediate', duration: '40 นาที', module: 2, keywords: ['figma', 'tools', 'integration', 'เครื่องมือ'] },
+            { id: '2.8', title: 'Project: สร้าง AI Workflow', level: '🚀 Intermediate', duration: '90 นาที', module: 2, keywords: ['project', 'workflow', 'โปรเจค'] },
+            
+            { id: '3.1', title: 'ออกแบบ AI-Enhanced Workflow', level: '⚡ Advanced', duration: '50 นาที', module: 3, keywords: ['workflow', 'design', 'ออกแบบ'] },
+            { id: '3.2', title: 'เมื่อไหร่ไม่ควรใช้ AI', level: '⚡ Advanced', duration: '45 นาที', module: 3, keywords: ['when not', 'ไม่ควรใช้', 'limitation'] },
+            { id: '3.3', title: 'Critical Thinking กับ AI Output', level: '⚡ Advanced', duration: '40 นาที', module: 3, keywords: ['critical', 'thinking', 'วิเคราะห์'] },
+            { id: '3.4', title: 'วิธีเรียนรู้ AI Tools ใหม่', level: '⚡ Advanced', duration: '35 นาที', module: 3, keywords: ['learn', 'tools', 'เรียนรู้'] },
+            { id: '3.5', title: 'สร้าง Personal AI Stack', level: '⚡ Advanced', duration: '45 นาที', module: 3, keywords: ['stack', 'personal', 'ส่วนตัว'] },
+            { id: '3.6', title: 'Lead AI ในทีม', level: '⚡ Advanced', duration: '40 นาที', module: 3, keywords: ['lead', 'team', 'ทีม'] },
+            { id: '3.7', title: 'AI Ethics Deep Dive', level: '⚡ Advanced', duration: '30 นาที', module: 3, keywords: ['ethics', 'deep', 'จริยธรรม'] },
+            { id: '3.8', title: 'Final Project', level: '⚡ Advanced', duration: '120 นาที', module: 3, keywords: ['final', 'project', 'โปรเจค', 'สุดท้าย'] },
+        ];
+
+        let currentFilter = 'all';
+        const searchInput = document.getElementById('searchInput');
+        const clearBtn = document.getElementById('clearBtn');
+        const resultsInfo = document.getElementById('resultsInfo');
+        const resultsList = document.getElementById('resultsList');
+        const popularSection = document.getElementById('popularSection');
+
+        // Search function
+        function search(query) {
+            query = query.toLowerCase().trim();
+            
+            clearBtn.classList.toggle('show', query.length > 0);
+            popularSection.style.display = query.length > 0 ? 'none' : 'block';
+
+            if (query.length === 0) {
+                resultsInfo.textContent = 'พิมพ์เพื่อค้นหา...';
+                resultsList.innerHTML = '';
+                return;
+            }
+
+            let filtered = lessons.filter(lesson => {
+                // Filter by module
+                if (currentFilter !== 'all' && lesson.module !== parseInt(currentFilter)) {
+                    return false;
+                }
+
+                // Search in title and keywords
+                const searchText = (lesson.title + ' ' + lesson.keywords.join(' ')).toLowerCase();
+                return searchText.includes(query);
+            });
+
+            // Display results
+            if (filtered.length === 0) {
+                resultsInfo.textContent = `ไม่พบผลลัพธ์สำหรับ "${query}"`;
+                resultsList.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">🔍</div>
+                        <h3>ไม่พบบทเรียนที่ค้นหา</h3>
+                        <p>ลองใช้คำค้นหาอื่น หรือดูคำค้นหายอดนิยมด้านล่าง</p>
+                    </div>
+                `;
+                popularSection.style.display = 'block';
+            } else {
+                resultsInfo.textContent = `พบ ${filtered.length} บทเรียน`;
+                resultsList.innerHTML = filtered.map(lesson => {
+                    // Highlight matching text
+                    const highlightedTitle = lesson.title.replace(
+                        new RegExp(`(${query})`, 'gi'),
+                        '<mark>$1</mark>'
+                    );
+                    
+                    return `
+                        <a href="lesson.html?lesson=${lesson.id}" class="result-card">
+                            <div class="result-num">${lesson.id}</div>
+                            <div class="result-info">
+                                <div class="result-title">${highlightedTitle}</div>
+                                <div class="result-meta">
+                                    <span>${lesson.level}</span>
+                                    <span>⏱️ ${lesson.duration}</span>
+                                </div>
+                            </div>
+                            <span class="result-arrow">→</span>
+                        </a>
+                    `;
+                }).join('');
+            }
+        }
+
+        // Clear search
+        function clearSearch() {
+            searchInput.value = '';
+            search('');
+            searchInput.focus();
+        }
+
+        // Search from popular tag
+        function searchFor(term) {
+            searchInput.value = term;
+            search(term);
+        }
+
+        // Filter buttons
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentFilter = btn.dataset.filter;
+                search(searchInput.value);
+            });
+        });
+
+        // Real-time search
+        searchInput.addEventListener('input', (e) => {
+            search(e.target.value);
+        });
+
+        // Theme
+        function toggleTheme() {
+            const t = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', t);
+            localStorage.setItem('theme', t);
+            document.querySelector('.theme-toggle').textContent = t === 'dark' ? '☀️' : '🌙';
+        }
+        (function() {
+            const t = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', t);
+            const btn = document.querySelector('.theme-toggle');
+            if (btn) btn.textContent = t === 'dark' ? '☀️' : '🌙';
+        })();
+
+        // Initial state
+        search('');
+    </script>
+</body>
+</html>

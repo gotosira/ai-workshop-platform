@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile — AI for Designers</title>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <style>
+        :root {
+            --bg: #FAF9F6;
+            --bg-warm: #FEF7F1;
+            --card: #FFFFFF;
+            --accent: #D97757;
+            --accent-light: #FEF3EE;
+            --accent-hover: #C4684A;
+            --text: #2D2A26;
+            --text-muted: #8B8680;
+            --border: #E8E3DB;
+            --shadow: 0 4px 20px rgba(0,0,0,0.06);
+            --success: #22C55E;
+            --error: #EF4444;
+        }
+
+        [data-theme="dark"] {
+            --bg: #1A1A1A;
+            --bg-warm: #242424;
+            --card: #2D2D2D;
+            --accent: #E8896A;
+            --accent-light: #3D2D28;
+            --text: #F5F5F5;
+            --text-muted: #A0A0A0;
+            --border: #404040;
+            --shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+
+        [data-theme="dark"] .navbar { background: rgba(26, 26, 26, 0.95); }
+        [data-theme="dark"] .form-group input { background: var(--bg); }
+        [data-theme="dark"] .form-group textarea { background: var(--bg); }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'IBM Plex Sans Thai', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        /* Unified Nav Bar - Centered */
+        .navbar {
+            background: rgba(251, 249, 247, 0.95);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .navbar-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 14px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .navbar-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: var(--text);
+            font-weight: 600;
+        }
+
+        .navbar-logo-icon {
+            width: 34px;
+            height: 34px;
+            background: var(--accent);
+            border-radius: 9px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+        }
+
+        .navbar-center {
+            display: flex;
+            gap: 32px;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: var(--text-muted);
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: color 0.15s;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            color: var(--accent);
+        }
+
+        .theme-toggle {
+            background: var(--card);
+            border: 1px solid var(--border);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .theme-toggle:hover {
+            border-color: var(--accent);
+            transform: scale(1.1);
+        }
+
+        /* Main Container */
+        .main {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 24px;
+        }
+
+        .page-header {
+            margin-bottom: 32px;
+        }
+
+        .page-header h1 {
+            font-size: 1.8rem;
+            margin-bottom: 8px;
+        }
+
+        .page-header p {
+            color: var(--text-muted);
+        }
+
+        /* Profile Card */
+        .profile-card {
+            background: var(--card);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            margin-bottom: 24px;
+        }
+
+        /* Avatar Section */
+        .avatar-section {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            margin-bottom: 32px;
+            padding-bottom: 32px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .avatar-wrapper {
+            position: relative;
+            cursor: pointer;
+        }
+
+        .avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: var(--accent-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            font-weight: 600;
+            color: var(--accent);
+            overflow: hidden;
+            border: 3px solid var(--border);
+            transition: all 0.2s;
+        }
+
+        .avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .avatar-wrapper:hover .avatar {
+            border-color: var(--accent);
+        }
+
+        .avatar-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .avatar-wrapper:hover .avatar-overlay {
+            opacity: 1;
+        }
+
+        .avatar-input {
+            display: none;
+        }
+
+        .avatar-info h2 {
+            font-size: 1.4rem;
+            margin-bottom: 4px;
+        }
+
+        .avatar-info p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .avatar-info .email {
+            color: var(--accent);
+        }
+
+        /* Form */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-group.full-width {
+            grid-column: span 2;
+        }
+
+        .form-group label {
+            font-weight: 500;
+            font-size: 0.9rem;
+            color: var(--text);
+        }
+
+        .form-group input,
+        .form-group textarea {
+            padding: 14px 16px;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            font-size: 1rem;
+            font-family: inherit;
+            transition: border-color 0.2s;
+            background: white;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .form-group input:disabled {
+            background: var(--bg);
+            cursor: not-allowed;
+        }
+
+        /* Buttons */
+        .form-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 24px;
+            padding-top: 24px;
+            border-top: 1px solid var(--border);
+        }
+
+        .btn {
+            padding: 14px 28px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            border: none;
+            font-family: inherit;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-hover);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--text);
+            border: 2px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        /* Stats Card */
+        .stats-card {
+            background: var(--card);
+            border-radius: 20px;
+            padding: 32px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+        }
+
+        .stats-card h3 {
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 16px;
+            background: var(--bg);
+            border-radius: 12px;
+        }
+
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            padding: 16px 24px;
+            border-radius: 12px;
+            color: white;
+            font-weight: 500;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.3s;
+            z-index: 1000;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .toast.success {
+            background: var(--success);
+        }
+
+        .toast.error {
+            background: var(--error);
+        }
+
+        /* Responsive - Tablet */
+        @media (max-width: 768px) {
+            .form-grid { grid-template-columns: 1fr; }
+            .form-group.full-width { grid-column: span 1; }
+            .avatar-section { flex-direction: column; text-align: center; }
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+            .navbar-center { display: none; }
+        }
+
+        /* Small Mobile (320px+) */
+        @media (max-width: 480px) {
+            .navbar-inner { padding: 12px 16px; }
+            .navbar-logo span { display: none; }
+            
+            .main { padding: 24px 16px; }
+            .page-header h1 { font-size: 1.4rem; }
+            
+            .profile-card { padding: 24px 16px; border-radius: 16px; }
+            
+            .avatar { width: 80px; height: 80px; font-size: 2rem; }
+            .avatar-info h2 { font-size: 1.2rem; }
+            .avatar-info p { font-size: 0.85rem; }
+            .avatar-section { padding-bottom: 20px; margin-bottom: 20px; }
+            
+            .form-group label { font-size: 0.85rem; }
+            .form-group input, .form-group textarea { padding: 12px 14px; font-size: 0.95rem; }
+            
+            .form-actions { flex-direction: column; }
+            .btn { width: 100%; }
+            
+            .stats-card { padding: 20px 16px; }
+            .stats-card h3 { font-size: 1rem; }
+            .stat-item { padding: 12px; }
+            .stat-value { font-size: 1.5rem; }
+            .stat-label { font-size: 0.75rem; }
+            
+            .toast { left: 16px; right: 16px; bottom: 16px; text-align: center; }
+        }
+
+        /* Extra small (320px) */
+        @media (max-width: 360px) {
+            .main { padding: 20px 12px; }
+            .profile-card { padding: 20px 14px; }
+            .avatar { width: 70px; height: 70px; font-size: 1.8rem; }
+            .stats-grid { gap: 8px; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-inner">
+            <a href="dashboard.html" class="navbar-logo">
+                <div class="navbar-logo-icon">🎨</div>
+                <span>AI for Designers</span>
+            </a>
+            <div class="navbar-center">
+                <a href="dashboard.html" class="nav-link">หน้าแรก</a>
+                <a href="lesson.html?lesson=1.1" class="nav-link">บทเรียน</a>
+                <a href="downloads.html" class="nav-link">ดาวน์โหลด</a>
+                <a href="quiz.html" class="nav-link">Quiz</a>
+            </div>
+            <button class="theme-toggle" onclick="toggleTheme()" title="เปลี่ยนธีม">🌙</button>
+        </div>
+    </nav>
+
+    <main class="main">
+        <div class="page-header">
+            <h1>👤 โปรไฟล์ของฉัน</h1>
+            <p>จัดการข้อมูลส่วนตัวและการตั้งค่า</p>
+        </div>
+
+        <div class="profile-card">
+            <div class="avatar-section">
+                <div class="avatar-wrapper" onclick="document.getElementById('avatarInput').click()">
+                    <div class="avatar" id="avatarDisplay">
+                        <span id="avatarInitial">D</span>
+                    </div>
+                    <div class="avatar-overlay">📷</div>
+                    <input type="file" id="avatarInput" class="avatar-input" accept="image/*">
+                </div>
+                <div class="avatar-info">
+                    <h2 id="displayName">Demo User</h2>
+                    <p class="email" id="displayEmail">demo@aidesigner.com</p>
+                    <p>คลิกที่รูปเพื่อเปลี่ยนภาพโปรไฟล์</p>
+                </div>
+            </div>
+
+            <form id="profileForm">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>ชื่อ-นามสกุล</label>
+                        <input type="text" id="fullName" placeholder="ชื่อของคุณ" value="Demo User">
+                    </div>
+                    <div class="form-group">
+                        <label>อีเมล</label>
+                        <input type="email" id="email" value="demo@aidesigner.com" disabled>
+                    </div>
+                    <div class="form-group">
+                        <label>บริษัท/องค์กร</label>
+                        <input type="text" id="company" placeholder="บริษัทที่ทำงาน">
+                    </div>
+                    <div class="form-group">
+                        <label>ตำแหน่งงาน</label>
+                        <input type="text" id="jobTitle" placeholder="เช่น UX Designer, Product Manager">
+                    </div>
+                    <div class="form-group full-width">
+                        <label>เกี่ยวกับฉัน</label>
+                        <textarea id="bio" placeholder="บอกเล่าเกี่ยวกับตัวคุณสักนิด..."></textarea>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary" id="saveBtn">💾 บันทึกการเปลี่ยนแปลง</button>
+                    <button type="button" class="btn btn-secondary" onclick="window.location.href='dashboard.html'">ยกเลิก</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="stats-card">
+            <h3>📊 สถิติการเรียน</h3>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-value" id="statCompleted">0</div>
+                    <div class="stat-label">บทเรียนเสร็จ</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="statQuizzes">0</div>
+                    <div class="stat-label">Quiz ทำแล้ว</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="statDownloads">0</div>
+                    <div class="stat-label">ดาวน์โหลด</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="statHours">0</div>
+                    <div class="stat-label">ชั่วโมงเรียน</div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div class="toast" id="toast"></div>
+
+    <script>
+        // Toast notification
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.className = `toast ${type} show`;
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // Load profile from localStorage (will be replaced with Supabase)
+        function loadProfile() {
+            const profile = JSON.parse(localStorage.getItem('userProfile') || '{}');
+            
+            if (profile.fullName) document.getElementById('fullName').value = profile.fullName;
+            if (profile.company) document.getElementById('company').value = profile.company;
+            if (profile.jobTitle) document.getElementById('jobTitle').value = profile.jobTitle;
+            if (profile.bio) document.getElementById('bio').value = profile.bio;
+            
+            // Update display name first
+            updateDisplayName();
+            
+            // Then update avatar (will override initial if image exists)
+            updateAvatarDisplay(profile.avatarUrl);
+            
+            loadStats();
+        }
+
+        // Update avatar display
+        function updateAvatarDisplay(avatarUrl) {
+            const avatarDisplay = document.getElementById('avatarDisplay');
+            const name = document.getElementById('fullName').value || 'Demo User';
+            const initial = name.charAt(0).toUpperCase();
+            
+            if (avatarUrl) {
+                avatarDisplay.innerHTML = `<img src="${avatarUrl}" alt="Avatar" style="width:100%;height:100%;object-fit:cover;">`;
+            } else {
+                avatarDisplay.innerHTML = `<span id="avatarInitial">${initial}</span>`;
+            }
+        }
+
+        // Update display name
+        function updateDisplayName() {
+            const name = document.getElementById('fullName').value || 'Demo User';
+            document.getElementById('displayName').textContent = name;
+            
+            // Update initial in avatar if not showing image
+            const avatarInitial = document.getElementById('avatarInitial');
+            if (avatarInitial) {
+                avatarInitial.textContent = name.charAt(0).toUpperCase();
+            }
+        }
+
+        // Load stats
+        function loadStats() {
+            const progress = JSON.parse(localStorage.getItem('lessonProgress') || '{}');
+            const completed = Object.keys(progress).length;
+            
+            document.getElementById('statCompleted').textContent = completed;
+            document.getElementById('statQuizzes').textContent = localStorage.getItem('quizCount') || '0';
+            document.getElementById('statDownloads').textContent = localStorage.getItem('downloadCount') || '0';
+            document.getElementById('statHours').textContent = (completed * 0.5).toFixed(1);
+        }
+
+        // Save profile
+        document.getElementById('profileForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const profile = {
+                fullName: document.getElementById('fullName').value,
+                company: document.getElementById('company').value,
+                jobTitle: document.getElementById('jobTitle').value,
+                bio: document.getElementById('bio').value,
+                avatarUrl: localStorage.getItem('userProfile') ? 
+                    JSON.parse(localStorage.getItem('userProfile')).avatarUrl : null
+            };
+            
+            localStorage.setItem('userProfile', JSON.stringify(profile));
+            updateDisplayName();
+            showToast('✅ บันทึกข้อมูลเรียบร้อย!');
+        });
+
+        // Avatar upload
+        document.getElementById('avatarInput').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            
+            // Validate file
+            if (!file.type.startsWith('image/')) {
+                showToast('❌ กรุณาเลือกไฟล์รูปภาพ', 'error');
+                return;
+            }
+            
+            if (file.size > 5 * 1024 * 1024) {
+                showToast('❌ ไฟล์ต้องมีขนาดไม่เกิน 5MB', 'error');
+                return;
+            }
+            
+            // Preview and save
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const avatarUrl = e.target.result;
+                
+                // Update display
+                updateAvatarDisplay(avatarUrl);
+                
+                // Save to localStorage (temporary - will use Supabase storage)
+                const profile = JSON.parse(localStorage.getItem('userProfile') || '{}');
+                profile.avatarUrl = avatarUrl;
+                localStorage.setItem('userProfile', JSON.stringify(profile));
+                
+                showToast('✅ อัพโหลดรูปโปรไฟล์แล้ว!');
+            };
+            reader.readAsDataURL(file);
+        });
+
+        // Theme toggle
+        function toggleTheme() {
+            const html = document.documentElement;
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            document.querySelector('.theme-toggle').textContent = newTheme === 'dark' ? '☀️' : '🌙';
+        }
+
+        (function loadTheme() {
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            const btn = document.querySelector('.theme-toggle');
+            if (btn) btn.textContent = savedTheme === 'dark' ? '☀️' : '🌙';
+        })();
+
+        // Initialize
+        loadProfile();
+    </script>
+</body>
+</html>

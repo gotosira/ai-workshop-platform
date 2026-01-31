@@ -1,0 +1,1057 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson — AI for Designers</title>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <style>
+        :root {
+            --bg: #FAF9F6;
+            --bg-warm: #FEF7F1;
+            --card: #FFFFFF;
+            --accent: #D97757;
+            --accent-light: #FEF3EE;
+            --accent-hover: #C4684A;
+            --text: #2D2A26;
+            --text-muted: #8B8680;
+            --border: #E8E3DB;
+            --shadow: 0 4px 20px rgba(0,0,0,0.06);
+            --radius: 16px;
+            --header-h: 64px;
+        }
+
+        /* Dark Mode */
+        [data-theme="dark"] {
+            --bg: #1A1A1A;
+            --bg-warm: #242424;
+            --card: #2D2D2D;
+            --accent: #E8896A;
+            --accent-light: #3D2D28;
+            --accent-hover: #F09A7D;
+            --text: #F5F5F5;
+            --text-muted: #A0A0A0;
+            --border: #404040;
+            --shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+
+        [data-theme="dark"] .navbar {
+            background: rgba(26, 26, 26, 0.95);
+        }
+
+        [data-theme="dark"] .video-player {
+            background: linear-gradient(135deg, #0d0d0d 0%, #1a1a1a 100%);
+        }
+
+        [data-theme="dark"] .prompt-box {
+            background: #1a1a1a;
+            border-color: var(--border);
+        }
+
+        [data-theme="dark"] .prompt-box code {
+            background: #333;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'IBM Plex Sans Thai', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+        }
+
+        /* Unified Nav Bar - Centered */
+        .navbar {
+            background: rgba(251, 249, 247, 0.95);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            height: var(--header-h);
+        }
+
+        .navbar-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .navbar-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: var(--text);
+            font-weight: 600;
+        }
+
+        .navbar-logo-icon {
+            width: 34px;
+            height: 34px;
+            background: var(--accent);
+            border-radius: 9px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+        }
+
+        .navbar-center {
+            display: flex;
+            gap: 32px;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: #8B8680;
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: color 0.15s;
+        }
+
+        .nav-link:hover {
+            color: var(--accent);
+        }
+
+        .nav-link.active {
+            color: var(--accent);
+        }
+
+        .menu-toggle {
+            display: none;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 8px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.2rem;
+        }
+
+        .theme-toggle {
+            background: var(--card);
+            border: 1px solid var(--border);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            margin-right: 8px;
+        }
+
+        .theme-toggle:hover {
+            border-color: var(--accent);
+            transform: scale(1.1);
+        }
+
+        /* Layout */
+        .layout {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            margin-top: var(--header-h);
+            min-height: calc(100vh - var(--header-h));
+        }
+
+        /* Sidebar */
+        .sidebar {
+            background: var(--card);
+            border-right: 1px solid var(--border);
+            height: calc(100vh - var(--header-h));
+            position: sticky;
+            top: var(--header-h);
+            overflow-y: auto;
+            padding: 24px 16px;
+        }
+
+        .sidebar-section {
+            margin-bottom: 24px;
+        }
+
+        .sidebar-title {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--text-muted);
+            padding: 8px 12px;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .lesson-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 12px;
+            border-radius: 10px;
+            text-decoration: none;
+            color: var(--text);
+            margin-bottom: 4px;
+            transition: all 0.2s;
+            font-size: 0.9rem;
+        }
+
+        .lesson-link:hover {
+            background: var(--bg);
+        }
+
+        .lesson-link.active {
+            background: var(--accent-light);
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        .lesson-num {
+            width: 28px;
+            height: 28px;
+            background: var(--bg);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        .lesson-link.active .lesson-num {
+            background: var(--accent);
+            color: white;
+        }
+
+        .lesson-link.completed .lesson-num {
+            background: #22C55E;
+            color: white;
+        }
+
+        .lesson-name {
+            flex: 1;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* Main Content */
+        .main {
+            padding: 40px;
+        }
+
+        @media (min-width: 1200px) {
+            .main {
+                padding: 48px 60px;
+            }
+        }
+
+        @media (min-width: 1600px) {
+            .main {
+                padding: 48px 80px;
+            }
+        }
+
+        /* Lesson Header */
+        .lesson-header {
+            margin-bottom: 32px;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .badge-level {
+            background: var(--accent-light);
+            color: var(--accent);
+        }
+
+        .badge-time {
+            background: var(--bg);
+            color: var(--text-muted);
+        }
+
+        .lesson-title {
+            font-size: 2.2rem;
+            font-weight: 700;
+            line-height: 1.3;
+            margin-bottom: 8px;
+        }
+
+        .lesson-desc {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+
+        /* Video Player */
+        .video-container {
+            margin-bottom: 32px;
+        }
+
+        .video-player {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            border-radius: var(--radius);
+            aspect-ratio: 16/9;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .video-player::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at center, rgba(217,119,87,0.2) 0%, transparent 70%);
+        }
+
+        .video-player:hover {
+            transform: scale(1.01);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+        }
+
+        .play-icon {
+            font-size: 4rem;
+            margin-bottom: 12px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .video-text {
+            font-size: 0.9rem;
+            color: rgba(255,255,255,0.7);
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Lesson Content */
+        .lesson-content {
+            background: var(--card);
+            border-radius: var(--radius);
+            padding: 40px 48px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+        }
+
+        @media (min-width: 1200px) {
+            .lesson-content {
+                padding: 48px 56px;
+            }
+        }
+
+        .lesson-content h2 {
+            font-size: 1.5rem;
+            margin: 40px 0 20px;
+            padding-top: 32px;
+            border-top: 1px solid var(--border);
+            color: var(--text);
+        }
+
+        .lesson-content h2:first-child {
+            margin-top: 0;
+            padding-top: 0;
+            border-top: none;
+        }
+
+        .lesson-content h3 {
+            font-size: 1.2rem;
+            margin: 28px 0 16px;
+            color: var(--accent);
+        }
+
+        .lesson-content p {
+            margin-bottom: 16px;
+            font-size: 1.05rem;
+        }
+
+        .lesson-content ul, .lesson-content ol {
+            margin-bottom: 20px;
+            padding-left: 28px;
+        }
+
+        .lesson-content li {
+            margin-bottom: 10px;
+        }
+
+        .lesson-content strong {
+            color: var(--text);
+            font-weight: 600;
+        }
+
+        /* Prompt Box */
+        .lesson-content pre {
+            background: linear-gradient(135deg, #FFF9F5 0%, var(--accent-light) 100%);
+            color: #5C4A3D;
+            padding: 24px;
+            border-radius: 16px;
+            overflow-x: auto;
+            margin: 24px 0;
+            font-size: 0.95rem;
+            border: 2px solid var(--accent);
+            position: relative;
+        }
+
+        .lesson-content pre::before {
+            content: '💬 Prompt';
+            position: absolute;
+            top: -12px;
+            left: 20px;
+            background: var(--accent);
+            color: white;
+            padding: 4px 14px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            font-family: inherit;
+        }
+
+        .lesson-content code {
+            background: var(--accent-light);
+            color: var(--accent);
+            padding: 3px 10px;
+            border-radius: 6px;
+            font-size: 0.9em;
+        }
+
+        .lesson-content pre code {
+            background: none;
+            padding: 0;
+            color: inherit;
+        }
+
+        .lesson-content blockquote {
+            border-left: 4px solid var(--accent);
+            padding: 16px 24px;
+            margin: 24px 0;
+            background: var(--bg-warm);
+            border-radius: 0 12px 12px 0;
+            font-style: italic;
+            color: var(--text-muted);
+        }
+
+        .lesson-content table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 0.95rem;
+        }
+
+        .lesson-content th, .lesson-content td {
+            padding: 14px 16px;
+            border: 1px solid var(--border);
+            text-align: left;
+        }
+
+        .lesson-content th {
+            background: var(--bg);
+            font-weight: 600;
+        }
+
+        .lesson-content tr:hover td {
+            background: var(--bg-warm);
+        }
+
+        /* Navigation */
+        .lesson-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 40px;
+            padding-top: 32px;
+            border-top: 1px solid var(--border);
+            gap: 16px;
+        }
+
+        .nav-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s;
+            border: 2px solid var(--border);
+            background: white;
+            color: var(--text);
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 0.95rem;
+        }
+
+        .nav-btn:hover:not(:disabled) {
+            border-color: var(--accent);
+            color: var(--accent);
+            background: var(--accent-light);
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        .complete-btn {
+            background: var(--accent);
+            color: white;
+            border-color: var(--accent);
+        }
+
+        .complete-btn:hover:not(:disabled) {
+            background: var(--accent-hover);
+            border-color: var(--accent-hover);
+            color: white;
+        }
+
+        /* Sidebar Overlay */
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 199;
+        }
+        .sidebar-overlay.active { display: block; }
+
+        .sidebar-close {
+            display: none;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            font-size: 1.2rem;
+            cursor: pointer;
+            z-index: 10;
+        }
+
+        /* Mobile Responsive - Tablet */
+        @media (max-width: 900px) {
+            .layout { grid-template-columns: 1fr; }
+            .navbar-center { display: none; }
+            .sidebar-close { display: flex; align-items: center; justify-content: center; }
+
+            .sidebar {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                height: 100%;
+                z-index: 200;
+                border-right: none;
+                background: var(--card);
+                overflow-y: auto;
+            }
+
+            .sidebar.open { display: block; }
+            .menu-toggle { display: block; }
+
+            .main { padding: 20px 16px; }
+            .lesson-title { font-size: 1.5rem; }
+            .lesson-content { padding: 24px; }
+            .lesson-content h2 { font-size: 1.3rem; }
+            .lesson-nav { flex-direction: column; gap: 10px; }
+            .nav-btn { width: 100%; justify-content: center; }
+        }
+
+        /* Small Mobile (320px+) */
+        @media (max-width: 480px) {
+            .navbar-inner { padding: 10px 12px; }
+            .navbar-logo span { display: none; }
+            .navbar-logo-icon { width: 32px; height: 32px; font-size: 0.9rem; }
+            .menu-toggle { padding: 6px 10px; font-size: 1.2rem; }
+            
+            .main { padding: 12px 10px; }
+            
+            .lesson-header { margin-bottom: 12px; }
+            .lesson-meta { 
+                flex-wrap: wrap; 
+                gap: 6px; 
+                margin-bottom: 8px;
+            }
+            .badge { padding: 4px 10px; font-size: 0.75rem; }
+            
+            .lesson-title { 
+                font-size: 1.15rem; 
+                line-height: 1.4;
+                word-wrap: break-word;
+                overflow-wrap: break-word;
+            }
+            
+            /* Video compact on mobile */
+            .video-container { margin-bottom: 12px; }
+            .video-player { 
+                aspect-ratio: 16/9;
+                border-radius: 10px;
+                min-height: 160px;
+                max-height: 200px;
+            }
+            .play-icon { font-size: 2rem; margin-bottom: 4px; }
+            .video-text { font-size: 0.75rem; }
+            
+            /* Content area */
+            .lesson-content { 
+                padding: 14px; 
+                border-radius: 10px;
+                margin-bottom: 12px;
+            }
+            .lesson-content h2 { 
+                font-size: 1.05rem; 
+                margin: 16px 0 10px;
+                padding-top: 16px;
+            }
+            .lesson-content h2:first-child { margin-top: 0; padding-top: 0; }
+            .lesson-content p { 
+                font-size: 0.88rem; 
+                line-height: 1.65;
+                margin-bottom: 12px;
+            }
+            .lesson-content ul, .lesson-content ol { 
+                padding-left: 18px;
+                margin-bottom: 12px;
+            }
+            .lesson-content li { 
+                font-size: 0.88rem; 
+                margin-bottom: 6px;
+                line-height: 1.5;
+            }
+            
+            .prompt-box { 
+                padding: 12px; 
+                font-size: 0.8rem;
+                border-radius: 8px;
+                margin: 12px 0;
+            }
+            .prompt-box code {
+                font-size: 0.75rem;
+            }
+            
+            /* Navigation buttons */
+            .lesson-nav { gap: 8px; }
+            .nav-btn { 
+                padding: 10px 14px; 
+                font-size: 0.85rem;
+                border-radius: 8px;
+            }
+            .complete-btn { order: -1; }
+            
+            /* Sidebar on mobile */
+            .sidebar { padding-top: 50px; }
+            .sidebar-section { padding: 12px 0; }
+            .sidebar-title { 
+                padding: 10px 14px; 
+                font-size: 0.85rem;
+            }
+            .lesson-link { 
+                padding: 10px 14px 10px 38px; 
+                font-size: 0.85rem;
+            }
+            .lesson-link .lesson-num {
+                width: 20px;
+                height: 20px;
+                font-size: 0.7rem;
+                left: 12px;
+            }
+        }
+
+        /* Extra small (320px) */
+        @media (max-width: 360px) {
+            .main { padding: 10px 8px; }
+            
+            .lesson-title { font-size: 1.05rem; }
+            .badge { padding: 3px 8px; font-size: 0.7rem; }
+            
+            .video-player { 
+                min-height: 140px;
+                max-height: 180px;
+            }
+            .play-icon { font-size: 1.8rem; }
+            
+            .lesson-content { padding: 12px; }
+            .lesson-content h2 { font-size: 1rem; }
+            .lesson-content p, .lesson-content li { font-size: 0.85rem; }
+            
+            .prompt-box { padding: 10px; font-size: 0.75rem; }
+            .nav-btn { padding: 10px 12px; font-size: 0.8rem; }
+        }
+
+        /* Scrollbar */
+        .sidebar::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .sidebar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .sidebar::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-inner">
+            <a href="dashboard.html" class="navbar-logo">
+                <div class="navbar-logo-icon">🎨</div>
+                <span>AI for Designers</span>
+            </a>
+            <div class="navbar-center">
+                <a href="dashboard.html" class="nav-link">หน้าแรก</a>
+                <a href="lesson.html?lesson=1.1" class="nav-link active">บทเรียน</a>
+                <a href="downloads.html" class="nav-link">ดาวน์โหลด</a>
+                <a href="quiz.html" class="nav-link">Quiz</a>
+            </div>
+            <button class="theme-toggle" onclick="toggleTheme()" title="เปลี่ยนธีม">🌙</button>
+            <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
+        </div>
+    </nav>
+
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+    <div class="layout">
+        <aside class="sidebar" id="sidebar">
+            <button class="sidebar-close" onclick="toggleSidebar()">✕</button>
+            <div class="sidebar-section">
+                <div class="sidebar-title">🌱 Module 1: Prompting</div>
+                <a href="?lesson=1.1" class="lesson-link" data-lesson="1.1">
+                    <span class="lesson-num">1</span>
+                    <span class="lesson-name">หลักการ Prompting</span>
+                </a>
+                <a href="?lesson=1.2" class="lesson-link" data-lesson="1.2">
+                    <span class="lesson-num">2</span>
+                    <span class="lesson-name">Structure & Format</span>
+                </a>
+                <a href="?lesson=1.3" class="lesson-link" data-lesson="1.3">
+                    <span class="lesson-num">3</span>
+                    <span class="lesson-name">Context & Examples</span>
+                </a>
+                <a href="?lesson=1.4" class="lesson-link" data-lesson="1.4">
+                    <span class="lesson-num">4</span>
+                    <span class="lesson-name">Iterative Refinement</span>
+                </a>
+                <a href="?lesson=1.5" class="lesson-link" data-lesson="1.5">
+                    <span class="lesson-num">5</span>
+                    <span class="lesson-name">Visual Generation</span>
+                </a>
+                <a href="?lesson=1.6" class="lesson-link" data-lesson="1.6">
+                    <span class="lesson-num">6</span>
+                    <span class="lesson-name">Style Reference</span>
+                </a>
+                <a href="?lesson=1.7" class="lesson-link" data-lesson="1.7">
+                    <span class="lesson-num">7</span>
+                    <span class="lesson-name">AI Ethics</span>
+                </a>
+                <a href="?lesson=1.8" class="lesson-link" data-lesson="1.8">
+                    <span class="lesson-num">8</span>
+                    <span class="lesson-name">Hands-on Project</span>
+                </a>
+            </div>
+
+            <div class="sidebar-section">
+                <div class="sidebar-title">🚀 Module 2: Research</div>
+                <a href="?lesson=2.1" class="lesson-link" data-lesson="2.1">
+                    <span class="lesson-num">1</span>
+                    <span class="lesson-name">User Research</span>
+                </a>
+                <a href="?lesson=2.2" class="lesson-link" data-lesson="2.2">
+                    <span class="lesson-num">2</span>
+                    <span class="lesson-name">Data Analysis</span>
+                </a>
+                <a href="?lesson=2.3" class="lesson-link" data-lesson="2.3">
+                    <span class="lesson-num">3</span>
+                    <span class="lesson-name">Competitive Analysis</span>
+                </a>
+                <a href="?lesson=2.4" class="lesson-link" data-lesson="2.4">
+                    <span class="lesson-num">4</span>
+                    <span class="lesson-name">UX Writing</span>
+                </a>
+                <a href="?lesson=2.5" class="lesson-link" data-lesson="2.5">
+                    <span class="lesson-num">5</span>
+                    <span class="lesson-name">Brand Voice</span>
+                </a>
+                <a href="?lesson=2.6" class="lesson-link" data-lesson="2.6">
+                    <span class="lesson-num">6</span>
+                    <span class="lesson-name">Design Critique</span>
+                </a>
+                <a href="?lesson=2.7" class="lesson-link" data-lesson="2.7">
+                    <span class="lesson-num">7</span>
+                    <span class="lesson-name">Tools Integration</span>
+                </a>
+                <a href="?lesson=2.8" class="lesson-link" data-lesson="2.8">
+                    <span class="lesson-num">8</span>
+                    <span class="lesson-name">Project</span>
+                </a>
+            </div>
+
+            <div class="sidebar-section">
+                <div class="sidebar-title">⚡ Module 3: Future</div>
+                <a href="?lesson=3.1" class="lesson-link" data-lesson="3.1">
+                    <span class="lesson-num">1</span>
+                    <span class="lesson-name">AI Workflow</span>
+                </a>
+                <a href="?lesson=3.2" class="lesson-link" data-lesson="3.2">
+                    <span class="lesson-num">2</span>
+                    <span class="lesson-name">When Not to Use AI</span>
+                </a>
+                <a href="?lesson=3.3" class="lesson-link" data-lesson="3.3">
+                    <span class="lesson-num">3</span>
+                    <span class="lesson-name">Critical Thinking</span>
+                </a>
+                <a href="?lesson=3.4" class="lesson-link" data-lesson="3.4">
+                    <span class="lesson-num">4</span>
+                    <span class="lesson-name">Learning New Tools</span>
+                </a>
+                <a href="?lesson=3.5" class="lesson-link" data-lesson="3.5">
+                    <span class="lesson-num">5</span>
+                    <span class="lesson-name">Personal AI Stack</span>
+                </a>
+                <a href="?lesson=3.6" class="lesson-link" data-lesson="3.6">
+                    <span class="lesson-num">6</span>
+                    <span class="lesson-name">Lead AI in Team</span>
+                </a>
+                <a href="?lesson=3.7" class="lesson-link" data-lesson="3.7">
+                    <span class="lesson-num">7</span>
+                    <span class="lesson-name">AI Ethics Deep</span>
+                </a>
+                <a href="?lesson=3.8" class="lesson-link" data-lesson="3.8">
+                    <span class="lesson-num">8</span>
+                    <span class="lesson-name">Final Project</span>
+                </a>
+            </div>
+        </aside>
+
+        <main class="main">
+            <div class="lesson-header">
+                <div class="lesson-meta">
+                    <span class="badge badge-level" id="lessonLevel">🌱 Beginner</span>
+                    <span class="badge badge-time">⏱️ <span id="lessonDuration">25 นาที</span></span>
+                </div>
+                <h1 class="lesson-title" id="lessonTitle">Loading...</h1>
+            </div>
+
+            <div class="video-container">
+                <div class="video-player" onclick="alert('🎬 Video จะพร้อมเร็วๆ นี้!')">
+                    <div class="play-icon">▶️</div>
+                    <div class="video-text">คลิกเพื่อดูวิดีโอ</div>
+                </div>
+            </div>
+
+            <div class="lesson-content" id="lessonContent">
+                <p>กำลังโหลดเนื้อหา...</p>
+            </div>
+
+            <div class="lesson-nav">
+                <button class="nav-btn" id="prevBtn">← บทก่อนหน้า</button>
+                <button class="nav-btn complete-btn" id="completeBtn">✓ เรียนจบบทนี้</button>
+                <button class="nav-btn" id="nextBtn">บทถัดไป →</button>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Toggle mobile sidebar
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            sidebar.classList.toggle('open');
+            overlay.classList.toggle('active');
+            document.body.style.overflow = sidebar.classList.contains('open') ? 'hidden' : '';
+        }
+
+        // Close sidebar when clicking a lesson on mobile
+        document.querySelectorAll('.lesson-link').forEach(link => {
+            link.addEventListener('click', () => {
+                if (window.innerWidth <= 900) {
+                    document.getElementById('sidebar').classList.remove('open');
+                    document.getElementById('sidebarOverlay').classList.remove('active');
+                    document.body.style.overflow = '';
+                }
+            });
+        });
+
+        // Lesson data
+        const lessons = {
+            '1.1': { title: 'หลักการ Prompting ที่ได้ผล', level: '🌱 Beginner', duration: '25 นาที', file: 'scripts/module-1/1.1-prompting-principles.md' },
+            '1.2': { title: 'Structure & Format ที่เหมาะสม', level: '🌱 Beginner', duration: '35 นาที', file: 'scripts/module-1/1.2-structure-format.md' },
+            '1.3': { title: 'Context & Examples ที่มีประสิทธิภาพ', level: '🌱 Beginner', duration: '30 นาที', file: 'scripts/module-1/1.3-context-examples.md' },
+            '1.4': { title: 'Iterative Refinement Techniques', level: '🌱 Beginner', duration: '40 นาที', file: 'scripts/module-1/1.4-iterative-refinement.md' },
+            '1.5': { title: 'หลักการสร้างภาพด้วย AI', level: '🌱 Beginner', duration: '45 นาที', file: 'scripts/module-1/1.5-visual-generation.md' },
+            '1.6': { title: 'Style Reference & Control', level: '🌱 Beginner', duration: '30 นาที', file: 'scripts/module-1/1.6-style-reference.md' },
+            '1.7': { title: 'AI Ethics & ข้อจำกัดที่ต้องรู้', level: '🌱 Beginner', duration: '25 นาที', file: 'scripts/module-1/1.7-ai-ethics.md' },
+            '1.8': { title: 'Hands-on Project', level: '🌱 Beginner', duration: '60 นาที', file: 'scripts/module-1/1.8-hands-on-project.md' },
+            '2.1': { title: 'AI ช่วย User Research อย่างไร', level: '🚀 Intermediate', duration: '40 นาที', file: 'scripts/module-2/2.1-user-research.md' },
+            '2.2': { title: 'การวิเคราะห์ข้อมูลด้วย AI', level: '🚀 Intermediate', duration: '35 นาที', file: 'scripts/module-2/2.2-data-analysis.md' },
+            '2.3': { title: 'Competitive Analysis Workflows', level: '🚀 Intermediate', duration: '30 นาที', file: 'scripts/module-2/2.3-competitive-analysis.md' },
+            '2.4': { title: 'AI สำหรับ UX Writing', level: '🚀 Intermediate', duration: '40 นาที', file: 'scripts/module-2/2.4-ux-writing-microcopy.md' },
+            '2.5': { title: 'Brand Voice & Tone with AI', level: '🚀 Intermediate', duration: '35 นาที', file: 'scripts/module-2/2.5-brand-voice-tone.md' },
+            '2.6': { title: 'Design Critique with AI', level: '🚀 Intermediate', duration: '30 นาที', file: 'scripts/module-2/2.6-design-critique.md' },
+            '2.7': { title: 'Integration กับ Design Tools', level: '🚀 Intermediate', duration: '40 นาที', file: 'scripts/module-2/2.7-design-tools-integration.md' },
+            '2.8': { title: 'Project: สร้าง AI Workflow', level: '🚀 Intermediate', duration: '90 นาที', file: 'scripts/module-2/2.8-project-ai-workflow.md' },
+            '3.1': { title: 'ออกแบบ AI-Enhanced Workflow', level: '⚡ Advanced', duration: '50 นาที', file: 'scripts/module-3/3.1-ai-enhanced-workflow.md' },
+            '3.2': { title: 'เมื่อไหร่ไม่ควรใช้ AI', level: '⚡ Advanced', duration: '45 นาที', file: 'scripts/module-3/3.2-when-not-to-use-ai.md' },
+            '3.3': { title: 'Critical Thinking กับ AI Output', level: '⚡ Advanced', duration: '40 นาที', file: 'scripts/module-3/3.3-critical-thinking.md' },
+            '3.4': { title: 'วิธีเรียนรู้ AI Tools ใหม่', level: '⚡ Advanced', duration: '35 นาที', file: 'scripts/module-3/3.4-learning-new-tools.md' },
+            '3.5': { title: 'สร้าง Personal AI Stack', level: '⚡ Advanced', duration: '45 นาที', file: 'scripts/module-3/3.5-personal-ai-stack.md' },
+            '3.6': { title: 'Lead AI ในทีม', level: '⚡ Advanced', duration: '40 นาที', file: 'scripts/module-3/3.6-lead-ai-team.md' },
+            '3.7': { title: 'AI Ethics Deep Dive', level: '⚡ Advanced', duration: '50 นาที', file: 'scripts/module-3/3.7-ai-ethics-deep.md' },
+            '3.8': { title: 'Final Project: AI Strategy', level: '⚡ Advanced', duration: '120 นาที', file: 'scripts/module-3/3.8-final-project.md' }
+        };
+
+        const lessonOrder = Object.keys(lessons);
+
+        async function loadLesson(lessonId) {
+            const lesson = lessons[lessonId];
+            if (!lesson) return;
+
+            document.getElementById('lessonTitle').textContent = lesson.title;
+            document.getElementById('lessonLevel').textContent = lesson.level;
+            document.getElementById('lessonDuration').textContent = lesson.duration;
+            document.title = `${lesson.title} — AI for Designers`;
+
+            document.querySelectorAll('.lesson-link').forEach(link => {
+                link.classList.remove('active');
+                if (link.dataset.lesson === lessonId) {
+                    link.classList.add('active');
+                }
+            });
+
+            try {
+                const response = await fetch(lesson.file);
+                const markdown = await response.text();
+                document.getElementById('lessonContent').innerHTML = marked.parse(markdown);
+            } catch (e) {
+                document.getElementById('lessonContent').innerHTML = '<p style="color: var(--text-muted);">ไม่สามารถโหลดเนื้อหาได้ กรุณาลองใหม่</p>';
+            }
+
+            const currentIndex = lessonOrder.indexOf(lessonId);
+            document.getElementById('prevBtn').disabled = currentIndex === 0;
+            document.getElementById('nextBtn').disabled = currentIndex === lessonOrder.length - 1;
+        }
+
+        // Navigation
+        document.getElementById('prevBtn').addEventListener('click', () => {
+            const currentLesson = new URLSearchParams(window.location.search).get('lesson') || '1.1';
+            const currentIndex = lessonOrder.indexOf(currentLesson);
+            if (currentIndex > 0) {
+                window.location.search = `?lesson=${lessonOrder[currentIndex - 1]}`;
+            }
+        });
+
+        document.getElementById('nextBtn').addEventListener('click', () => {
+            const currentLesson = new URLSearchParams(window.location.search).get('lesson') || '1.1';
+            const currentIndex = lessonOrder.indexOf(currentLesson);
+            if (currentIndex < lessonOrder.length - 1) {
+                window.location.search = `?lesson=${lessonOrder[currentIndex + 1]}`;
+            }
+        });
+
+        // Progress tracking
+        function getProgress() {
+            return JSON.parse(localStorage.getItem('lessonProgress') || '{}');
+        }
+
+        function saveProgress(lessonId) {
+            const progress = getProgress();
+            progress[lessonId] = { completed: true, date: new Date().toISOString() };
+            localStorage.setItem('lessonProgress', JSON.stringify(progress));
+            updateProgressUI();
+        }
+
+        function updateProgressUI() {
+            const progress = getProgress();
+            document.querySelectorAll('.lesson-link').forEach(link => {
+                const id = link.dataset.lesson;
+                if (progress[id]?.completed) {
+                    link.classList.add('completed');
+                    link.querySelector('.lesson-num').textContent = '✓';
+                }
+            });
+            
+            const currentLesson = new URLSearchParams(window.location.search).get('lesson') || '1.1';
+            const btn = document.getElementById('completeBtn');
+            if (progress[currentLesson]?.completed) {
+                btn.innerHTML = '✓ เรียนจบแล้ว';
+                btn.style.opacity = '0.7';
+            } else {
+                btn.innerHTML = '✓ เรียนจบบทนี้';
+                btn.style.opacity = '1';
+            }
+        }
+
+        document.getElementById('completeBtn').addEventListener('click', () => {
+            const currentLesson = new URLSearchParams(window.location.search).get('lesson') || '1.1';
+            saveProgress(currentLesson);
+            alert('🎉 บันทึกแล้ว! คุณเรียนจบบทนี้แล้ว');
+        });
+
+        // Init
+        const urlParams = new URLSearchParams(window.location.search);
+        
+        if (urlParams.get('reset') === 'true') {
+            localStorage.removeItem('lessonProgress');
+            localStorage.removeItem('quizScores');
+            alert('🔄 Progress reset!');
+            window.location.href = 'lesson.html?lesson=1.1';
+        }
+        
+        // Theme toggle
+        function toggleTheme() {
+            const html = document.documentElement;
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            
+            const btn = document.querySelector('.theme-toggle');
+            btn.textContent = newTheme === 'dark' ? '☀️' : '🌙';
+        }
+
+        function loadTheme() {
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            
+            const btn = document.querySelector('.theme-toggle');
+            if (btn) btn.textContent = savedTheme === 'dark' ? '☀️' : '🌙';
+        }
+
+        loadTheme();
+
+        const lessonId = urlParams.get('lesson') || '1.1';
+        loadLesson(lessonId);
+        updateProgressUI();
+    </script>
+</body>
+</html>

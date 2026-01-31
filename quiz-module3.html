@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Module 3 — AI for Designers</title>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root { --bg: #FAF9F6; --card: #FFFFFF; --accent: #D97757; --accent-light: #FEF3EE; --success: #4CAF50; --error: #E53935; --text: #2D2A26; --muted: #8B8680; --border: #E8E3DB; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'IBM Plex Sans Thai', sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+        .container { max-width: 700px; margin: 0 auto; padding: 40px 20px; }
+        .quiz-header { text-align: center; margin-bottom: 40px; }
+        .quiz-header h1 { font-size: 1.8rem; margin-bottom: 8px; }
+        .quiz-header p { color: var(--muted); }
+        .progress-bar { background: var(--border); height: 8px; border-radius: 4px; margin-bottom: 40px; overflow: hidden; }
+        .progress-fill { background: var(--accent); height: 100%; transition: width 0.3s; }
+        .question-card { background: var(--card); border-radius: 16px; padding: 32px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); margin-bottom: 24px; }
+        .question-number { color: var(--accent); font-weight: 600; font-size: 0.9rem; margin-bottom: 12px; }
+        .question-text { font-size: 1.2rem; font-weight: 600; margin-bottom: 24px; }
+        .options { display: flex; flex-direction: column; gap: 12px; }
+        .option { padding: 16px 20px; border: 2px solid var(--border); border-radius: 12px; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 12px; }
+        .option:hover { border-color: var(--accent); background: var(--accent-light); }
+        .option.correct { border-color: var(--success); background: #E8F5E9; }
+        .option.wrong { border-color: var(--error); background: #FFEBEE; }
+        .option-letter { width: 32px; height: 32px; border-radius: 50%; background: var(--border); display: flex; align-items: center; justify-content: center; font-weight: 600; }
+        .option.correct .option-letter { background: var(--success); color: white; }
+        .option.wrong .option-letter { background: var(--error); color: white; }
+        .explanation { margin-top: 20px; padding: 16px; background: var(--accent-light); border-radius: 12px; display: none; }
+        .explanation.show { display: block; }
+        .nav-buttons { display: flex; justify-content: space-between; margin-top: 24px; }
+        .btn { padding: 14px 28px; border-radius: 10px; font-weight: 600; cursor: pointer; border: none; font-family: inherit; font-size: 1rem; }
+        .btn-primary { background: var(--accent); color: white; }
+        .btn-primary:disabled { opacity: 0.5; }
+        .btn-outline { background: transparent; border: 2px solid var(--border); color: var(--text); }
+        .results { text-align: center; padding: 40px; }
+        .results-score { font-size: 4rem; font-weight: 700; color: var(--accent); margin-bottom: 16px; }
+        .hidden { display: none; }
+        /* Unified Nav Bar */
+        .navbar { background: rgba(251, 249, 247, 0.95); backdrop-filter: blur(20px); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100; }
+        .navbar-inner { max-width: 1200px; margin: 0 auto; padding: 14px 24px; display: flex; align-items: center; justify-content: space-between; }
+        .navbar-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--text); font-weight: 600; }
+        .navbar-logo-icon { width: 34px; height: 34px; background: var(--accent); border-radius: 9px; display: flex; align-items: center; justify-content: center; font-size: 1rem; }
+        .navbar-center { display: flex; gap: 32px; }
+        .nav-link { text-decoration: none; color: var(--muted); font-weight: 500; font-size: 0.9rem; transition: color 0.15s; }
+        .nav-link:hover, .nav-link.active { color: var(--accent); }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-inner">
+            <a href="dashboard.html" class="navbar-logo"><div class="navbar-logo-icon">🎨</div><span>AI for Designers</span></a>
+            <div class="navbar-center">
+                <a href="dashboard.html" class="nav-link">หน้าแรก</a>
+                <a href="lesson.html?lesson=1.1" class="nav-link">บทเรียน</a>
+                <a href="downloads.html" class="nav-link">ดาวน์โหลด</a>
+                <a href="quiz.html" class="nav-link active">Quiz</a>
+            </div>
+            <div></div>
+        </div>
+    </nav>
+    <div class="container">
+        <div class="quiz-header">
+            <h1>📝 Quiz: Module 3</h1>
+            <p>ทดสอบความเข้าใจ Future-Ready Skills</p>
+        </div>
+        <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+        <div id="quizContainer"></div>
+        <div id="resultsContainer" class="results hidden">
+            <div class="question-card">
+                <div class="results-score" id="scoreText">0%</div>
+                <h2 id="resultTitle">ผลคะแนน</h2>
+                <p id="resultMessage"></p>
+                <button class="btn btn-primary" onclick="restartQuiz()">ทำใหม่</button>
+                <a href="lesson.html?lesson=3.1" class="btn btn-outline" style="margin-left: 12px; text-decoration: none;">กลับไปเรียน</a>
+            </div>
+        </div>
+    </div>
+    <script>
+        const quizData = [
+            {
+                question: "หลักการ 'Human-in-the-Loop' หมายถึงอะไร?",
+                options: [
+                    "ให้ AI ทำงานโดยไม่ต้องมีคนควบคุม",
+                    "คนต้องอยู่ในขั้นตอนตรวจสอบและตัดสินใจ",
+                    "ใช้คนทำงานแทน AI ทั้งหมด",
+                    "ให้คนกับ AI ทำงานแข่งกัน"
+                ],
+                correct: 1,
+                explanation: "Human-in-the-Loop หมายถึง AI ช่วยทำงาน แต่คนยังต้องอยู่ในขั้นตอน Review และตัดสินใจขั้นสุดท้าย"
+            },
+            {
+                question: "เมื่อไหร่ไม่ควรใช้ AI?",
+                options: [
+                    "เมื่อต้องการ Brainstorming",
+                    "เมื่อทำ First draft",
+                    "เมื่อต้องการ 100% accuracy และมีข้อมูลลับ",
+                    "เมื่อต้องการหลาย Options"
+                ],
+                correct: 2,
+                explanation: "ไม่ควรใช้ AI เมื่อต้องการความแม่นยำ 100%, มีข้อมูล Sensitive, หรือไม่มีเวลา Review"
+            },
+            {
+                question: "FACT Check Framework มีอะไรบ้าง?",
+                options: [
+                    "Fast, Accurate, Clear, True",
+                    "Find source, Assess claim, Cross-reference, Test in context",
+                    "Fact, Analysis, Conclusion, Testing",
+                    "First, After, Check, Then"
+                ],
+                correct: 1,
+                explanation: "FACT = Find source, Assess claim, Cross-reference, Test in context - ใช้ตรวจสอบ AI output"
+            },
+            {
+                question: "WORTH Framework สำหรับประเมิน Tool ใหม่มีอะไรบ้าง?",
+                options: [
+                    "Work, Output, Review, Test, Help",
+                    "What problem, Overlap, Required learning, Trust, Help workflow",
+                    "Worth, Opinion, Rating, Testing, Handling",
+                    "ไม่มี WORTH Framework"
+                ],
+                correct: 1,
+                explanation: "WORTH = What problem does it solve, Overlap with existing, Required learning curve, Trust & reliability, Help my workflow"
+            },
+            {
+                question: "วิธีที่ดีที่สุดในการแนะนำ AI ให้ทีมคืออะไร?",
+                options: [
+                    "สั่งให้ทุกคนใช้ AI ตั้งแต่วันแรก",
+                    "Start small → Quick win → Share story → Create guidelines",
+                    "จัดอบรม 1 สัปดาห์แบบเข้มข้น",
+                    "ให้แต่ละคนหาเรียนเอง"
+                ],
+                correct: 1,
+                explanation: "เริ่มเล็กๆ หา 1 Quick win แล้วค่อยขยาย Share story ให้คนอื่นเห็น แล้วสร้าง Guidelines"
+            }
+        ];
+
+        let currentQuestion = 0, score = 0, answered = false;
+
+        function renderQuestion() {
+            const q = quizData[currentQuestion];
+            document.getElementById('progressFill').style.width = ((currentQuestion) / quizData.length) * 100 + '%';
+            document.getElementById('quizContainer').innerHTML = `
+                <div class="question-card">
+                    <div class="question-number">คำถามที่ ${currentQuestion + 1} จาก ${quizData.length}</div>
+                    <div class="question-text">${q.question}</div>
+                    <div class="options">${q.options.map((opt, i) => `
+                        <div class="option" onclick="selectOption(${i})">
+                            <span class="option-letter">${String.fromCharCode(65 + i)}</span><span>${opt}</span>
+                        </div>`).join('')}</div>
+                    <div class="explanation" id="explanation"><strong>💡</strong> ${q.explanation}</div>
+                </div>
+                <div class="nav-buttons">
+                    <button class="btn btn-outline" onclick="prevQuestion()" ${currentQuestion === 0 ? 'disabled' : ''}>← ก่อนหน้า</button>
+                    <button class="btn btn-primary" id="nextBtn" onclick="nextQuestion()" disabled>${currentQuestion === quizData.length - 1 ? 'ดูผลคะแนน' : 'ถัดไป →'}</button>
+                </div>`;
+            answered = false;
+        }
+
+        function selectOption(index) {
+            if (answered) return;
+            answered = true;
+            const q = quizData[currentQuestion];
+            document.querySelectorAll('.option').forEach((opt, i) => {
+                opt.style.pointerEvents = 'none';
+                if (i === q.correct) opt.classList.add('correct');
+                else if (i === index) opt.classList.add('wrong');
+            });
+            if (index === q.correct) score++;
+            document.getElementById('explanation').classList.add('show');
+            document.getElementById('nextBtn').disabled = false;
+        }
+
+        function nextQuestion() {
+            if (currentQuestion < quizData.length - 1) { currentQuestion++; renderQuestion(); }
+            else showResults();
+        }
+        function prevQuestion() { if (currentQuestion > 0) { currentQuestion--; renderQuestion(); } }
+
+        function showResults() {
+            document.getElementById('quizContainer').classList.add('hidden');
+            document.getElementById('resultsContainer').classList.remove('hidden');
+            document.getElementById('progressFill').style.width = '100%';
+            const pct = Math.round((score / quizData.length) * 100);
+            document.getElementById('scoreText').textContent = pct + '%';
+            document.getElementById('resultTitle').textContent = pct >= 80 ? '🎉 ยอดเยี่ยม!' : pct >= 60 ? '👍 ดีมาก!' : '📚 ลองอีกครั้ง';
+            document.getElementById('resultMessage').textContent = pct >= 80 ? 'คุณพร้อมใช้ AI อย่างมืออาชีพแล้ว!' : 'ลองทบทวนเพิ่มเติม';
+            const progress = JSON.parse(localStorage.getItem('quizProgress') || '{}');
+            progress['module3'] = { score: pct, date: new Date().toISOString() };
+            localStorage.setItem('quizProgress', JSON.stringify(progress));
+        }
+
+        function restartQuiz() { currentQuestion = 0; score = 0; document.getElementById('quizContainer').classList.remove('hidden'); document.getElementById('resultsContainer').classList.add('hidden'); renderQuestion(); }
+        renderQuestion();
+    </script>
+</body>
+</html>

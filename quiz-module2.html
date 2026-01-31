@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Module 2 — AI for Designers</title>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #FAF9F6; --card: #FFFFFF; --accent: #D97757;
+            --accent-light: #FEF3EE; --success: #4CAF50; --error: #E53935;
+            --text: #2D2A26; --muted: #8B8680; --border: #E8E3DB;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'IBM Plex Sans Thai', sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+        .container { max-width: 700px; margin: 0 auto; padding: 40px 20px; }
+        .quiz-header { text-align: center; margin-bottom: 40px; }
+        .quiz-header h1 { font-size: 1.8rem; margin-bottom: 8px; }
+        .quiz-header p { color: var(--muted); }
+        .progress-bar { background: var(--border); height: 8px; border-radius: 4px; margin-bottom: 40px; overflow: hidden; }
+        .progress-fill { background: var(--accent); height: 100%; transition: width 0.3s; }
+        .question-card { background: var(--card); border-radius: 16px; padding: 32px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); margin-bottom: 24px; }
+        .question-number { color: var(--accent); font-weight: 600; font-size: 0.9rem; margin-bottom: 12px; }
+        .question-text { font-size: 1.2rem; font-weight: 600; margin-bottom: 24px; }
+        .options { display: flex; flex-direction: column; gap: 12px; }
+        .option { padding: 16px 20px; border: 2px solid var(--border); border-radius: 12px; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 12px; }
+        .option:hover { border-color: var(--accent); background: var(--accent-light); }
+        .option.selected { border-color: var(--accent); background: var(--accent-light); }
+        .option.correct { border-color: var(--success); background: #E8F5E9; }
+        .option.wrong { border-color: var(--error); background: #FFEBEE; }
+        .option-letter { width: 32px; height: 32px; border-radius: 50%; background: var(--border); display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 0.9rem; }
+        .option.selected .option-letter { background: var(--accent); color: white; }
+        .option.correct .option-letter { background: var(--success); color: white; }
+        .option.wrong .option-letter { background: var(--error); color: white; }
+        .explanation { margin-top: 20px; padding: 16px; background: var(--accent-light); border-radius: 12px; display: none; }
+        .explanation.show { display: block; }
+        .nav-buttons { display: flex; justify-content: space-between; margin-top: 24px; }
+        .btn { padding: 14px 28px; border-radius: 10px; font-weight: 600; cursor: pointer; border: none; font-family: inherit; font-size: 1rem; transition: all 0.2s; }
+        .btn-primary { background: var(--accent); color: white; }
+        .btn-primary:hover { background: #C4684A; }
+        .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+        .btn-outline { background: transparent; border: 2px solid var(--border); color: var(--text); }
+        .results { text-align: center; padding: 40px; }
+        .results-score { font-size: 4rem; font-weight: 700; color: var(--accent); margin-bottom: 16px; }
+        .hidden { display: none; }
+        /* Unified Nav Bar */
+        .navbar { background: rgba(251, 249, 247, 0.95); backdrop-filter: blur(20px); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100; }
+        .navbar-inner { max-width: 1200px; margin: 0 auto; padding: 14px 24px; display: flex; align-items: center; justify-content: space-between; }
+        .navbar-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--text); font-weight: 600; }
+        .navbar-logo-icon { width: 34px; height: 34px; background: var(--accent); border-radius: 9px; display: flex; align-items: center; justify-content: center; font-size: 1rem; }
+        .navbar-center { display: flex; gap: 32px; }
+        .nav-link { text-decoration: none; color: var(--muted); font-weight: 500; font-size: 0.9rem; transition: color 0.15s; }
+        .nav-link:hover, .nav-link.active { color: var(--accent); }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-inner">
+            <a href="dashboard.html" class="navbar-logo"><div class="navbar-logo-icon">🎨</div><span>AI for Designers</span></a>
+            <div class="navbar-center">
+                <a href="dashboard.html" class="nav-link">หน้าแรก</a>
+                <a href="lesson.html?lesson=1.1" class="nav-link">บทเรียน</a>
+                <a href="downloads.html" class="nav-link">ดาวน์โหลด</a>
+                <a href="quiz.html" class="nav-link active">Quiz</a>
+            </div>
+            <div></div>
+        </div>
+    </nav>
+    <div class="container">
+        <div class="quiz-header">
+            <h1>📝 Quiz: Module 2</h1>
+            <p>ทดสอบความเข้าใจ AI-Assisted Research & Writing</p>
+        </div>
+        <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width: 0%"></div></div>
+        <div id="quizContainer"></div>
+        <div id="resultsContainer" class="results hidden">
+            <div class="question-card">
+                <div class="results-score" id="scoreText">0%</div>
+                <h2 id="resultTitle">ผลคะแนน</h2>
+                <p id="resultMessage">กำลังคำนวณ...</p>
+                <button class="btn btn-primary" onclick="restartQuiz()">ทำใหม่</button>
+                <a href="lesson.html?lesson=2.1" class="btn btn-outline" style="margin-left: 12px; text-decoration: none;">กลับไปเรียน</a>
+            </div>
+        </div>
+    </div>
+    <script>
+        const quizData = [
+            {
+                question: "AI ช่วยงาน User Research ได้อย่างไร?",
+                options: [
+                    "ทำ User Interview แทนเราได้เลย",
+                    "ช่วยวิเคราะห์ข้อมูลและหา Patterns",
+                    "ตัดสินใจแทนเราได้ว่าต้องทำอะไร",
+                    "ไม่สามารถช่วยงาน Research ได้"
+                ],
+                correct: 1,
+                explanation: "AI เก่งในการวิเคราะห์ข้อมูลจำนวนมากและหา Patterns แต่การสัมภาษณ์และตัดสินใจยังต้องใช้คน"
+            },
+            {
+                question: "เวลาเขียน Error Message ที่ดี ต้องมีอะไรบ้าง?",
+                options: [
+                    "บอกว่า User ทำผิด และให้แก้ไข",
+                    "ไม่โทษ User + บอกว่าเกิดอะไร + บอก Next step",
+                    "ใช้ภาษา Technical ให้ชัดเจน",
+                    "เขียนให้สั้นที่สุด 1-2 คำ"
+                ],
+                correct: 1,
+                explanation: "Error message ที่ดีต้องไม่โทษผู้ใช้ บอกว่าเกิดอะไรขึ้น และแนะนำขั้นตอนถัดไป"
+            },
+            {
+                question: "Voice vs Tone ต่างกันอย่างไร?",
+                options: [
+                    "เหมือนกัน ใช้แทนกันได้",
+                    "Voice = Personality (คงที่), Tone = Mood (เปลี่ยนตาม context)",
+                    "Voice = เสียงพูด, Tone = ระดับเสียง",
+                    "Tone สำคัญกว่า Voice"
+                ],
+                correct: 1,
+                explanation: "Voice คือบุคลิกของ Brand ที่คงที่ ส่วน Tone คืออารมณ์ที่เปลี่ยนไปตามสถานการณ์"
+            },
+            {
+                question: "AI Critique มีข้อจำกัดอะไรบ้าง?",
+                options: [
+                    "ไม่มีข้อจำกัด สามารถใช้แทน Human feedback ได้เลย",
+                    "ไม่เห็น Interaction จริง, ไม่รู้ Context ทั้งหมด",
+                    "ไม่สามารถดู Visual design ได้",
+                    "ใช้ได้แค่กับ Mobile design"
+                ],
+                correct: 1,
+                explanation: "AI ไม่เห็นการ Interact จริง ไม่รู้ Business context ทั้งหมด จึงใช้เป็น First pass แต่ต้องมี Human review"
+            },
+            {
+                question: "วิธีที่ดีในการ Integrate AI กับ Design workflow คืออะไร?",
+                options: [
+                    "ใช้ AI ทำทุกอย่าง แล้วค่อย Review ตอนจบ",
+                    "ระบุ Repetitive tasks แล้วสร้าง Prompt templates",
+                    "เปลี่ยนไปใช้ AI tools ทั้งหมดแทน Figma",
+                    "ไม่ควร Integrate เพราะจะทำให้งานช้าลง"
+                ],
+                correct: 1,
+                explanation: "เริ่มจากหางานที่ทำซ้ำๆ สร้าง Template และ Prompt ที่ใช้ซ้ำได้ ค่อยๆ ขยาย"
+            }
+        ];
+
+        let currentQuestion = 0, score = 0, answered = false;
+
+        function renderQuestion() {
+            const q = quizData[currentQuestion];
+            document.getElementById('progressFill').style.width = ((currentQuestion) / quizData.length) * 100 + '%';
+            document.getElementById('quizContainer').innerHTML = `
+                <div class="question-card">
+                    <div class="question-number">คำถามที่ ${currentQuestion + 1} จาก ${quizData.length}</div>
+                    <div class="question-text">${q.question}</div>
+                    <div class="options">${q.options.map((opt, i) => `
+                        <div class="option" onclick="selectOption(${i})" data-index="${i}">
+                            <span class="option-letter">${String.fromCharCode(65 + i)}</span><span>${opt}</span>
+                        </div>`).join('')}</div>
+                    <div class="explanation" id="explanation"><strong>💡 คำอธิบาย:</strong> ${q.explanation}</div>
+                </div>
+                <div class="nav-buttons">
+                    <button class="btn btn-outline" onclick="prevQuestion()" ${currentQuestion === 0 ? 'disabled' : ''}>← ก่อนหน้า</button>
+                    <button class="btn btn-primary" id="nextBtn" onclick="nextQuestion()" disabled>${currentQuestion === quizData.length - 1 ? 'ดูผลคะแนน' : 'ถัดไป →'}</button>
+                </div>`;
+            answered = false;
+        }
+
+        function selectOption(index) {
+            if (answered) return;
+            answered = true;
+            const q = quizData[currentQuestion];
+            document.querySelectorAll('.option').forEach((opt, i) => {
+                opt.style.pointerEvents = 'none';
+                if (i === q.correct) opt.classList.add('correct');
+                else if (i === index) opt.classList.add('wrong');
+            });
+            if (index === q.correct) score++;
+            document.getElementById('explanation').classList.add('show');
+            document.getElementById('nextBtn').disabled = false;
+        }
+
+        function nextQuestion() {
+            if (currentQuestion < quizData.length - 1) { currentQuestion++; renderQuestion(); }
+            else showResults();
+        }
+
+        function prevQuestion() { if (currentQuestion > 0) { currentQuestion--; renderQuestion(); } }
+
+        function showResults() {
+            document.getElementById('quizContainer').classList.add('hidden');
+            document.getElementById('resultsContainer').classList.remove('hidden');
+            document.getElementById('progressFill').style.width = '100%';
+            const pct = Math.round((score / quizData.length) * 100);
+            document.getElementById('scoreText').textContent = pct + '%';
+            document.getElementById('resultTitle').textContent = pct >= 80 ? '🎉 ยอดเยี่ยม!' : pct >= 60 ? '👍 ดีมาก!' : '📚 ลองอีกครั้ง';
+            document.getElementById('resultMessage').textContent = pct >= 80 ? 'พร้อมไป Module 3!' : pct >= 60 ? 'เข้าใจดี ลองทบทวนบางส่วน' : 'กลับไปทบทวน Lesson อีกรอบ';
+            const progress = JSON.parse(localStorage.getItem('quizProgress') || '{}');
+            progress['module2'] = { score: pct, date: new Date().toISOString() };
+            localStorage.setItem('quizProgress', JSON.stringify(progress));
+        }
+
+        function restartQuiz() { currentQuestion = 0; score = 0; document.getElementById('quizContainer').classList.remove('hidden'); document.getElementById('resultsContainer').classList.add('hidden'); renderQuestion(); }
+        renderQuestion();
+    </script>
+</body>
+</html>

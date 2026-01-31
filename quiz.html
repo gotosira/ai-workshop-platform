@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz — AI for Designers</title>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #FAF9F6;
+            --card: #FFFFFF;
+            --accent: #D97757;
+            --accent-light: #FEF3EE;
+            --success: #4CAF50;
+            --error: #E53935;
+            --text: #2D2A26;
+            --muted: #8B8680;
+            --border: #E8E3DB;
+        }
+
+        /* Dark Mode */
+        [data-theme="dark"] {
+            --bg: #1A1A1A;
+            --card: #2D2D2D;
+            --accent: #E8896A;
+            --accent-light: #3D2D28;
+            --text: #F5F5F5;
+            --muted: #A0A0A0;
+            --border: #404040;
+        }
+
+        [data-theme="dark"] .navbar {
+            background: rgba(26, 26, 26, 0.95);
+        }
+
+        [data-theme="dark"] .option.correct {
+            background: #1B3D1B;
+            border-color: var(--success);
+        }
+
+        [data-theme="dark"] .option.wrong {
+            background: #3D1B1B;
+            border-color: var(--error);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'IBM Plex Sans Thai', sans-serif; 
+            background: var(--bg); 
+            color: var(--text);
+            line-height: 1.6;
+        }
+        .container { max-width: 700px; margin: 0 auto; padding: 40px 20px; }
+        
+        .quiz-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .quiz-header h1 { font-size: 1.8rem; margin-bottom: 8px; }
+        .quiz-header p { color: var(--muted); }
+        
+        .progress-bar {
+            background: var(--border);
+            height: 8px;
+            border-radius: 4px;
+            margin-bottom: 40px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            background: var(--accent);
+            height: 100%;
+            transition: width 0.3s;
+        }
+        
+        .question-card {
+            background: var(--card);
+            border-radius: 16px;
+            padding: 32px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            margin-bottom: 24px;
+        }
+        .question-number {
+            color: var(--accent);
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 12px;
+        }
+        .question-text {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 24px;
+        }
+        
+        .options { display: flex; flex-direction: column; gap: 12px; }
+        .option {
+            padding: 16px 20px;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .option:hover { border-color: var(--accent); background: var(--accent-light); }
+        .option.selected { border-color: var(--accent); background: var(--accent-light); }
+        .option.correct { border-color: var(--success); background: #E8F5E9; }
+        .option.wrong { border-color: var(--error); background: #FFEBEE; }
+        .option-letter {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        .option.selected .option-letter { background: var(--accent); color: white; }
+        .option.correct .option-letter { background: var(--success); color: white; }
+        .option.wrong .option-letter { background: var(--error); color: white; }
+        
+        .explanation {
+            margin-top: 20px;
+            padding: 16px;
+            background: var(--accent-light);
+            border-radius: 12px;
+            display: none;
+        }
+        .explanation.show { display: block; }
+        .explanation strong { color: var(--accent); }
+        
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 24px;
+        }
+        .btn {
+            padding: 14px 28px;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            font-family: inherit;
+            font-size: 1rem;
+            transition: all 0.2s;
+        }
+        .btn-primary { background: var(--accent); color: white; }
+        .btn-primary:hover { background: #C4684A; }
+        .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+        .btn-outline { background: transparent; border: 2px solid var(--border); color: var(--text); }
+        .btn-outline:hover { border-color: var(--accent); }
+        
+        .results {
+            text-align: center;
+            padding: 40px;
+        }
+        .results-score {
+            font-size: 4rem;
+            font-weight: 700;
+            color: var(--accent);
+            margin-bottom: 16px;
+        }
+        .results h2 { margin-bottom: 8px; }
+        .results p { color: var(--muted); margin-bottom: 32px; }
+        
+        .hidden { display: none; }
+
+        /* Unified Nav Bar - Centered */
+        .navbar {
+            background: rgba(251, 249, 247, 0.95);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .navbar-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 14px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .navbar-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: var(--text);
+            font-weight: 600;
+        }
+        .navbar-logo-icon {
+            width: 34px;
+            height: 34px;
+            background: var(--accent);
+            border-radius: 9px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+        }
+        .navbar-center {
+            display: flex;
+            gap: 32px;
+        }
+        .nav-link {
+            text-decoration: none;
+            color: var(--muted);
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: color 0.15s;
+        }
+        .nav-link:hover {
+            color: var(--accent);
+        }
+        .nav-link.active {
+            color: var(--accent);
+        }
+
+        .theme-toggle {
+            background: var(--card);
+            border: 1px solid var(--border);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .theme-toggle:hover {
+            border-color: var(--accent);
+            transform: scale(1.1);
+        }
+
+        /* Responsive - Tablet */
+        @media (max-width: 768px) {
+            .navbar-center { display: none; }
+            .container { padding: 32px 20px; }
+            .quiz-header h1 { font-size: 1.5rem; }
+            .question-card { padding: 24px; }
+        }
+
+        /* Small Mobile (320px+) */
+        @media (max-width: 480px) {
+            .navbar-inner { padding: 12px 16px; }
+            .navbar-logo span { display: none; }
+            
+            .container { padding: 20px 16px; }
+            .quiz-header { margin-bottom: 24px; }
+            .quiz-header h1 { font-size: 1.3rem; }
+            .quiz-header p { font-size: 0.9rem; }
+            
+            .progress-bar { margin-bottom: 24px; }
+            
+            .question-card { padding: 16px; border-radius: 12px; }
+            .question-number { font-size: 0.8rem; }
+            .question-text { font-size: 1rem; margin-bottom: 16px; }
+            
+            .option { padding: 12px 14px; gap: 10px; }
+            .option-letter { width: 28px; height: 28px; font-size: 0.8rem; }
+            
+            .explanation { padding: 12px; font-size: 0.9rem; }
+            
+            .btn { padding: 12px 20px; font-size: 0.9rem; }
+            
+            .results { padding: 24px; }
+            .results-score { font-size: 3rem; }
+        }
+
+        /* Extra small (320px) */
+        @media (max-width: 360px) {
+            .container { padding: 16px 12px; }
+            .question-card { padding: 14px; }
+            .option { padding: 10px 12px; }
+            .results-score { font-size: 2.5rem; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-inner">
+            <a href="dashboard.html" class="navbar-logo">
+                <div class="navbar-logo-icon">🎨</div>
+                <span>AI for Designers</span>
+            </a>
+            <div class="navbar-center">
+                <a href="dashboard.html" class="nav-link">หน้าแรก</a>
+                <a href="lesson.html?lesson=1.1" class="nav-link">บทเรียน</a>
+                <a href="downloads.html" class="nav-link">ดาวน์โหลด</a>
+                <a href="quiz.html" class="nav-link active">Quiz</a>
+            </div>
+            <button class="theme-toggle" onclick="toggleTheme()" title="เปลี่ยนธีม">🌙</button>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="quiz-header">
+            <h1>📝 Quiz: Module 1</h1>
+            <p>ทดสอบความเข้าใจ Prompting Principles</p>
+        </div>
+        
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+        </div>
+        
+        <div id="quizContainer"></div>
+        
+        <div id="resultsContainer" class="results hidden">
+            <div class="question-card">
+                <div class="results-score" id="scoreText">0%</div>
+                <h2 id="resultTitle">ผลคะแนน</h2>
+                <p id="resultMessage">กำลังคำนวณ...</p>
+                <button class="btn btn-primary" onclick="restartQuiz()">ทำใหม่</button>
+                <a href="lesson.html?lesson=1.1" class="btn btn-outline" style="margin-left: 12px; text-decoration: none;">กลับไปเรียน</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const quizData = [
+            {
+                question: "AI ประมวลผล Prompt อย่างไร?",
+                options: [
+                    "อ่านใจผู้ใช้และเดาสิ่งที่ต้องการ",
+                    "ทำนายคำถัดไปจากสิ่งที่ผู้ใช้บอก",
+                    "ค้นหาคำตอบจาก Google",
+                    "ถามผู้เชี่ยวชาญเพื่อตอบ"
+                ],
+                correct: 1,
+                explanation: "AI ทำงานโดยการทำนายคำถัดไปจากข้อมูลที่ได้รับ ไม่ได้อ่านใจหรือเข้าใจบริบทลึกซึ้งเหมือนคน"
+            },
+            {
+                question: "องค์ประกอบ 4 อย่างของ Prompt ที่ดีคืออะไร?",
+                options: [
+                    "Who, What, When, Where",
+                    "Role, Task, Context, Format",
+                    "Input, Process, Output, Feedback",
+                    "Question, Answer, Example, Test"
+                ],
+                correct: 1,
+                explanation: "R-T-C-F: Role (บทบาท), Task (งาน), Context (บริบท), Format (รูปแบบ) เป็น Framework สำหรับเขียน Prompt ที่มีประสิทธิภาพ"
+            },
+            {
+                question: "ข้อใดเป็น Prompt ที่ดี?",
+                options: [
+                    "ช่วยออกแบบหน่อย",
+                    "ออกแบบ Landing Page สำหรับ SaaS กลุ่มเป้าหมาย Startup สไตล์ Minimal",
+                    "ทำ Design ให้สวยๆ",
+                    "ขอ UI หน่อย"
+                ],
+                correct: 1,
+                explanation: "Prompt ที่ดีต้องบอก Context ชัดเจน: Product type, Target audience, Style ที่ต้องการ"
+            },
+            {
+                question: "ทำไมต้องบอก 'Role' ให้ AI?",
+                options: [
+                    "เพื่อให้ AI รู้ว่าเราเป็นใคร",
+                    "เพื่อให้ AI ตอบในมุมมองที่เราต้องการ",
+                    "เพื่อให้ AI ทำงานเร็วขึ้น",
+                    "ไม่จำเป็นต้องบอก Role"
+                ],
+                correct: 1,
+                explanation: "การบอก Role ช่วยให้ AI ตอบในมุมมองเฉพาะทาง เช่น UX Designer จะตอบต่างจาก Marketing"
+            },
+            {
+                question: "ถ้า Prompt แรกไม่ได้ผลลัพธ์ที่ต้องการ ควรทำอย่างไร?",
+                options: [
+                    "เปลี่ยนไปใช้ AI ตัวอื่น",
+                    "ยอมแพ้และทำเอง",
+                    "Iterate: ปรับ Prompt และลองใหม่",
+                    "พิมพ์ Prompt เดิมซ้ำหลายรอบ"
+                ],
+                correct: 2,
+                explanation: "Iteration เป็นเรื่องปกติ ไม่มีใครได้ผลลัพธ์ Perfect ตั้งแต่ครั้งแรก ให้ปรับ Prompt ตาม Feedback"
+            }
+        ];
+
+        let currentQuestion = 0;
+        let score = 0;
+        let answered = false;
+
+        function renderQuestion() {
+            const q = quizData[currentQuestion];
+            const progress = ((currentQuestion) / quizData.length) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+            
+            const html = `
+                <div class="question-card">
+                    <div class="question-number">คำถามที่ ${currentQuestion + 1} จาก ${quizData.length}</div>
+                    <div class="question-text">${q.question}</div>
+                    <div class="options">
+                        ${q.options.map((opt, i) => `
+                            <div class="option" onclick="selectOption(${i})" data-index="${i}">
+                                <span class="option-letter">${String.fromCharCode(65 + i)}</span>
+                                <span>${opt}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                    <div class="explanation" id="explanation">
+                        <strong>💡 คำอธิบาย:</strong> ${q.explanation}
+                    </div>
+                </div>
+                <div class="nav-buttons">
+                    <button class="btn btn-outline" onclick="prevQuestion()" ${currentQuestion === 0 ? 'disabled' : ''}>← ก่อนหน้า</button>
+                    <button class="btn btn-primary" id="nextBtn" onclick="nextQuestion()" disabled>ถัดไป →</button>
+                </div>
+            `;
+            
+            document.getElementById('quizContainer').innerHTML = html;
+            answered = false;
+        }
+
+        function selectOption(index) {
+            if (answered) return;
+            answered = true;
+            
+            const q = quizData[currentQuestion];
+            const options = document.querySelectorAll('.option');
+            
+            options.forEach((opt, i) => {
+                opt.style.pointerEvents = 'none';
+                if (i === q.correct) {
+                    opt.classList.add('correct');
+                } else if (i === index && i !== q.correct) {
+                    opt.classList.add('wrong');
+                }
+            });
+            
+            if (index === q.correct) {
+                score++;
+            }
+            
+            document.getElementById('explanation').classList.add('show');
+            document.getElementById('nextBtn').disabled = false;
+            
+            if (currentQuestion === quizData.length - 1) {
+                document.getElementById('nextBtn').textContent = 'ดูผลคะแนน';
+            }
+        }
+
+        function nextQuestion() {
+            if (currentQuestion < quizData.length - 1) {
+                currentQuestion++;
+                renderQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        function prevQuestion() {
+            if (currentQuestion > 0) {
+                currentQuestion--;
+                renderQuestion();
+            }
+        }
+
+        function showResults() {
+            document.getElementById('quizContainer').classList.add('hidden');
+            document.getElementById('resultsContainer').classList.remove('hidden');
+            document.getElementById('progressFill').style.width = '100%';
+            
+            const percentage = Math.round((score / quizData.length) * 100);
+            document.getElementById('scoreText').textContent = percentage + '%';
+            
+            let title, message;
+            if (percentage >= 80) {
+                title = '🎉 ยอดเยี่ยม!';
+                message = 'คุณเข้าใจ Prompting Principles เป็นอย่างดี พร้อมไป Module ถัดไปแล้ว!';
+            } else if (percentage >= 60) {
+                title = '👍 ดีมาก!';
+                message = 'คุณเข้าใจพื้นฐานดี แต่ลองทบทวนบางส่วนอีกนิดนะ';
+            } else {
+                title = '📚 ลองอีกครั้ง';
+                message = 'ลองกลับไปทบทวน Lesson อีกรอบ แล้วมาทำ Quiz ใหม่นะ';
+            }
+            
+            document.getElementById('resultTitle').textContent = title;
+            document.getElementById('resultMessage').textContent = message;
+            
+            // Save to localStorage
+            const quizProgress = JSON.parse(localStorage.getItem('quizProgress') || '{}');
+            quizProgress['module1'] = { score: percentage, date: new Date().toISOString() };
+            localStorage.setItem('quizProgress', JSON.stringify(quizProgress));
+        }
+
+        function restartQuiz() {
+            currentQuestion = 0;
+            score = 0;
+            document.getElementById('quizContainer').classList.remove('hidden');
+            document.getElementById('resultsContainer').classList.add('hidden');
+            renderQuestion();
+        }
+
+        // Theme toggle
+        function toggleTheme() {
+            const html = document.documentElement;
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            
+            const btn = document.querySelector('.theme-toggle');
+            btn.textContent = newTheme === 'dark' ? '☀️' : '🌙';
+        }
+
+        function loadTheme() {
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            
+            const btn = document.querySelector('.theme-toggle');
+            if (btn) btn.textContent = savedTheme === 'dark' ? '☀️' : '🌙';
+        }
+
+        loadTheme();
+
+        // Start
+        renderQuestion();
+    </script>
+</body>
+</html>

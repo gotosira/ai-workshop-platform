@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Certificate — AI for Designers</title>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        :root {
+            --bg: #FAF9F6;
+            --bg-warm: #FEF7F1;
+            --card: #FFFFFF;
+            --accent: #D97757;
+            --accent-light: #FEF3EE;
+            --text: #2D2A26;
+            --text-muted: #8B8680;
+            --border: #E8E3DB;
+            --gold: #B8860B;
+        }
+
+        [data-theme="dark"] {
+            --bg: #1A1A1A;
+            --bg-warm: #242424;
+            --card: #2D2D2D;
+            --accent: #E8896A;
+            --accent-light: #3D2D28;
+            --text: #F5F5F5;
+            --text-muted: #A0A0A0;
+            --border: #404040;
+        }
+
+        [data-theme="dark"] .navbar { background: rgba(26, 26, 26, 0.95); }
+        [data-theme="dark"] .locked-overlay { background: rgba(45, 45, 45, 0.95); }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'IBM Plex Sans Thai', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        /* Nav Bar */
+        .navbar { background: rgba(251, 249, 247, 0.95); backdrop-filter: blur(20px); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100; }
+        .navbar-inner { max-width: 1200px; margin: 0 auto; padding: 14px 24px; display: flex; align-items: center; justify-content: space-between; }
+        .navbar-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--text); font-weight: 600; }
+        .navbar-logo-icon { width: 34px; height: 34px; background: var(--accent); border-radius: 9px; display: flex; align-items: center; justify-content: center; font-size: 1rem; }
+        .navbar-center { display: flex; gap: 32px; }
+        .nav-link { text-decoration: none; color: var(--text-muted); font-weight: 500; font-size: 0.9rem; transition: color 0.15s; }
+        .nav-link:hover, .nav-link.active { color: var(--accent); }
+
+        .theme-toggle {
+            background: var(--card);
+            border: 1px solid var(--border);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+        .theme-toggle:hover { border-color: var(--accent); transform: scale(1.1); }
+
+        /* Main */
+        .main {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 24px;
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .page-header h1 {
+            font-size: 2rem;
+            margin-bottom: 8px;
+        }
+
+        .page-header p {
+            color: var(--text-muted);
+        }
+
+        /* Progress Card */
+        .progress-card {
+            background: var(--card);
+            border-radius: 20px;
+            padding: 32px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+            border: 1px solid var(--border);
+            margin-bottom: 32px;
+            text-align: center;
+        }
+
+        .progress-circle {
+            width: 150px;
+            height: 150px;
+            margin: 0 auto 24px;
+            position: relative;
+        }
+
+        .progress-circle svg {
+            transform: rotate(-90deg);
+        }
+
+        .progress-circle circle {
+            fill: none;
+            stroke-width: 12;
+        }
+
+        .progress-bg {
+            stroke: var(--border);
+        }
+
+        .progress-fill {
+            stroke: var(--accent);
+            stroke-linecap: round;
+            transition: stroke-dashoffset 1s ease;
+        }
+
+        .progress-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        .progress-info h3 {
+            font-size: 1.3rem;
+            margin-bottom: 8px;
+        }
+
+        .progress-info p {
+            color: var(--text-muted);
+        }
+
+        /* Certificate Preview */
+        .certificate-section {
+            margin-top: 40px;
+        }
+
+        .certificate-section h2 {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .certificate-wrapper {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 8px 40px rgba(0,0,0,0.15);
+            overflow: hidden;
+        }
+
+        /* Certificate Design */
+        .certificate {
+            width: 800px;
+            height: 566px;
+            margin: 0 auto;
+            background: linear-gradient(135deg, #FFFEF9 0%, #FFF9F0 100%);
+            position: relative;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .certificate-border {
+            position: absolute;
+            inset: 15px;
+            border: 3px solid var(--gold);
+            border-radius: 8px;
+        }
+
+        .certificate-inner-border {
+            position: absolute;
+            inset: 20px;
+            border: 1px solid var(--gold);
+            border-radius: 6px;
+        }
+
+        .certificate-corner {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            border: 3px solid var(--gold);
+        }
+
+        .corner-tl { top: 30px; left: 30px; border-right: none; border-bottom: none; }
+        .corner-tr { top: 30px; right: 30px; border-left: none; border-bottom: none; }
+        .corner-bl { bottom: 30px; left: 30px; border-right: none; border-top: none; }
+        .corner-br { bottom: 30px; right: 30px; border-left: none; border-top: none; }
+
+        .certificate-logo {
+            font-size: 2rem;
+            margin-bottom: 16px;
+        }
+
+        .certificate-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            font-weight: 600;
+            color: var(--gold);
+            margin-bottom: 8px;
+            letter-spacing: 4px;
+        }
+
+        .certificate-subtitle {
+            font-size: 1rem;
+            color: var(--text-muted);
+            margin-bottom: 32px;
+            letter-spacing: 2px;
+        }
+
+        .certificate-text {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+        }
+
+        .certificate-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.2rem;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 8px;
+            border-bottom: 2px solid var(--gold);
+            padding-bottom: 8px;
+            min-width: 300px;
+            text-align: center;
+        }
+
+        .certificate-course {
+            font-size: 1.1rem;
+            color: var(--text);
+            margin-top: 24px;
+            margin-bottom: 8px;
+        }
+
+        .certificate-date {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        .certificate-footer {
+            position: absolute;
+            bottom: 50px;
+            display: flex;
+            gap: 100px;
+        }
+
+        .certificate-sign {
+            text-align: center;
+        }
+
+        .certificate-sign-line {
+            width: 150px;
+            border-bottom: 1px solid var(--text);
+            margin-bottom: 8px;
+        }
+
+        .certificate-sign-name {
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .certificate-sign-title {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        /* Buttons */
+        .btn-group {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            margin-top: 24px;
+        }
+
+        .btn {
+            padding: 14px 28px;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            font-family: inherit;
+            font-size: 1rem;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #C4684A;
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--text);
+            border: 2px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        /* Locked State */
+        .locked-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(255,255,255,0.9);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+        }
+
+        .locked-icon {
+            font-size: 4rem;
+            margin-bottom: 16px;
+        }
+
+        .locked-text {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .locked-subtext {
+            color: var(--text-muted);
+        }
+
+        /* Share Buttons */
+        .btn-share {
+            background: var(--card);
+            color: var(--text);
+            border: 2px solid var(--border);
+            padding: 12px 20px;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+
+        .btn-share:hover {
+            border-color: var(--accent);
+            transform: translateY(-2px);
+        }
+
+        /* Responsive - Tablet */
+        @media (max-width: 850px) {
+            .certificate-wrapper { overflow-x: auto; }
+            .navbar-center { display: none; }
+        }
+
+        /* Small Mobile (320px+) */
+        @media (max-width: 480px) {
+            .navbar-inner { padding: 12px 16px; }
+            .navbar-logo span { display: none; }
+            
+            .main { padding: 24px 16px; }
+            .page-header h1 { font-size: 1.4rem; }
+            .page-header p { font-size: 0.9rem; }
+            
+            .progress-card { padding: 24px 16px; }
+            .progress-circle { width: 120px; height: 120px; }
+            .progress-circle svg { width: 120px; height: 120px; }
+            .progress-circle circle { stroke-width: 10; }
+            .progress-text { font-size: 1.6rem; }
+            .progress-info h3 { font-size: 1.1rem; }
+            
+            .certificate-section h2 { font-size: 1.1rem; }
+            .certificate-wrapper { border-radius: 8px; }
+            
+            .btn-group { flex-direction: column; }
+            .btn { width: 100%; }
+            
+            .locked-icon { font-size: 3rem; }
+            .locked-text { font-size: 1rem; }
+        }
+
+        /* Extra small (320px) */
+        @media (max-width: 360px) {
+            .main { padding: 20px 12px; }
+            .progress-card { padding: 20px 14px; }
+            .progress-circle { width: 100px; height: 100px; margin-bottom: 16px; }
+            .progress-circle svg { width: 100px; height: 100px; }
+            .progress-text { font-size: 1.4rem; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-inner">
+            <a href="dashboard.html" class="navbar-logo">
+                <div class="navbar-logo-icon">🎨</div>
+                <span>AI for Designers</span>
+            </a>
+            <div class="navbar-center">
+                <a href="dashboard.html" class="nav-link">หน้าแรก</a>
+                <a href="lesson.html?lesson=1.1" class="nav-link">บทเรียน</a>
+                <a href="downloads.html" class="nav-link">ดาวน์โหลด</a>
+                <a href="quiz.html" class="nav-link">Quiz</a>
+            </div>
+            <button class="theme-toggle" onclick="toggleTheme()" title="เปลี่ยนธีม">🌙</button>
+        </div>
+    </nav>
+
+    <main class="main">
+        <div class="page-header">
+            <h1>🏆 Certificate of Completion</h1>
+            <p>รับใบประกาศเมื่อเรียนจบครบ 24 บทเรียน</p>
+        </div>
+
+        <div class="progress-card">
+            <div class="progress-circle">
+                <svg width="150" height="150">
+                    <circle class="progress-bg" cx="75" cy="75" r="65"></circle>
+                    <circle class="progress-fill" cx="75" cy="75" r="65" 
+                        stroke-dasharray="408.4" 
+                        stroke-dashoffset="408.4"
+                        id="progressCircle"></circle>
+                </svg>
+                <div class="progress-text" id="progressPercent">0%</div>
+            </div>
+            <div class="progress-info">
+                <h3 id="progressTitle">กำลังเรียน...</h3>
+                <p id="progressDesc">เรียนจบ 0/24 บทเรียน</p>
+            </div>
+        </div>
+
+        <section class="certificate-section">
+            <h2>📜 ตัวอย่าง Certificate</h2>
+            <div class="certificate-wrapper" style="position: relative;">
+                <div class="certificate" id="certificate">
+                    <div class="certificate-border"></div>
+                    <div class="certificate-inner-border"></div>
+                    <div class="certificate-corner corner-tl"></div>
+                    <div class="certificate-corner corner-tr"></div>
+                    <div class="certificate-corner corner-bl"></div>
+                    <div class="certificate-corner corner-br"></div>
+
+                    <div class="certificate-logo">🎨</div>
+                    <div class="certificate-title">CERTIFICATE</div>
+                    <div class="certificate-subtitle">OF COMPLETION</div>
+                    
+                    <div class="certificate-text">This is to certify that</div>
+                    <div class="certificate-name" id="certName">Your Name</div>
+                    
+                    <div class="certificate-course">has successfully completed</div>
+                    <div class="certificate-text" style="font-weight: 600; font-size: 1.1rem;">AI for Designers 2026</div>
+                    <div class="certificate-text">24 lessons • 12 hours</div>
+                    
+                    <div class="certificate-date" id="certDate">January 31, 2026</div>
+
+                    <div class="certificate-footer">
+                        <div class="certificate-sign">
+                            <div class="certificate-sign-line"></div>
+                            <div class="certificate-sign-name">May (Kacha)</div>
+                            <div class="certificate-sign-title">Course Instructor</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="locked-overlay" id="lockedOverlay">
+                    <div class="locked-icon">🔒</div>
+                    <div class="locked-text">Certificate ถูกล็อค</div>
+                    <div class="locked-subtext">เรียนจบครบ 24 บทเรียนเพื่อปลดล็อค</div>
+                </div>
+            </div>
+
+            <div class="btn-group">
+                <button class="btn btn-primary" id="downloadBtn" disabled onclick="downloadCertificate()">
+                    📥 ดาวน์โหลด Certificate
+                </button>
+                <button class="btn btn-secondary" onclick="window.location.href='dashboard.html'">
+                    ← กลับไปเรียน
+                </button>
+            </div>
+
+            <div class="share-section" id="shareSection" style="display: none;">
+                <h3 style="text-align: center; margin: 32px 0 16px; font-size: 1rem; color: var(--text-muted);">📣 แชร์ความสำเร็จ</h3>
+                <div class="btn-group">
+                    <button class="btn btn-share" onclick="shareLinkedIn()">
+                        💼 LinkedIn
+                    </button>
+                    <button class="btn btn-share" onclick="shareTwitter()">
+                        🐦 Twitter
+                    </button>
+                    <button class="btn btn-share" onclick="shareFacebook()">
+                        📘 Facebook
+                    </button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // Load progress
+        function loadProgress() {
+            const progress = JSON.parse(localStorage.getItem('lessonProgress') || '{}');
+            const profile = JSON.parse(localStorage.getItem('userProfile') || '{}');
+            const completed = Object.keys(progress).length;
+            const total = 24;
+            const percent = Math.round((completed / total) * 100);
+            
+            // Update progress circle
+            const circle = document.getElementById('progressCircle');
+            const circumference = 408.4;
+            const offset = circumference - (percent / 100) * circumference;
+            circle.style.strokeDashoffset = offset;
+            
+            // Update text
+            document.getElementById('progressPercent').textContent = `${percent}%`;
+            document.getElementById('progressDesc').textContent = `เรียนจบ ${completed}/${total} บทเรียน`;
+            
+            // Update title
+            if (percent === 100) {
+                document.getElementById('progressTitle').textContent = '🎉 ยินดีด้วย! คุณเรียนจบแล้ว';
+                document.getElementById('lockedOverlay').style.display = 'none';
+                document.getElementById('downloadBtn').disabled = false;
+                document.getElementById('shareSection').style.display = 'block';
+            } else if (percent >= 75) {
+                document.getElementById('progressTitle').textContent = 'เกือบจะเสร็จแล้ว!';
+            } else if (percent >= 50) {
+                document.getElementById('progressTitle').textContent = 'ครึ่งทางแล้ว!';
+            } else if (percent > 0) {
+                document.getElementById('progressTitle').textContent = 'กำลังเรียน...';
+            } else {
+                document.getElementById('progressTitle').textContent = 'ยังไม่ได้เริ่มเรียน';
+            }
+            
+            // Update certificate name
+            const name = profile.fullName || 'Your Name';
+            document.getElementById('certName').textContent = name;
+            
+            // Update date
+            const today = new Date();
+            const options = { year: 'numeric', month: 'long', day: 'numeric' };
+            document.getElementById('certDate').textContent = today.toLocaleDateString('en-US', options);
+        }
+
+        // Download certificate as PNG
+        async function downloadCertificate() {
+            const certificate = document.getElementById('certificate');
+            
+            try {
+                const canvas = await html2canvas(certificate, {
+                    scale: 2,
+                    backgroundColor: '#FFFEF9',
+                    useCORS: true
+                });
+                
+                const link = document.createElement('a');
+                link.download = 'AI-for-Designers-Certificate.png';
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+            } catch (err) {
+                console.error('Failed to generate certificate:', err);
+                alert('ไม่สามารถสร้าง Certificate ได้ กรุณาลองใหม่');
+            }
+        }
+
+        // Social share functions
+        function getShareText() {
+            const profile = JSON.parse(localStorage.getItem('userProfile') || '{}');
+            const name = profile.fullName || 'I';
+            return `🎉 ${name} just completed the AI for Designers course! 24 lessons of practical AI skills for designers. #AIforDesigners #UXDesign #DesignAI`;
+        }
+
+        function shareLinkedIn() {
+            const url = encodeURIComponent('https://ai-for-designers-2026.vercel.app');
+            const text = encodeURIComponent(getShareText());
+            window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${url}`, '_blank');
+        }
+
+        function shareTwitter() {
+            const text = encodeURIComponent(getShareText());
+            const url = encodeURIComponent('https://ai-for-designers-2026.vercel.app');
+            window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, '_blank');
+        }
+
+        function shareFacebook() {
+            const url = encodeURIComponent('https://ai-for-designers-2026.vercel.app');
+            window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}`, '_blank');
+        }
+
+        // Theme toggle
+        function toggleTheme() {
+            const html = document.documentElement;
+            const newTheme = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            document.querySelector('.theme-toggle').textContent = newTheme === 'dark' ? '☀️' : '🌙';
+        }
+
+        (function loadTheme() {
+            const t = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', t);
+            const btn = document.querySelector('.theme-toggle');
+            if (btn) btn.textContent = t === 'dark' ? '☀️' : '🌙';
+        })();
+
+        // Initialize
+        loadProgress();
+    </script>
+</body>
+</html>

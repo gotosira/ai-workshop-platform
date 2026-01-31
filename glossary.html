@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Glossary — AI for Designers</title>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #FAF9F6;
+            --card: #FFFFFF;
+            --accent: #D97757;
+            --accent-light: #FEF3EE;
+            --text: #2D2A26;
+            --text-muted: #8B8680;
+            --border: #E8E3DB;
+            --shadow: 0 4px 20px rgba(0,0,0,0.06);
+        }
+
+        [data-theme="dark"] {
+            --bg: #1A1A1A;
+            --card: #2D2D2D;
+            --accent: #E8896A;
+            --accent-light: #3D2D28;
+            --text: #F5F5F5;
+            --text-muted: #A0A0A0;
+            --border: #404040;
+            --shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+
+        [data-theme="dark"] .navbar { background: rgba(26,26,26,0.95); }
+        [data-theme="dark"] .search-input { background: var(--bg); }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'IBM Plex Sans Thai', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        /* Nav Bar */
+        .navbar { background: rgba(251, 249, 247, 0.95); backdrop-filter: blur(20px); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100; }
+        .navbar-inner { max-width: 1200px; margin: 0 auto; padding: 14px 24px; display: flex; align-items: center; justify-content: space-between; }
+        .navbar-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--text); font-weight: 600; }
+        .navbar-logo-icon { width: 34px; height: 34px; background: var(--accent); border-radius: 9px; display: flex; align-items: center; justify-content: center; font-size: 1rem; }
+        .navbar-center { display: flex; gap: 32px; }
+        .nav-link { text-decoration: none; color: var(--text-muted); font-weight: 500; font-size: 0.9rem; transition: color 0.15s; }
+        .nav-link:hover, .nav-link.active { color: var(--accent); }
+        .theme-toggle { background: var(--card); border: 1px solid var(--border); width: 36px; height: 36px; border-radius: 50%; cursor: pointer; font-size: 1rem; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
+        .theme-toggle:hover { border-color: var(--accent); transform: scale(1.1); }
+
+        /* Main */
+        .main {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 24px;
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .page-header h1 {
+            font-size: 2rem;
+            margin-bottom: 8px;
+        }
+
+        .page-header p {
+            color: var(--text-muted);
+        }
+
+        /* Search */
+        .search-box {
+            position: relative;
+            margin-bottom: 32px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 14px 20px 14px 48px;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            font-size: 1rem;
+            font-family: inherit;
+            background: var(--card);
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+        }
+
+        /* Alphabet Nav */
+        .alphabet-nav {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            justify-content: center;
+            margin-bottom: 32px;
+            padding: 16px;
+            background: var(--card);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+        }
+
+        .alpha-link {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            color: var(--text-muted);
+            font-weight: 600;
+            font-size: 0.9rem;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+
+        .alpha-link:hover {
+            background: var(--accent-light);
+            color: var(--accent);
+        }
+
+        .alpha-link.active {
+            background: var(--accent);
+            color: white;
+        }
+
+        /* Term Cards */
+        .letter-section {
+            margin-bottom: 32px;
+        }
+
+        .letter-header {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent);
+            padding: 8px 0;
+            border-bottom: 2px solid var(--accent);
+            margin-bottom: 16px;
+        }
+
+        .term-card {
+            background: var(--card);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 12px;
+            border: 1px solid var(--border);
+        }
+
+        .term-header {
+            display: flex;
+            align-items: baseline;
+            gap: 12px;
+            margin-bottom: 8px;
+        }
+
+        .term-en {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .term-th {
+            color: var(--accent);
+            font-size: 0.95rem;
+        }
+
+        .term-def {
+            color: var(--text);
+            font-size: 0.95rem;
+            line-height: 1.7;
+        }
+
+        .term-example {
+            margin-top: 12px;
+            padding: 12px;
+            background: var(--accent-light);
+            border-radius: 8px;
+            font-size: 0.9rem;
+        }
+
+        .term-example strong {
+            color: var(--accent);
+        }
+
+        /* Category Tags */
+        .term-tags {
+            display: flex;
+            gap: 6px;
+            margin-top: 12px;
+        }
+
+        .term-tag {
+            padding: 4px 10px;
+            background: var(--bg);
+            border-radius: 12px;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-muted);
+        }
+
+        .empty-state-icon {
+            font-size: 4rem;
+            margin-bottom: 16px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .navbar-center { display: none; }
+            .alphabet-nav { padding: 12px; gap: 4px; }
+            .alpha-link { width: 28px; height: 28px; font-size: 0.8rem; }
+        }
+
+        @media (max-width: 480px) {
+            .navbar-inner { padding: 12px 16px; }
+            .navbar-logo span { display: none; }
+            .main { padding: 24px 16px; }
+            .page-header h1 { font-size: 1.5rem; }
+            .term-card { padding: 16px; }
+            .term-en { font-size: 1rem; }
+            .term-header { flex-direction: column; gap: 4px; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-inner">
+            <a href="dashboard.html" class="navbar-logo">
+                <div class="navbar-logo-icon">🎨</div>
+                <span>AI for Designers</span>
+            </a>
+            <div class="navbar-center">
+                <a href="dashboard.html" class="nav-link">หน้าแรก</a>
+                <a href="lesson.html?lesson=1.1" class="nav-link">บทเรียน</a>
+                <a href="downloads.html" class="nav-link">ดาวน์โหลด</a>
+                <a href="quiz.html" class="nav-link">Quiz</a>
+            </div>
+            <button class="theme-toggle" onclick="toggleTheme()">🌙</button>
+        </div>
+    </nav>
+
+    <main class="main">
+        <div class="page-header">
+            <h1>📖 AI Glossary</h1>
+            <p>คำศัพท์ AI ที่ Designer ควรรู้ — อังกฤษ-ไทย</p>
+        </div>
+
+        <div class="search-box">
+            <span class="search-icon">🔍</span>
+            <input type="text" class="search-input" id="searchInput" placeholder="ค้นหาคำศัพท์...">
+        </div>
+
+        <div class="alphabet-nav" id="alphabetNav"></div>
+
+        <div id="glossaryContent"></div>
+    </main>
+
+    <script>
+        const glossary = [
+            { en: 'Artificial Intelligence (AI)', th: 'ปัญญาประดิษฐ์', def: 'ระบบคอมพิวเตอร์ที่สามารถทำงานที่ต้องใช้ความฉลาดของมนุษย์ เช่น การเรียนรู้ การตัดสินใจ', tags: ['พื้นฐาน'] },
+            { en: 'Bias', th: 'อคติ', def: 'ความลำเอียงในข้อมูลหรือผลลัพธ์ของ AI ที่อาจเกิดจากข้อมูลที่ใช้ train ไม่ครอบคลุมหรือไม่สมดุล', example: 'ถ้า train AI ด้วยภาพคนผิวขาวเป็นหลัก จะทำให้ recognize คนผิวสีอื่นได้ไม่ดี', tags: ['Ethics'] },
+            { en: 'Chain-of-Thought (CoT)', th: 'การคิดเป็นลำดับขั้น', def: 'เทคนิคการ prompt ให้ AI อธิบายวิธีคิดทีละขั้นตอน ช่วยให้ได้คำตอบที่แม่นยำขึ้น', example: 'แทนที่จะถามตรงๆ ให้บอก "คิดทีละขั้น แล้วบอกคำตอบ"', tags: ['Prompting'] },
+            { en: 'Context Window', th: 'หน้าต่างบริบท', def: 'จำนวน tokens สูงสุดที่ AI สามารถรับได้ในครั้งเดียว รวมทั้ง prompt และ response', example: 'GPT-4 มี context window 128K tokens', tags: ['เทคนิค'] },
+            { en: 'DALL-E', th: 'ดาล-อี', def: 'AI สร้างภาพจาก text prompt พัฒนาโดย OpenAI', tags: ['Tools'] },
+            { en: 'Embedding', th: 'การฝังค่า', def: 'การแปลงข้อมูล (เช่น ข้อความ รูปภาพ) เป็นตัวเลขที่ AI เข้าใจได้', tags: ['เทคนิค'] },
+            { en: 'Few-shot Learning', th: 'การเรียนจากตัวอย่างน้อย', def: 'การให้ตัวอย่าง 2-5 ตัวอย่างใน prompt เพื่อให้ AI เข้าใจรูปแบบที่ต้องการ', example: 'Q: แมว A: cat\\nQ: หมา A: dog\\nQ: นก A: ?', tags: ['Prompting'] },
+            { en: 'Fine-tuning', th: 'การปรับจูน', def: 'การ train AI เพิ่มเติมด้วยข้อมูลเฉพาะทาง เพื่อให้เก่งในงานบางอย่างมากขึ้น', tags: ['เทคนิค'] },
+            { en: 'Generative AI', th: 'AI สร้างสรรค์', def: 'AI ที่สามารถสร้างเนื้อหาใหม่ เช่น ข้อความ รูปภาพ เสียง วิดีโอ', tags: ['พื้นฐาน'] },
+            { en: 'GPT', th: 'จีพีที', def: 'Generative Pre-trained Transformer — โมเดลภาษาขนาดใหญ่ของ OpenAI', tags: ['Tools'] },
+            { en: 'Hallucination', th: 'อาการหลอน', def: 'เมื่อ AI สร้างข้อมูลที่ดูน่าเชื่อถือแต่ไม่เป็นความจริง', example: 'AI อาจอ้างอิงบทความวิจัยที่ไม่มีอยู่จริง', tags: ['ข้อจำกัด'] },
+            { en: 'Image-to-Image', th: 'ภาพสู่ภาพ', def: 'การใช้รูปภาพเป็น input ให้ AI แปลงเป็นภาพใหม่ตาม style ที่ต้องการ', tags: ['Visual'] },
+            { en: 'Inpainting', th: 'การวาดเติมเต็ม', def: 'การให้ AI วาดเติมส่วนที่หายไปหรือต้องการแก้ไขในรูปภาพ', tags: ['Visual'] },
+            { en: 'Iteration', th: 'การทำซ้ำปรับปรุง', def: 'การปรับ prompt หลายรอบเพื่อให้ได้ผลลัพธ์ที่ดีขึ้น', tags: ['Prompting'] },
+            { en: 'Large Language Model (LLM)', th: 'โมเดลภาษาขนาดใหญ่', def: 'AI ที่ train จากข้อความจำนวนมหาศาล สามารถเข้าใจและสร้างภาษาได้', example: 'GPT-4, Claude, Gemini, Llama', tags: ['พื้นฐาน'] },
+            { en: 'LoRA', th: 'โลร่า', def: 'Low-Rank Adaptation — เทคนิคการ fine-tune โมเดลแบบประหยัดทรัพยากร', tags: ['เทคนิค'] },
+            { en: 'Midjourney', th: 'มิดเจอร์นีย์', def: 'AI สร้างภาพที่มีชื่อเสียงด้านความสวยงามและ artistic', tags: ['Tools'] },
+            { en: 'Multimodal', th: 'หลายรูปแบบ', def: 'AI ที่รับ input ได้หลายแบบ เช่น ทั้งข้อความและรูปภาพ', example: 'GPT-4V สามารถอ่านภาพและตอบคำถามเกี่ยวกับภาพได้', tags: ['พื้นฐาน'] },
+            { en: 'Negative Prompt', th: 'พรอมต์เชิงลบ', def: 'การบอก AI ว่าไม่ต้องการอะไรในผลลัพธ์', example: 'สำหรับ Midjourney: --no blur, watermark', tags: ['Prompting', 'Visual'] },
+            { en: 'Outpainting', th: 'การวาดขยาย', def: 'การให้ AI วาดต่อเติมพื้นที่รอบๆ รูปภาพที่มีอยู่', tags: ['Visual'] },
+            { en: 'Parameter', th: 'พารามิเตอร์', def: 'ค่าตัวแปรที่ปรับแต่งได้เพื่อควบคุมผลลัพธ์ของ AI', example: 'Temperature, Top-p, Max tokens', tags: ['เทคนิค'] },
+            { en: 'Prompt', th: 'พรอมต์ / คำสั่ง', def: 'ข้อความที่ป้อนให้ AI เพื่อให้ทำงานตามที่ต้องการ', tags: ['พื้นฐาน', 'Prompting'] },
+            { en: 'Prompt Engineering', th: 'วิศวกรรมพรอมต์', def: 'ศาสตร์การออกแบบ prompt ให้ได้ผลลัพธ์ที่ดีที่สุดจาก AI', tags: ['Prompting'] },
+            { en: 'RAG', th: 'แร็ก', def: 'Retrieval-Augmented Generation — การให้ AI ค้นหาข้อมูลจากแหล่งภายนอกก่อนตอบ', tags: ['เทคนิค'] },
+            { en: 'Seed', th: 'ซีด', def: 'ตัวเลขที่ใช้ควบคุมความสุ่มของ AI ช่วยให้สร้างผลลัพธ์ซ้ำได้', example: 'ใช้ seed เดียวกัน = ได้ภาพเหมือนกัน', tags: ['Visual', 'เทคนิค'] },
+            { en: 'Style Transfer', th: 'การถ่ายทอดสไตล์', def: 'การนำสไตล์จากภาพหนึ่งไปใช้กับอีกภาพหนึ่ง', tags: ['Visual'] },
+            { en: 'System Prompt', th: 'พรอมต์ระบบ', def: 'คำสั่งตั้งต้นที่กำหนดบทบาทและพฤติกรรมของ AI ก่อนเริ่มสนทนา', example: 'คุณคือผู้เชี่ยวชาญด้าน UX Design...', tags: ['Prompting'] },
+            { en: 'Temperature', th: 'อุณหภูมิ', def: 'ค่าที่ควบคุมความสุ่ม/ความคิดสร้างสรรค์ของ AI (0=แม่นยำ, 1=สร้างสรรค์)', tags: ['เทคนิค'] },
+            { en: 'Text-to-Image', th: 'ข้อความสู่ภาพ', def: 'การใช้ข้อความ prompt ให้ AI สร้างภาพ', example: 'DALL-E, Midjourney, Stable Diffusion', tags: ['Visual'] },
+            { en: 'Token', th: 'โทเค็น', def: 'หน่วยพื้นฐานที่ AI ใช้ประมวลผลข้อความ (ประมาณ 4 ตัวอักษร = 1 token)', tags: ['พื้นฐาน'] },
+            { en: 'Training Data', th: 'ข้อมูลฝึกสอน', def: 'ข้อมูลที่ใช้สอน AI ให้เรียนรู้', tags: ['พื้นฐาน'] },
+            { en: 'Transformer', th: 'ทรานส์ฟอร์เมอร์', def: 'สถาปัตยกรรม AI ที่เป็นพื้นฐานของ LLM สมัยใหม่', tags: ['เทคนิค'] },
+            { en: 'Upscaling', th: 'การขยายความละเอียด', def: 'การใช้ AI เพิ่มความละเอียดของภาพให้สูงขึ้น', tags: ['Visual'] },
+            { en: 'Zero-shot Learning', th: 'การเรียนโดยไม่มีตัวอย่าง', def: 'การให้ AI ทำงานโดยไม่ต้องให้ตัวอย่างใน prompt', tags: ['Prompting'] },
+        ];
+
+        // Sort alphabetically
+        glossary.sort((a, b) => a.en.localeCompare(b.en));
+
+        // Get unique first letters
+        const letters = [...new Set(glossary.map(t => t.en[0].toUpperCase()))];
+
+        // Render alphabet nav
+        document.getElementById('alphabetNav').innerHTML = letters.map(letter => 
+            `<a href="#letter-${letter}" class="alpha-link">${letter}</a>`
+        ).join('');
+
+        // Render glossary
+        function renderGlossary(terms) {
+            if (terms.length === 0) {
+                document.getElementById('glossaryContent').innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📖</div>
+                        <h3>ไม่พบคำศัพท์</h3>
+                        <p>ลองใช้คำค้นหาอื่น</p>
+                    </div>
+                `;
+                return;
+            }
+
+            const grouped = {};
+            terms.forEach(term => {
+                const letter = term.en[0].toUpperCase();
+                if (!grouped[letter]) grouped[letter] = [];
+                grouped[letter].push(term);
+            });
+
+            document.getElementById('glossaryContent').innerHTML = Object.entries(grouped).map(([letter, terms]) => `
+                <div class="letter-section" id="letter-${letter}">
+                    <div class="letter-header">${letter}</div>
+                    ${terms.map(term => `
+                        <div class="term-card">
+                            <div class="term-header">
+                                <span class="term-en">${term.en}</span>
+                                <span class="term-th">${term.th}</span>
+                            </div>
+                            <div class="term-def">${term.def}</div>
+                            ${term.example ? `<div class="term-example"><strong>ตัวอย่าง:</strong> ${term.example}</div>` : ''}
+                            <div class="term-tags">
+                                ${term.tags.map(tag => `<span class="term-tag">${tag}</span>`).join('')}
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `).join('');
+        }
+
+        // Search
+        document.getElementById('searchInput').addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase().trim();
+            if (query === '') {
+                renderGlossary(glossary);
+            } else {
+                const filtered = glossary.filter(term => 
+                    term.en.toLowerCase().includes(query) ||
+                    term.th.includes(query) ||
+                    term.def.toLowerCase().includes(query)
+                );
+                renderGlossary(filtered);
+            }
+        });
+
+        // Theme
+        function toggleTheme() {
+            const t = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', t);
+            localStorage.setItem('theme', t);
+            document.querySelector('.theme-toggle').textContent = t === 'dark' ? '☀️' : '🌙';
+        }
+        (function() {
+            const t = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', t);
+            const btn = document.querySelector('.theme-toggle');
+            if (btn) btn.textContent = t === 'dark' ? '☀️' : '🌙';
+        })();
+
+        // Initial render
+        renderGlossary(glossary);
+    </script>
+</body>
+</html>
